@@ -1,0 +1,31 @@
+{
+  "name": "ntouer-academic-planner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc -b && node scripts/clean-dist.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "~5.2.0",
+    "jsdom": "^29.0.0",
+    "typescript": "^7.0.2",
+    "vite": "~7.3.7",
+    "vitest": "^5.0.4"
+  }
+}
