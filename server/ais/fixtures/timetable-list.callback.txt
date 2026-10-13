@@ -1,0 +1,5 @@
+0|<table id="DataGrid">
+  <tr><th>序號</th><th>學期</th><th>課號</th><th>課名</th><th>開課單位</th><th>年級班別</th><th>授課老師</th><th>老師單位</th><th>學分</th><th>選別</th><th>人數</th><th>人數限制上／下限</th><th>實習</th><th>時數</th><th>合開</th><th>期限</th></tr>
+  <tr><td>0001</td><td>1142</td><td>FAKE101</td><td>海洋資料導論</td><td>測試學系</td><td>3年A班</td><td>測試教師甲</td><td>測試教師單位</td><td>3</td><td>必修</td><td>42</td><td>50/10</td><td></td><td>3</td><td>否</td><td>單學期</td></tr>
+  <tr><td>0002</td><td>1142</td><td>FAKE202</td><td>港灣文化【人文探索】</td><td>測試學系</td><td>1年A班</td><td>測試教師乙</td><td>測試教師單位</td><td>2</td><td>通識</td><td>28</td><td>30/10</td><td></td><td>2</td><td>否</td><td>單學期</td></tr>
+</table>

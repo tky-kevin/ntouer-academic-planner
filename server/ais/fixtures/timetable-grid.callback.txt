@@ -1,0 +1,7 @@
+0|<table id="table2">
+  <tr><th>節次</th><th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th><th>星期五</th><th>星期六</th><th>星期日</th></tr>
+  <tr><td>第0節<br>06:20<br>~<br>08:10</td><td></td><td><a href='javascript:fn_open("100000001");'>海洋資料導論<br>FAKE101<br>測試系<br>3A<br>INS-101</a></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>第一節<br>08:20<br>~<br>09:10</td><td><a href='javascript:fn_open("100000002");'>港灣文化【人文探索】<br>FAKE202<br>測試系<br>1A<br>INS-202</a></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>第二節<br>09:20<br>~<br>10:10</td><td></td><td><a href='javascript:fn_open("100000001");'>海洋資料導論<br>FAKE101<br>測試系<br>3A<br>INS-101</a></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>第三節<br>10:20<br>~<br>11:10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>

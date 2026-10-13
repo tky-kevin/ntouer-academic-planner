@@ -8,12 +8,16 @@
     "dev": "vite",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build": "tsc -b && node scripts/clean-dist.mjs && vite build",
+    "typecheck:ais": "tsc -p tsconfig.server.json",
+    "demo:ais": "tsx scripts/demo-ais-fixtures.ts",
+    "verify:ais:live": "node --env-file-if-exists=.env.local --import tsx scripts/verify-live-ais.ts",
+    "build": "tsc -b && node scripts/clean-dist.mjs && vite build && node scripts/verify-client-boundary.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "tough-cookie": "^6.0.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -25,6 +29,7 @@
     "@vitejs/plugin-react": "~5.2.0",
     "jsdom": "^29.0.0",
     "typescript": "^7.0.2",
+    "tsx": "^4.23.15",
     "vite": "~7.3.7",
     "vitest": "^5.0.4"
   }

@@ -1,0 +1,144 @@
+{
+  "source": "NTOUer / project-voyager services/gateway/src",
+  "revision": "9c28a0ebdb0d6af2339b7c29f9b26a9077a38f78",
+  "importedAt": "2026-10-14",
+  "note": "Local reusable protocol snapshot; Planner changes are documented in ../README.md. Original license retained.",
+  "files": [
+    {
+      "path": "application/auth-service.ts",
+      "sha256": "12ca964bf808be63381c8b82d1e21bcb7b4b7c9d5d78387fbee228766fab4504"
+    },
+    {
+      "path": "application/grades-service.ts",
+      "sha256": "0e98f3e5faa5d6dccc261e543b35805a6a86f7d1d6131770505ce2cb55272ee8"
+    },
+    {
+      "path": "application/timetable-service.ts",
+      "sha256": "435963233181a545359084adfe8b7df8069919198657d2f5afcb28234664b746"
+    },
+    {
+      "path": "protocol/ais/grades-parser.ts",
+      "sha256": "c36b56445c349807bc6344cd50c1a20d344127f7df5934ec6a0a137f34455310"
+    },
+    {
+      "path": "protocol/ais/grade-details-parser.ts",
+      "sha256": "cf5771b31f66b0a7e757a9df986c3e5b0045ff5092d7f67739222b7bef7b7085"
+    },
+    {
+      "path": "protocol/ais/timetable-parser.ts",
+      "sha256": "b8681ff3c8e6e2ff053cfb6b1917baf455967c2820c329e9e34cf2b9eab2ead9"
+    },
+    {
+      "path": "protocol/ais/course-catalog-parser.ts",
+      "sha256": "cc93fd16d704254a647c21388e4a022b9298e9a418b9bc01bd57f8e3d6f261ed"
+    },
+    {
+      "path": "protocol/ais/course-detail-parser.ts",
+      "sha256": "b97b3cb39dd7bc7a76787a0812257e88a6a1311419322c84bb194a14abc3a3ad"
+    },
+    {
+      "path": "protocol/ais/course-catalog-source.ts",
+      "sha256": "61ae1cf675b3b42056ecacfd7840ce566478caa41f39866c49cc7fc96623a950"
+    },
+    {
+      "path": "infrastructure/self_hosted/memory-session-store.ts",
+      "sha256": "f7b531f1f7553a55b0ce57b0317a724ca8105356b91ff886560946efb1660a7e"
+    },
+    {
+      "path": "application/ais-response.ts",
+      "sha256": "7d0da685ae367b5fb2ff8137e8cc059d65cbe59cc08dcd780e350024ec4884fb"
+    },
+    {
+      "path": "application/gateway-error.ts",
+      "sha256": "bdc6ed67206919f3659ea198890f95d6a04b205bdb69279b66ef21df9fa606f9"
+    },
+    {
+      "path": "application/ports/gateway-session.ts",
+      "sha256": "454569dde3c39b2c67cf4708bae1211e1ff16b976937e05bb5655c54767bef3e"
+    },
+    {
+      "path": "protocol/ais/authenticated-shell-parser.ts",
+      "sha256": "51abb73b794c3671c53d43eac4cfd86fe4c8c615a8b8a9db5ac1d990a63119c4"
+    },
+    {
+      "path": "protocol/ais/login-page-parser.ts",
+      "sha256": "e40ff5cba1fed3c9135b13e2f3f4a36d6ddbc11069ed20fb25248dfc7cb204b4"
+    },
+    {
+      "path": "protocol/ais/login-request.ts",
+      "sha256": "cda84bfe4019d39af6cc4da3f0763391933c2815b5775216ea4e0e29352449b2"
+    },
+    {
+      "path": "protocol/ais/protocol-error.ts",
+      "sha256": "291b86afe9b144693a237ef4b30bad9b1820300d36000fcc2dbac40f8d186dad"
+    },
+    {
+      "path": "application/ais-feature-navigation.ts",
+      "sha256": "435e3fab0ad0aff355e0e8aa00f7dfee823c3941836ced7b0f2b689604314d4a"
+    },
+    {
+      "path": "application/grades-response.ts",
+      "sha256": "ee62038029830ed17e10a36339eab57acbde52d2cb19c5888e10aae6bb43b70b"
+    },
+    {
+      "path": "protocol/ais/grades-query.ts",
+      "sha256": "1ce02780b8f8455f56c3a3943c283bf1031507aaf4cd1aa70d68f731c110cd66"
+    },
+    {
+      "path": "protocol/ais/grades-detail-navigation.ts",
+      "sha256": "2fe4c7c226650fc01b9a5dba6913322d870c57512174359fb2e1ada5aee989e5"
+    },
+    {
+      "path": "protocol/ais/webforms-query.ts",
+      "sha256": "b98e5ec83028a137e218dc9c5c0fb22a70a3dfa36f4d6b04fae8536a53749665"
+    },
+    {
+      "path": "application/timetable-response.ts",
+      "sha256": "27ed3dc179762e60f33b01aee4eacd494bbe4805e1e5641f48b86e8c94c939d8"
+    },
+    {
+      "path": "protocol/ais/callback.ts",
+      "sha256": "ae0170de46ca490e00c7222cbadc0030f9c8eafe9d2adacd5731981199f048c8"
+    },
+    {
+      "path": "protocol/ais/html-table.ts",
+      "sha256": "75dfe27d90a9bfd53bf90d863bd798217f28e2bca8084305dd60f3d05121ec2e"
+    },
+    {
+      "path": "protocol/ais/course-requirement.ts",
+      "sha256": "3527b98d40ac0a5c5cd87c28c5470dd563acb8fedb14aa24c922414ff2b5dfe3"
+    },
+    {
+      "path": "application/course-reference-material.ts",
+      "sha256": "ed43efb7431fe046f2920f4f93ca2a8dd146178023c7c927c141854614756633"
+    },
+    {
+      "path": "application/ports/ais-transport.ts",
+      "sha256": "2e58612f2d9b2515b790ca4fbdad7ef659f805013c58b73480e9f79472b710a6"
+    },
+    {
+      "path": "application/ports/course-catalog-source.ts",
+      "sha256": "e4fb488007e1217110b3dabb51fb6714a8e9049f5217d68caa4f80859a727f7e"
+    },
+    {
+      "path": "application/course-catalog-ingestion.ts",
+      "sha256": "76b98ea5203ff4596713986080dc2879b036b8785c561c71e7e2596b71386035"
+    },
+    {
+      "path": "protocol/ais/course-catalog-query.ts",
+      "sha256": "214d2f04ef3bc91637a7a9f65071086b79c29c374f738e7548ed9ae6910d9724"
+    },
+    {
+      "path": "protocol/ais/menu-tree-parser.ts",
+      "sha256": "b6e895b0fbc98f36fd1ca38d9bbd2ba875c061beff1c9c28a79bc7b69f00d6be"
+    },
+    {
+      "path": "protocol/ais/feature-loader-parser.ts",
+      "sha256": "92bb6638a71f66b08d79d58eb1c84ced4680eced0991851d7494d14f00d08a17"
+    },
+    {
+      "path": "application/course-classification.ts",
+      "sha256": "751015fd40b5ac0c161357008371b4387fa9ecdcbb96da1e7829e771285a3b4f"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+export const aisProtocolFailureCodes = [
+  "callback_error",
+  "invalid_callback_envelope",
+  "invalid_callback_length",
+  "missing_table",
+  "missing_required_header",
+  "missing_course_metadata",
+  "feature_loader_changed",
+  "menu_tree_contract_changed",
+  "invalid_table_row",
+  "invalid_credits",
+  "invalid_timetable_slot",
+  "generic_error",
+  "invalid_grade_row",
+  "invalid_grade_value",
+  "grades_grid_header_changed",
+  "grades_no_data_message_changed",
+  "grades_query_result_missing",
+  "grades_query_term_not_applied",
+  "grades_result_table_unrecognized",
+  "grades_detail_target_changed",
+  "grades_term_header_changed",
+  "grades_code_header_changed",
+  "grades_class_section_header_changed",
+  "grades_credits_header_changed",
+  "grades_selection_header_changed",
+  "grades_title_header_changed",
+  "grades_semester_header_changed",
+  "grades_other_header_changed",
+  "grades_metadata_contract_changed",
+  "course_catalog_contract_changed",
+  "course_catalog_header_changed",
+  "course_catalog_row_labels_changed",
+  "course_catalog_form_changed",
+  "course_catalog_callback_changed",
+  "course_catalog_options_changed",
+  "course_catalog_public_entry_changed",
+  "course_catalog_pagination_changed",
+  "course_catalog_state_missing",
+  "invalid_course_catalog_query",
+  "invalid_course_catalog_row",
+  "invalid_course_catalog_value",
+  "invalid_course_requirement_value",
+  "course_detail_contract_changed",
+  "course_detail_schedule_changed",
+  "course_detail_target_changed",
+  "course_detail_term_mismatch",
+  "invalid_course_detail_value",
+] as const;
+
+export type AisProtocolFailureCode = (typeof aisProtocolFailureCodes)[number];
+
+export class AisProtocolError extends Error {
+  constructor(readonly code: AisProtocolFailureCode) {
+    super(code);
+    this.name = "AisProtocolError";
+  }
+}

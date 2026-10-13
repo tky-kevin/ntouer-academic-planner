@@ -1,0 +1,1 @@
+0|<div id="AjaxPanel">fixture</div><script>doOpenFancyBox('','800','600','./Application/TKE/TKE22/TKE2240_03.aspx?PKNO=999999#');</script>|hiddenField|__VIEWSTATE|FAKE_DETAIL_STATE|hiddenField|__VIEWSTATEGENERATOR|FAKE_GENERATOR|hiddenField|__EVENTVALIDATION|FAKE_DETAIL_VALIDATION|

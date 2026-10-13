@@ -4,3 +4,7 @@ dist/
 output/
 .playwright-cli/
 *.local
+.env*
+!.env.example
+secrets/
+tmp/

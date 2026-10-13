@@ -1,0 +1,18 @@
+0|<section>
+  <span id="M_ASYS_NAME">日間學制</span><span id="M_DEGREE_NAME">大學部</span>
+  <span id="M_COLLEGE_NAME">範例學院</span><span id="M_FACULTY_NAME">範例學系</span>
+  <span id="M_GRADE">2</span><span id="M_CLASSNO">A</span>
+  <span id="M_STNO">FIXTURE-STUDENT</span><span id="M_CH_NAME">範例學生</span>
+  <span id="M_STUDY_STATUS_NAME">在學</span><span id="M_PRESENT_TYPE">一般生</span>
+  <span id="M_WARE_CRD">3</span><span id="M_PASS_CRD">42</span>
+  <span id="M_CRD_TOTAL">45</span><span id="M_AVG_MARK">86.5</span>
+  <span id="M_CRD">42</span><span id="M_CLASS_RANK">4/54</span>
+  <span id="M_FACULTY_RANK">6/107</span><span id="MLSMS_RANK_SDATE">(1142學年期)115/09/21</span>
+</section>
+<table id="DataGrid">
+  <tr><th>學年期</th><th>課號</th><th>開課班別</th><th>學分數</th><th>選別</th><th>課程名稱</th><th>教師姓名</th><th>學期總成績</th><th>其他成績</th></tr>
+  <tr><td>1132</td><td>FAKE401</td><td>A</td><td>3</td><td>必修</td><td>測試程式設計</td><td>測試教師丁</td><td>99</td><td>詳</td></tr>
+  <tr><td>1132</td><td></td><td></td><td></td><td></td><td>操行成績</td><td></td><td>90</td><td></td></tr>
+  <tr><td>1141</td><td>FAKE402</td><td>B</td><td>0</td><td>抵</td><td>測試抵免課程</td><td></td><td>抵</td><td>詳</td></tr>
+  <tr><td>1141</td><td></td><td></td><td></td><td></td><td>操行成績</td><td></td><td>92</td><td></td></tr>
+</table>

@@ -6,6 +6,13 @@ import type { CourseRecord, CreditRuleSet } from '../domain/types'
 import { checkCredits } from './checkCredits'
 
 describe('AP-I1-03 學分檢核引擎', () => {
+  it('已及格但分類未知時，只計入總學分，分類缺額保留', () => {
+    const record: CourseRecord = { recordId: 'unclassified', courseCode: 'U', name: '分類待確認', credits: 2, category: 'unknown', status: 'passed' }
+    const result = checkCredits([record], testRules)
+    expect(result.summary).toEqual({ totalCredits: 2, requiredCredits: 0, electiveCredits: 0 })
+    expect(result.conditions.map(condition => condition.deficit)).toEqual([10, 6, 6])
+    expect(result.conditions.map(condition => condition.countedRecords.length)).toEqual([1, 0, 0])
+  })
   for (const sample of recordSamples) {
     it(`七組樣本：${sample.name} 的學分、缺額與達標狀態`, () => {
       const result = checkCredits(sample.records, testRules)

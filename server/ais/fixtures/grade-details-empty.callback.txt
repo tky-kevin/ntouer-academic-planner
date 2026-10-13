@@ -1,0 +1,6 @@
+0|<section>
+  <span id="M_MARK1"></span><span id="M_MARK3"></span>
+  <span id="M_SMS_FMARK">通過</span><span id="M_MARK2"></span>
+  <span id="M_MARK4"></span>
+</section>
+<table id="DataGrid"><tr><td>查無符合資料!!</td></tr></table>

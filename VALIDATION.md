@@ -1,6 +1,6 @@
 # Iteration 1 驗證紀錄
 
-日期：2026/10/13（Asia/Taipei）。規則版本：test-v0.1。範圍：開發測試規則的部分條件檢核。
+I1 初次驗證日期：2026/10/13（Asia/Taipei）。規則版本：test-v0.1。範圍：開發測試規則的部分條件檢核。
 
 ## 執行環境
 
@@ -49,3 +49,16 @@ Playwright CLI 是額外的驗證工具，不是 Demo 執行的必要相依套�
 - 真人使用者測試、螢幕閱讀器實機測試與完整 WCAG 稽核。
 - 正式部署、真實 AIS 紀錄與海大正式畢業規則；這些不屬於 I1 實作範圍。
 - 外部看板、影片與提交頁；GitHub 原始碼提交不等同完成這些外部提交項目。
+
+## 教務 adapter fixture 驗證（2026/10/14）
+
+| 指令 | 結果 |
+| --- | --- |
+| npm test | 5 個測試檔，47 項測試通過；包含 I1 與教務 adapter |
+| npm run typecheck:ais | 通過；伺服器模組與 CLI 型別檢查 |
+| npm run demo:ais | fixture 登入、歷年成績、課表、課程清單及身份一致的 detail 均通過；沒有網路請求 |
+| npm run build | TypeScript、Vite 及前端／教務模組邊界檢查通過 |
+
+教務 fixture 的 10 筆成績由同一引擎計算出 11／6／3 學分、1／0／3 缺額；沒有讀取樣本答案。課表為 2 次修課與 3 個時段；公開課程為 2 筆。詳細測試包括分頁 postback、表單更新、數字及格政策、特殊成績、未知分類、重修、detail 身份、學生 profile 身份、登入失敗、驗證碼 bootstrap、session TTL、登出失敗、Cookie 隔離、跨來源導向、大小上限及 timeout。
+
+真實測試 CLI 的缺少帳密 preflight 經獨立子程序確認會在網路前安全結束。帳密、私人結果與驗證碼圖片的路徑已列入 Git 忽略。尚未提供或使用真實帳號；成績明細目前只測 parser，未驗證 live 導覽。Fixture 並不代表真實 AIS 整合已通過，亦不代表已完成正式畢業規則。

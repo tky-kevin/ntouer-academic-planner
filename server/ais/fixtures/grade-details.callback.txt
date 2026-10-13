@@ -1,0 +1,9 @@
+0|<section>
+  <span id="M_MARK1">84</span><span id="M_MARK3">91</span>
+  <span id="M_SMS_FMARK">88</span><span id="M_MARK2"></span>
+  <span id="M_MARK4">#</span>
+</section>
+<table id="DataGrid">
+  <tr><th>學年期</th><th>課號</th><th>開課班別</th><th>課程名稱</th><th>教師姓名</th><th>平時成績</th><th>平時成績日期</th></tr>
+  <tr><td>1142</td><td>FAKE601</td><td>A</td><td>測試課程</td><td>範例教師</td><td>90</td><td>115/01/15</td></tr>
+</table>

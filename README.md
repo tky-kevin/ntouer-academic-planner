@@ -26,6 +26,8 @@ npm run preview   # 預覽 dist/ 的建置成果
 
 不需後端、資料庫、帳號、API 金鑰或環境變數。停止開發伺服器請按 Ctrl+C。
 
+另有伺服器端教務 adapter，可用 `npm run demo:ais` 執行登入、成績、課表與課程 detail 的 fixture 流程，並交給相同學分引擎檢核。此入口不使用網路；瀏覽器 I1 Demo 仍使用原本七組樣本。模組介面、來源及日後真實測試方式見 [教務 adapter 說明](server/ais/README.md)。
+
 建置指令先做型別檢查，再以 `scripts/clean-dist.mjs` 逐檔清理本專案 `dist/`，最後執行 Vite。這是為了處理本機 Windows/Node 在自動遞迴清理舊產物時的程序崩潰；腳本會檢查路徑、拒絕連結形式的輸出根目錄，並且不跟隨子目錄連結。
 
 ## 如何操作 Demo
@@ -48,7 +50,7 @@ npm run preview   # 預覽 dist/ 的建置成果
 | required-credits | 必修類學分 | 6 |
 | elective-credits | 選修類學分 | 6 |
 
-A、B 為必修各 3 學分；C、D、X 為選修各 3 學分。修課紀錄包含 `recordId`、`courseCode`、`name`、`credits`、`category`、`status`。`category` 為 required/elective；`status` 為 passed/failed/unknown。
+A、B 為必修各 3 學分；C、D、X 為選修各 3 學分。修課紀錄包含 `recordId`、`courseCode`、`name`、`credits`、`category`、`status`。I1 樣本 `category` 為 required/elective；`status` 為 passed/failed/unknown。教務 adapter 另保留 category=unknown，及格但分類未知時只計總學分，分類缺額與待確認原因仍保留。
 
 | 樣本 | 已取得：總／必修／選修 | 缺額：總／必修／選修 | 三項測試條件全部達標 |
 | --- | --- | --- | --- |
@@ -96,7 +98,7 @@ Vitest 覆蓋七組樣本的精確學分／缺額／狀態、未知狀態不採�
 - 模擬資料是有效、非負的學分資料；沒有匯入或編輯功能，也未建立外部不合法資料的執行期驗證。
 - `recordId`、`courseCode` 以完全相同的字串識別。相同識別但學分／類別矛盾時採首次紀錄，不處理複雜等價課程、替代、抵免、免修或多次修習例外。
 - 未知狀態不採計學分；I1 的結果為測試學分條件達標／未達標，不支援正式三態規則樹。
-- Google 登入、AIS 同步、資料庫、AI、修課計畫、正式課程庫與衝堂檢查均留待後續迭代。
+- 教務 adapter 已有 fixture 驗證與真實測試 CLI，但尚未以真實帳號驗證，也尚未接上畫面的 AIS 同步入口。Google 登入、資料庫、AI、修課計畫及衝堂檢查仍留待後續迭代。
 - 選取與結果只存在瀏覽器記憶體，重新整理即重設；沒有保存或多使用者功能。
 - 本機開發／建置驗證不等於正式部署、校方畢業審核或完整 MVP 驗收。
 

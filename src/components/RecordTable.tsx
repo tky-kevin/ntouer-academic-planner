@@ -31,7 +31,7 @@ export function RecordTable({ records, result }: RecordTableProps) {
                   <th scope="row"><span className="course-name">{record.name}</span><span className="course-code">課號 {record.courseCode}</span></th>
                   <td className="record-id">{record.recordId}</td>
                   <td className="number-cell">{record.credits}</td>
-                  <td>{record.category === 'required' ? '必修' : '選修'}</td>
+                  <td>{record.category === 'required' ? '必修' : record.category === 'elective' ? '選修' : '分類待確認'}</td>
                   <td><span className={`status-badge status-${record.status}`}>{statusLabels[record.status]}</span></td>
                   <td><span className={result && !reason ? 'counted-label' : 'muted'}>{result ? reason ? exclusionLabels[reason] : '已採計' : '待檢核'}</span></td>
                 </tr>

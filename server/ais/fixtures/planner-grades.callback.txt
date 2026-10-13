@@ -1,0 +1,13 @@
+0|<table id="DataGrid">
+<tr><th>學年期</th><th>課號</th><th>開課班別</th><th>學分</th><th>選別</th><th>課程名稱</th><th>教師</th><th>暫存學期總成績</th><th>學期總成績</th><th>其他成績</th></tr>
+<tr><td>1121</td><td>A</td><td>測試班</td><td>3</td><td>必修</td><td>課程 A</td><td>測試教師</td><td>55</td><td>55</td><td></td></tr>
+<tr><td>1131</td><td>A</td><td>測試班</td><td>3</td><td>必修</td><td>課程 A</td><td>測試教師</td><td>70</td><td>70</td><td></td></tr>
+<tr><td>1131</td><td>B</td><td>測試班</td><td>3</td><td>必修</td><td>課程 B</td><td>測試教師</td><td>60</td><td>60</td><td></td></tr>
+<tr><td>1131</td><td>C</td><td>測試班</td><td>3</td><td>選修</td><td>課程 C</td><td>測試教師</td><td>80</td><td>80</td><td></td></tr>
+<tr><td>1131</td><td>D</td><td>測試班</td><td>3</td><td>選修</td><td>課程 D</td><td>測試教師</td><td>50</td><td>50</td><td></td></tr>
+<tr><td>1132</td><td>X</td><td>測試班</td><td>3</td><td>選修</td><td>課程 X</td><td>測試教師</td><td>90</td><td>+未公布</td><td></td></tr>
+<tr><td>1131</td><td>U</td><td>測試班</td><td>2</td><td>待確認</td><td>未知分類課程</td><td>測試教師</td><td>75</td><td>75</td><td></td></tr>
+<tr><td>1131</td><td>W</td><td>測試班</td><td>3</td><td>選修</td><td>退選課程</td><td>測試教師</td><td></td><td>W</td><td></td></tr>
+<tr><td>1131</td><td>E</td><td>測試班</td><td>3</td><td>必修</td><td>抵免課程</td><td>測試教師</td><td></td><td>抵</td><td></td></tr>
+<tr><td>1132</td><td>A</td><td>測試班</td><td>3</td><td>必修</td><td>課程 A</td><td>測試教師</td><td>85</td><td>85</td><td></td></tr>
+</table>

@@ -1,4 +1,4 @@
-export type CourseCategory = 'required' | 'elective'
+export type CourseCategory = 'required' | 'elective' | 'unknown'
 export type CourseStatus = 'passed' | 'failed' | 'unknown'
 
 export interface CourseRecord {
