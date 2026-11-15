@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-11-09T00:00:00.000Z" agent="OpenCode" version="24.7.17" type="device">
+  <diagram id="context" name="01 System Context">
+    <mxGraphModel dx="1400" dy="990" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="990" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="NTOUER Academic Planner｜System Context Diagram（C4 Level 1）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#172B4D;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="22" width="1320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Lab 2 Architecture Design · 2026/11/09 · 焦點在人與軟體系統，不顯示低階技術細節" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#5E6C84;" vertex="1" parent="1">
+          <mxGeometry x="40" y="62" width="1320" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="rule" value="" style="endArrow=none;html=1;strokeColor=#E4E7EC;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="40" y="92" as="sourcePoint"/><mxPoint x="1360" y="92" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="student" value='&lt;b&gt;學生&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Person]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;查看畢業進度、修正紀錄&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;規劃未來修課&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value='&lt;b&gt;開發者／系所管理員&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Person]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;建立、確認與發布&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;畢業規則&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="220" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="planner" value='&lt;b&gt;NTOUER Academic Planner&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Software System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;海大智慧修課與畢業規劃系統&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;整合修課紀錄、畢業規則與修課計畫&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4F8A;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="330" width="340" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="google" value='&lt;b&gt;Google Identity&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;OAuth 2.0 / OpenID Connect&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="120" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ais" value='&lt;b&gt;NTOUer 教務系統（AIS）&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;登入、成績與課表資料&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="300" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="coursedb" value='&lt;b&gt;NTOUer 課程資料庫&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;歷年課程與開課資訊&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="480" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="official" value='&lt;b&gt;官方規則來源&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;系所手冊、修業規定、檢核表&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;（PDF / 網頁）&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="660" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="使用&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="student" target="planner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="維護規則&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="admin" target="planner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="驗證身分&lt;br&gt;[OIDC]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="planner" target="google">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="同步成績與課表&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="planner" target="ais">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="查詢課程&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="planner" target="coursedb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="規則依據（人工整理）&lt;br&gt;[PDF / Web]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="official" target="planner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-person" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;" vertex="1" parent="1">
+          <mxGeometry x="40" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-person" value="Person" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="64" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-system" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4F8A;" vertex="1" parent="1">
+          <mxGeometry x="190" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-system" value="Software System" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="214" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-external" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="360" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-external" value="External System" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="384" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-rel" value="Relationship" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="530" y="924" width="120" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-arrow" value="" style="endArrow=block;endFill=1;html=1;strokeColor=#5E6C84;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="500" y="936" as="sourcePoint"/><mxPoint x="524" y="936" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lg-note" value="C4 Model · diagrams.net source" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="924" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="官方來源不會由系統自動爬取；MVP 由維護者閱讀後，經 Web UI 建立結構化規則。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="40" y="896" width="1320" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="container" name="02 Container">
+    <mxGraphModel dx="1400" dy="990" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="990" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="NTOUER Academic Planner｜Container Diagram（C4 Level 2）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#172B4D;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="22" width="1320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Lab 2 Architecture Design · 2026/11/09 · 目標 MVP 架構；I1 目前僅實作前端 Demo 與 AIS adapter 模組" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#5E6C84;" vertex="1" parent="1">
+          <mxGeometry x="40" y="62" width="1320" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="rule" value="" style="endArrow=none;html=1;strokeColor=#E4E7EC;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="40" y="92" as="sourcePoint"/><mxPoint x="1360" y="92" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="boundary" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#9E9E9E;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="170" width="800" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="boundarylabel" value='NTOUER Academic Planner&lt;br&gt;&lt;font style="font-size:10px"&gt;[Software System]&lt;/font&gt;' style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#42526E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="268" y="180" width="380" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="student" value='&lt;b&gt;學生&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Person]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;使用網站查看進度&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;與規劃修課&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="300" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value='&lt;b&gt;開發者／系所管理員&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Person]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;經 Web UI 維護&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;與發布規則&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="520" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="webui" value='&lt;b&gt;Web UI&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Container: React + TypeScript SPA]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;學生與管理者操作介面&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;呼叫 Planner API&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6DA4;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="290" y="280" width="210" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value='&lt;b&gt;Planner API&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Container: Node.js + TypeScript]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;身分與權限、畢業檢核引擎&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;計畫與規則 API&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6DA4;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="580" y="280" width="240" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="db" value='&lt;b&gt;Planner DB&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Container: PostgreSQL]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;使用者、修正、計畫&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;規則版本與快照&lt;/font&gt;' style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=15;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6DA4;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="870" y="280" width="150" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="aisadapter" value='&lt;b&gt;AIS Adapter&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[Container: Node.js + TypeScript]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;封裝 AIS 登入、驗證碼&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;成績與課表查詢&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6DA4;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="580" y="510" width="240" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="google" value='&lt;b&gt;Google Identity&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;OAuth 2.0 / OIDC&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="140" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="coursedb" value='&lt;b&gt;NTOUer 課程資料庫&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;歷年課程與開課資訊&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="380" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ais" value='&lt;b&gt;NTOUer 教務系統（AIS）&lt;/b&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;[External System]&lt;/font&gt;&lt;br&gt;&lt;font style="font-size:10px"&gt;登入、成績與課表&lt;/font&gt;' style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;fontColor=#FFFFFF;fontSize=13;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="580" y="760" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="使用&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="student" target="webui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="管理&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="admin" target="webui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="REST/JSON&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="webui" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="SQL&lt;br&gt;[TLS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="內部 API&lt;br&gt;[HTTP/JSON]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="aisadapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" value="HTTPS form login&lt;br&gt;+ session cookie" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="aisadapter" target="ais">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" value="驗證 ID token&lt;br&gt;[OIDC]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.875;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="google">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" value="查詢課程&lt;br&gt;[HTTPS]" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#5E6C84;strokeWidth=2;fontColor=#42526E;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.917;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="coursedb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-person" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;" vertex="1" parent="1">
+          <mxGeometry x="40" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-person" value="Person" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="64" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-system" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4F8A;" vertex="1" parent="1">
+          <mxGeometry x="190" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-system" value="Software System" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="214" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-external" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="360" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-external" value="External System" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="384" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6DA4;" vertex="1" parent="1">
+          <mxGeometry x="520" y="928" width="16" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt-container" value="Container" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="544" y="924" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-rel" value="Relationship" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="690" y="924" width="120" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-arrow" value="" style="endArrow=block;endFill=1;html=1;strokeColor=#5E6C84;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="936" as="sourcePoint"/><mxPoint x="684" y="936" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="lg-note" value="C4 Model · diagrams.net source" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="924" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="官方規則來源由維護者經 Web UI 建立；MVP 不直接連線官方來源。AIS Adapter 以獨立容器隔離 AIS 協定與 session。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#6B778C;" vertex="1" parent="1">
+          <mxGeometry x="40" y="896" width="1320" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

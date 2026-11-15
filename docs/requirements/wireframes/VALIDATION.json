@@ -1,0 +1,23 @@
+{
+  "diagrams": 9,
+  "embedded_story_maps": 2,
+  "embedded_interface_plates": 7,
+  "coverage_rules": 39,
+  "required_courses": 18,
+  "required_credits": 50,
+  "core_course_names": 14,
+  "missing_local_links": [],
+  "duplicate_condition_ids": false,
+  "source_hashes_match": true,
+  "browser_capture": {
+    "captured": 9,
+    "mobileOverflow": false,
+    "textOutsideCanvas": []
+  },
+  "limitations": [
+    "Miro connector not logged in; maps reconstructed from v0.3 tables",
+    "Formal course code mappings not implemented",
+    "Electronic commerce source conflict retained",
+    "Diagram illustrations are not delivery evidence"
+  ]
+}

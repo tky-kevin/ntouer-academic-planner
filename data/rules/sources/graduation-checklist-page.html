@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=1, minimum-scale=1.0, maximum-scale=3.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta property="og:image"  content="https://cse.ntou.edu.tw/var/file/63/1063/msys_1063_7707003_66539.png" />
+
+<meta name="google-site-verification" content="_3aa5XBF1O59qO6-EPNu8jqK-hAH8ZDRV2Xh6Vl065U" />
+<!-- Custom CSS Start -->
+<style>
+/*
+    .owl-stage img, .owl-stage-outer {
+        width: auto !important;
+        height: 500px;
+        min-height: 500px;
+        max-height: 500px;
+    }
+
+    @media screen and (max-width: 767px) {
+        .owl-stage img, .owl-stage-outer {
+            height: 40vh;
+            min-height: 40vh;
+            max-height: 40vh;
+        }
+    }
+*/
+</style>
+<!-- Custom CSS End -->
+
+<!-- Custom Js Start -->
+<script>
+// Auto Calendar
+function autoCalendar() {
+    const calendarA = [...document.querySelectorAll(".module.module-link a")].filter(a => a.title.endsWith("行事曆(另開新視窗)"))[0];
+    if (!calendarA) return;
+    const year = parseInt(new Date(new Date().getTime() + 3600000*8).toISOString().split('-')[0]);
+    const month = parseInt(new Date(new Date().getTime() + 3600000*8).toISOString().split('-')[1]);
+    const semester = ((year - 1911) - ((month >= 8) ? 0 : 1)).toString();
+    const calendarKey = "cse-calendar-uri";
+    
+    if (localStorage[calendarKey] && JSON.parse(localStorage[calendarKey])['semester'] === semester && !localStorage[calendarKey].includes("Error")) {
+        console.log("Loading calendar uri from local.")
+        const uri = JSON.parse(localStorage[calendarKey])['uri'];
+        calendarA.href = uri;
+    } else fetch('https://ntou-calendar.herokuapp.com/').then(res => res.text()).then(res => {
+        console.log("Set new calendar uri from remote.")
+        calendarA.href = res;
+        localStorage[calendarKey] = JSON.stringify({
+            semester,
+            uri: res
+        });
+    });
+}
+
+function fixTitle() {
+    const logo = document.querySelector(".mlogo span");
+    logo.innerHTML = logo.innerHTML.replace(" ", " <style>.titleDivider { display: none; } @media screen and (max-width: 767px) { .titleDivider { display: block; }}</style><p class='titleDivider'></p>");
+}
+
+window.addEventListener("load", () => {
+    autoCalendar();
+    fixTitle();
+});
+</script>
+<!-- Custom Js End -->
+
+<!-- 圖資處設定 Start -->
+<style>
+.PtStatistic {
+    display:none;
+}
+
+.module-adv img,
+.module-detail img {
+    height:300px !important;
+}
+@media screen and (min-width: 481px) {
+    .module-adv img,
+	.module-detail img {
+        height:400px !important;
+    }
+}
+@media screen and (min-width: 992px) {
+    .module-adv img,
+	.module-detail img {
+        height:500px !important;
+    }
+}
+</style>
+<!-- 圖資處設定 End -->
+
+<meta property="og:image"  content="/var/file/63/1063/msys_1063_2938895_66561.png" />
+
+<title>畢業學分檢核表 </title>
+
+<link rel="shortcut icon" href="/var/file/63/1063/msys_1063_2938895_66561.png" type="image/x-icon" />
+<link rel="icon" href="/var/file/63/1063/msys_1063_2938895_66561.png" type="image/x-icon" />
+<link rel="bookmark" href="/var/file/63/1063/msys_1063_2938895_66561.png" type="image/x-icon" />
+
+<link rel="apple-touch-icon-precomposed" href="/var/file/63/1063/msys_1063_2938895_66561.png">
+<link rel="apple-touch-icon" href="/var/file/63/1063/msys_1063_2938895_66561.png">
+
+<link rel="stylesheet" href="/var/file/63/1063/mobilestyle/combine-zh-tw.css?t=260ebdd15a" type="text/css" />
+<style>@media (min-width: 481px) {.row_0 .col_01 { width: 0%;}.row_0 .col_02 { width: 100%;}.row_0 .col_03 { width: 0%;}}</style>
+
+<script language="javascript"><!--
+ var isHome = false 
+ --></script>
+<script language="javascript"><!--
+ var isExpanMenu = false 
+ --></script>
+<script type="text/javascript" src="/var/file/js/combine_fr_6bbf00278b.js" ></script>
+</head>
+ 
+<body class="page_mobileptdetail webfree ">
+
+<div class="wrap">
+
+
+<a href="#start-C" class="focusable" title="跳到主要內容區">跳到主要內容區</a>
+
+
+<div class="fpbgvideo"></div>
+<div class="minner">
+
+<div id="Dyn_head">
+<noscript>您的瀏覽器不支援JavaScript功能，若網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態</noscript>
+<div class="header">
+	<div class="minner container">
+
+
+
+
+
+
+
+	
+<div class="selfhead">
+		<div class="meditor">
+	
+      
+         
+			<nav class='fixed-top-mobile'>
+    <div class='head dark-bg-mobile'>
+        <div class='mlogo'>
+            <h1>
+                <a href='/?Lang=zh-tw' title='國立臺灣海洋大學資訊工程學系'>
+                    <picture >
+                        
+                        <img src='/var/file/29/1029/img/1207/logo.png' alt='國立臺灣海洋大學資訊工程學系 LOGO' style='max-height:55px' />
+                    </picture>
+    
+                <div style='display:inline-block;'>
+                    <span class='university'></span>
+                    <span>國立臺灣海洋大學 資訊工程學系</span>
+                </div>
+                </a>
+            </h1>
+        </div>
+        <div class='topnav'>
+            
+				
+				
+
+
+
+   
+<div class="headnavcust">
+	<div class="mnavbar mn-collapse">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hd-topnav" aria-expanded="false">
+			<span class="glyphicons show_lines">漢堡鈕選單</span>
+		</button>
+		<div class="nav-toggle collapse navbar-collapse iosScrollToggle hd-topnav">
+			<div class="hdmenu">
+				<ul class="nav navbar-nav" id="a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_topnav">
+				
+					<li   id="Hln_2385" ><a  href="/app/index.php" title="原頁面開啟">回首頁</a></li>
+				
+					<li   id="Hln_3430" ><a  href="/p/17-1063.php?Lang=zh-tw" title="原頁面開啟">網站導覽</a></li>
+				
+					<li   id="Hln_3431" ><a  href="https://www.ntou.edu.tw/" title="原頁面開啟">海洋大學</a></li>
+				
+					<li   id="Hln_1869" ><a  href="/?Lang=en" title="原頁面開啟">EN</a></li>
+				
+        		
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function(){
+	$(".mnavbar .navbar-toggle").click(function(){
+		$(this).toggleClass("open");
+		var ariaExpanded = $(this).attr('aria-expanded');
+		$(this).attr('aria-expanded',ariaExpanded !== 'true');
+	});
+   $(".mycollapse .navbar-toggle").click(function(){
+      $(this).toggleClass("open");
+      var ariaExpanded = $(this).attr('aria-expanded');
+      $(this).attr('aria-expanded',ariaExpanded !== 'true');
+   });
+   $('.iosScrollToggle').on('shown.bs.collapse', function () {
+		var togglePos = $(this).css('position');
+      if(togglePos !== 'static'){
+          ModalHelper.afterOpen();
+      }
+    });
+
+    $('.iosScrollToggle').on('hide.bs.collapse', function () {
+		var togglePos = $(this).css('position');
+      if(togglePos !== 'static'){
+			ModalHelper.beforeClose();
+      }
+    });
+	
+});
+</script>
+
+
+
+	
+
+<script language="javascript">
+
+	tabSwitch("a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_topnav");
+
+
+</script>
+
+         
+			
+        </div>
+        <div class='hdsearch'>
+            <a aria-expanded='false' class='btn btn-primary navbar-toggle1 sch-toggle' data-toggle='collapse'
+                href='#headsearch' role='button'><span></span></a>
+            <div class='collapse' id='hdsearch'></div>
+        </div>
+        <button class='navbar-toggle' data-target='.nav-toggle' data-toggle='collapse' type='button'>
+            <span class='glyphicons show_lines'>Menu</span>
+        </button>
+    </div>
+
+    <div class='mycollapse'>
+        <div class='navbar-collapse collapse nav-toggle' id='collapseExample2'>
+            <div class='mainmenu'>
+                
+				
+				
+
+
+
+   
+<div class="headnavcust">
+	<div class="mnavbar mn-collapse">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hd-mainmenu" aria-expanded="false">
+			<span class="glyphicons show_lines">漢堡鈕選單</span>
+		</button>
+		<div class="nav-toggle collapse navbar-collapse iosScrollToggle hd-mainmenu">
+			<div class="hdmenu">
+				<ul class="nav navbar-nav" id="a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_mainmenu">
+				
+					<li  class="dropdown"  id="Hln_2383" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7465.php?Lang=zh-tw" title="原頁面開啟">關於本系</a><ul class="dropdown-menu"><li  id="Hln_2384"><a href="/p/412-1063-7466.php?Lang=zh-tw" title="原頁面開啟">簡介</a></li><li  id="Hln_2386"><a href="/p/412-1063-7468.php?Lang=zh-tw" title="原頁面開啟">系所願景</a></li><li  id="Hln_2387"><a href="/p/412-1063-7503.php?Lang=zh-tw" title="原頁面開啟">教育特色</a></li><li  id="Hln_2388"><a href="/p/412-1063-7469.php?Lang=zh-tw" title="原頁面開啟">地理位置</a></li><li  id="Hln_2389"><a href="/p/412-1063-7470.php?Lang=zh-tw" title="原頁面開啟">規章辦法</a></li><li  id="Hln_6481"><a href="/p/412-1063-13243.php?Lang=zh-tw" title="原頁面開啟">榮譽事蹟</a></li><li  id="Hln_6495"><a href="/p/412-1063-13375.php?Lang=zh-tw" title="原頁面開啟">常見問題</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2391" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7472.php?Lang=zh-tw" title="原頁面開啟">系所成員</a><ul class="dropdown-menu"><li  id="Hln_2392"><a href="/p/412-1063-7473.php?Lang=zh-tw" title="原頁面開啟">系所主任</a></li><li  id="Hln_2393"><a href="/p/412-1063-7475.php?Lang=zh-tw" title="原頁面開啟">師資陣容</a></li><li  id="Hln_6410"><a href="/p/412-1063-13127.php?Lang=zh-tw" title="原頁面開啟">退休教師</a></li><li  id="Hln_2394"><a href="/p/412-1063-7476.php?Lang=zh-tw" title="原頁面開啟">行政人員</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2395" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7477.php?Lang=zh-tw" title="原頁面開啟">招生資訊</a><ul class="dropdown-menu"><li  id="Hln_2396"><a href="/p/412-1063-7478.php?Lang=zh-tw" title="原頁面開啟">大學部</a></li><li  id="Hln_2397"><a href="/p/412-1063-7479.php?Lang=zh-tw" title="原頁面開啟">碩士班</a></li><li  id="Hln_2398"><a href="/p/412-1063-7480.php?Lang=zh-tw" title="原頁面開啟">博士班</a></li><li  id="Hln_2399"><a href="/p/412-1063-7481.php?Lang=zh-tw" title="原頁面開啟">在職專班</a></li><li  id="Hln_5822"><a href="/p/412-1063-11671.php?Lang=zh-tw" title="原頁面開啟">碩士先修</a></li><li  id="Hln_6081"><a href="https://cse.ntou.edu.tw/p/406-1063-84321,r1035.php?Lang=zh-tw" title="原頁面開啟">影音專區</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2400" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7482.php?Lang=zh-tw" title="原頁面開啟">課程資訊</a><ul class="dropdown-menu"><li  id="Hln_2401"><a href="/p/412-1063-7483.php?Lang=zh-tw" title="原頁面開啟">修業規定</a></li><li  id="Hln_2402"><a href="/p/412-1063-7484.php?Lang=zh-tw" title="原頁面開啟">課程規劃</a></li><li  id="Hln_2403"><a href="/p/412-1063-7485.php?Lang=zh-tw" title="原頁面開啟">學程資訊</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2404" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7487.php?Lang=zh-tw" title="原頁面開啟">學生事務</a><ul class="dropdown-menu"><li  id="Hln_2405"><a href="/p/412-1063-7488.php?Lang=zh-tw" title="原頁面開啟">獎助學金</a></li><li  id="Hln_2406"><a href="https://www.facebook.com/ntoucs/" title="原頁面開啟">系學會</a></li><li  id="Hln_4093"><a href="/p/412-1063-9239.php?Lang=zh-tw" title="原頁面開啟">系學會資訊</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2407" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7490.php?Lang=zh-tw" title="原頁面開啟">學術研究</a><ul class="dropdown-menu"><li  id="Hln_2409"><a href="/p/412-1063-7492.php?Lang=zh-tw" title="原頁面開啟">研究(實驗)室</a></li><li  id="Hln_2411"><a href="/p/412-1063-7494.php?Lang=zh-tw" title="原頁面開啟">儀器設備</a></li><li  id="Hln_2413"><a href="/p/412-1063-7496.php?Lang=zh-tw" title="原頁面開啟">學術活動</a></li><li  id="Hln_2414"><a href="/p/412-1063-7497.php?Lang=zh-tw" title="原頁面開啟">特色研究</a></li><li  id="Hln_6483"><a href="/p/412-1063-13256.php?Lang=zh-tw" title="原頁面開啟">專題專區</a></li><li  id="Hln_3253"><a href="/p/412-1063-8364.php?Lang=zh-tw" title="原頁面開啟">學習資源</a></li><li  id="Hln_4037"><a href="/p/412-1063-8943.php?Lang=zh-tw" title="原頁面開啟">資訊時事</a></li><li  id="Hln_6166"><a href="/p/412-1063-12422.php?Lang=zh-tw" title="原頁面開啟">永續發展目標SDGs</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_2415" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-7498.php?Lang=zh-tw" title="原頁面開啟">就業與系友</a><ul class="dropdown-menu"><li  id="Hln_2416"><a href="/p/412-1063-7499.php?Lang=zh-tw" title="原頁面開啟">資工系系友會</a></li><li  id="Hln_2417"><a href="/p/412-1063-7500.php?Lang=zh-tw" title="原頁面開啟">傑出系友</a></li><li  id="Hln_2418"><a href="/p/412-1063-7501.php?Lang=zh-tw" title="原頁面開啟">畢業生發展概況</a></li><li  id="Hln_2419"><a href="/p/412-1063-7502.php?Lang=zh-tw" title="原頁面開啟">畢業出路</a></li><li  id="Hln_6571"><a href="/p/412-1063-13541.php?Lang=zh-tw" title="原頁面開啟">捐款芳名錄</a></li></ul></li>
+				
+					<li  class="dropdown"  id="Hln_6262" class="dropdown" ><a role="button" aria-expanded="false" class="dropdown-toggle"  href="/p/412-1063-12854.php?Lang=zh-tw" title="原頁面開啟">AI專區</a><ul class="dropdown-menu"><li  id="Hln_6266"><a href="https://cse.ntou.edu.tw/var/file/63/1063/attach/20/pta_70629_6366694_87504.pdf" target="_blank"  title="另開新視窗">AI課程規劃</a></li><li  id="Hln_6263"><a href="/p/412-1063-12856.php?Lang=zh-tw" title="原頁面開啟">AI相關之研究計畫</a></li><li  id="Hln_6265"><a href="javascript:void(0);" onclick="return false;" title=''>AI設備</a></li><li  id="Hln_6264"><a href="https://li.ntou.edu.tw/p/412-1029-12433.php?Lang=zh-tw" target="_blank"  rel="noopener noreferrer"  title="另開新視窗">圖資處AI資源庫</a></li></ul></li>
+				
+        		
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+	
+
+<script language="javascript">
+
+	tabSwitch("a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_mainmenu");
+
+
+</script>
+
+         
+			
+            </div>
+            <div class='topnav'>
+                
+				
+				
+
+
+
+   
+<div class="headnavcust">
+	<div class="mnavbar mn-collapse">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".hd-topnav" aria-expanded="false">
+			<span class="glyphicons show_lines">漢堡鈕選單</span>
+		</button>
+		<div class="nav-toggle collapse navbar-collapse iosScrollToggle hd-topnav">
+			<div class="hdmenu">
+				<ul class="nav navbar-nav" id="a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_topnav">
+				
+					<li   id="Hln_2385" ><a  href="/app/index.php" title="原頁面開啟">回首頁</a></li>
+				
+					<li   id="Hln_3430" ><a  href="/p/17-1063.php?Lang=zh-tw" title="原頁面開啟">網站導覽</a></li>
+				
+					<li   id="Hln_3431" ><a  href="https://www.ntou.edu.tw/" title="原頁面開啟">海洋大學</a></li>
+				
+					<li   id="Hln_1869" ><a  href="/?Lang=en" title="原頁面開啟">EN</a></li>
+				
+        		
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+	
+
+<script language="javascript">
+
+	tabSwitch("a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop_topnav");
+
+
+</script>
+
+         
+         
+            </div>
+        </div>
+    </div>
+</nav>
+<div class='fixed-top-height-mobile'></div>
+
+
+<script>
+    $(document).ready(function () {
+        $.hajaxOpenUrl('/app/index.php?Action=mobileloadmod&Type=mobilesch&Nbr=0', '#hdsearch');
+
+        $('.sch-toggle').click(function () {
+            $('.sch-toggle').toggleClass('open');
+        });
+    });
+
+    (function($){
+        CheckHeaderHeight();
+    })(jQuery);
+
+    //瀏覽器縮放時判斷
+    $(window).on('resize', function() {
+        CheckHeaderHeight();
+    });
+
+    function CheckHeaderHeight(e){
+        if($('nav.fixed-top-mobile').css('position') == 'fixed') {
+            var headerHeight = $('.head').height();
+            console.log(headerHeight);
+            $('.fixed-top-height-mobile').css('min-height',headerHeight);
+        }
+    }
+</script>
+      
+      
+   
+
+
+
+
+
+
+	
+	</div>
+</div>
+
+
+
+
+	</div>
+</div>
+<script language="javascript">
+
+	tabSwitch("a3dbca2af0e9efc563f0f4c404fb6d026_MenuTop");
+
+
+
+if(typeof(_LoginHln)=='undefined') var _LoginHln = new hashUtil();
+
+if(typeof(_LogoutHln)=='undefined') var _LogoutHln = new hashUtil();
+
+if(typeof(_HomeHln)=='undefined') var _HomeHln = new hashUtil();
+
+if(typeof(_InternalHln)=='undefined') var _InternalHln = new hashUtil();
+
+
+$(document).ready(function(){
+   if(typeof(loginStat)=='undefined') {
+   	if(popChkLogin()) loginStat="login";
+   	else loginStat="logout";
+	}
+	dealHln(isHome,loginStat,$('div.hdmenu'));
+
+	
+	
+});
+
+var firstWidth = window.innerWidth;
+function mobilehead_widthChangeCb() {
+if((firstWidth>=1024 && window.innerWidth<1024) || (firstWidth<1024 && window.innerWidth>=1024))  location.reload();
+if(window.innerWidth <1024) {
+setTimeout(()=>{
+   var div = document.getElementsByClassName('mycollapse');
+   if(div=='undefined' || div.length==0) div = document.getElementsByClassName('mnavbar mn-collapse');
+   if(typeof(div)!='undefined'){
+      for (var i = 0; i < div.length; i++) {
+         var focusableElements = div[i].querySelectorAll('a[href], button, input[type="text"], select, textarea');
+         if (focusableElements.length > 0) {
+            focusableElements[focusableElements.length-1].addEventListener('keydown', function(event) {
+               if (!event.shiftKey && event.key === 'Tab') {
+                  $(".hdmenu .dropdown").removeClass("open");
+                  var currentDiv = this.closest('.mycollapse') || this.closest('.mnavbar');
+                  if (currentDiv) {
+                     var button= currentDiv.getElementsByClassName('navbar-toggle');
+                     for (var j = 0; j < button.length; j++) {
+                        button[j].click();
+								$(".navbar-toggle").removeClass("open");
+                     }
+                  }
+               }
+            });
+         }
+         var focusableElements = div[i].querySelectorAll('.nav.navbar-nav > li:last-child > a');
+         if (focusableElements.length > 0) {
+            focusableElements[focusableElements.length-1].addEventListener('keydown', function(event) {
+               if (!event.shiftKey && event.key === 'Tab') {
+ 						if(this.getAttribute('aria-expanded')==='true') return;
+                  $(".hdmenu .dropdown").removeClass("open");
+                  var currentDiv = this.closest('.mycollapse') || this.closest('.mnavbar');
+                  if (currentDiv) {
+                     var button= currentDiv.getElementsByClassName('navbar-toggle');
+                     for (var j = 0; j < button.length; j++) {
+                        button[j].click();
+                        $(".navbar-toggle").removeClass("open");
+                     }
+                  }
+               }
+            });
+         }
+      }
+   }
+},1000);
+}else{
+	var div = document.getElementsByClassName('mycollapse');
+   if(div=='undefined' || div.length==0) div = document.getElementsByClassName('mnavbar mn-collapse');
+   div = div[0];
+	if(typeof(div)!='undefined'){
+   var focusableElements = div.querySelectorAll('a[href]');
+   focusableElements[focusableElements.length-1].addEventListener('keydown', function(event) {
+      if (event.key === 'Tab') {
+         $(".hdmenu .dropdown").removeClass("open");
+      }
+   });
+	}
+}
+}
+window.addEventListener('resize', mobilehead_widthChangeCb);
+mobilehead_widthChangeCb();
+</script>
+<!-- generated at Wed Sep 30 2026 10:38:46 --></div>
+
+<main id="main-content">
+<div class="main">
+<div class="minner">
+
+	
+	
+<div class="row col1 row_0">
+	<div class="mrow container">
+		
+			
+			
+			
+			 
+		
+			
+			
+			
+			
+				
+        		
+         	
+				<div class="col col_02">
+					<div class="mcol">
+					
+						
+						
+						<div id="Dyn_2_1" class="M3  ">
+
+<div class="module module-path md_style1">
+	<div class="minner">
+		<section class="mb">
+			<ol class="breadcrumb">
+			
+			
+				
+				
+				<li><a href="/index.php">首頁</a></li>
+				
+				
+			
+				
+				
+				<li><a href="https://cse.ntou.edu.tw/p/412-1063-7482.php?Lang=zh-tw">課程資訊</a></li>
+				
+				
+			
+				
+				
+				<li><a href="https://cse.ntou.edu.tw/p/412-1063-7483.php?Lang=zh-tw">修業規定</a></li>
+				
+				
+			
+				
+				
+				
+            <li class="active"><a href="https://cse.ntou.edu.tw/p/412-1063-7910.php?Lang=zh-tw" aria-current="page">大學部</a></li>
+				
+			
+			</ol>
+		</section>
+	</div>
+</div>
+
+</div>
+
+					
+						
+						
+						<div id="Dyn_2_2" class="M23  ">
+
+
+
+
+
+<div class="module module-detail md_style1">
+	<div class="module-inner">
+	<section class="mb">
+		<div class="mpgtitle">
+		<h2 class="hdline">畢業學分檢核表</h2>
+		</div>
+		<div class="mcont">
+			
+
+			
+
+
+
+<div class="mpgdetail">
+	
+		
+ 		
+		
+		
+		
+		
+	
+	
+   <div class="meditor"></div>
+	
+	
+	
+</div>
+
+
+
+
+
+		</div>
+	</section>
+	</div>
+</div>
+
+
+<div class="module module-ptattach">
+	<div class="minner">
+	<section class="mb">
+		<ul class="mptattach">
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODNNRGcxTUY4NE1EUTVOakUzWHpNMk5qWTJMbVJ2WTNnPQ==&fname=WW54RPOKRK4411HHHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMP10SS14B4JG45USDCECPKWW1011YXEDXWDHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />113學年度入學學生畢業學分檢核表 .docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODNNREl4Tmw4M056YzFOemN5WHpBMk1EUTVMbVJ2WTNnPQ==&fname=WW54RPOKRK4441HHHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMP10SS14B4JG45USDCECPKWW1011YXEDXWDHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />112學年度入學學生畢業學分檢核表 .docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODJORFV6TTE4Mk1UTTVPREExWHpNeE1EZ3pMbVJ2WTNnPQ==&fname=WW54RPOKRK44A1HHHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMP10SS14B4JG45USDCECPKWW1011YXEDXWDHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />111學年度入學學生畢業學分檢核表 .docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODJORFV6TVY4M05qazNNemd5WHpNeE1EZ3pMbVJ2WTNnPQ==&fname=WW54RPOKRK44OOYXHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />110學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODJORFV6TWw4M016azBPVGd4WHpNeE1EZ3pMbVJ2WTNnPQ==&fname=WW54RPOKNPSS41KKHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />109學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODBPVGszTVY4NU1EYzBORFUxWHpRek56VTNMbVJ2WTNnPQ==&fname=WW54RPOKNPSSA1KKHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />108學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODBPVGszTWw4ek5qUTBNVEV5WHpRek56VTRMbVJ2WXc9PQ==&fname=WW54RPOKICSSOOMPHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />107學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODBPVGszTTE4ME9UUTJNak00WHpRek56VTRMbVJ2WXc9PQ==&fname=WW54RPOKICSS11MPHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />106學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODBPVGszTkY4Mk1qRTNOREU0WHpRek56VTRMbVJ2WXc9PQ==&fname=WW54RPOKICSS41MPHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />105學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+			<li ><span><a href="/app/index.php?Action=downloadfile&file=WVhSMFlXTm9Mekl4TDNCMFlWODBPVGszTlY4MU56QTVORGd4WHpRek56VTRMbVJ2WXc9PQ==&fname=WW54RPOKICSSA1MPHCLKRKZWQOTWWT14QO3435HGTX25LK40FCNKA054WW54KLOKZTPO00XXA404ROJGKOSWTSLO34B0NOYSVXVXDCTSWSB0VSOKUSKKYWFCRKPOCDYXDGA0XWZWZSB4DC35DGB0GGNKA151QP21LKB4ZSTWGGECSTUSVW44A50544LKDGGD14JGSWLKWSRO35RLMLMPPOSSSSROLLUWOOPOYSTSNO10OO15WW04DHHG&cg=7910" title="(另開新視窗)" target="_blank"><img src="/images/icon/doc.gif " align="absmiddle" alt="" />104學年度入學學生畢業學分檢核表.docx</a>
+			
+			</li>
+		
+		</ul>
+		
+	</section>
+	</div>
+</div>
+
+
+
+<div class="module module-misc">
+	<div class="minner">
+		<section class="mb">
+			
+			<div class="artctrl">
+				
+				<div class="PtStatistic">
+					<em>瀏覽數:<i id='a03d21bdedc67d825189f029b09b54376_PtStatistic_83635'></i><script>
+					$(document).ready(function() {
+						$.hajaxOpenUrl('/app/index.php?Action=mobileloadmod&Type=mobileptstatistic&Nbr=83635','#a03d21bdedc67d825189f029b09b54376_PtStatistic_83635');
+					})</script></em>
+				</div>
+				
+				
+				<div class="badge addfav"><em><a href="javascript:void(null);" title="加到我的最愛">加到我的最愛</a></em></div>
+				
+
+						
+   	            
+                  <div class="badge fprint"><a href="https://cse.ntou.edu.tw/p/16-1063-83635.php?Lang=zh-tw" title="友善列印(另開新視窗)" target="_blank">友善列印</a></div>
+						
+                  
+               
+
+					
+				<div class="badge share_btn"><em>分享</em></div>
+				<input type="hidden" id="changeTime" name="changeTime" value='1611166539'>
+				<div class="shareto">
+            </div>
+				
+			</div>
+		</section>
+	</div>
+</div>
+
+
+
+
+<script defer="defer">
+$(document).ready(function(){
+	$('.artctrl .addfav').click(function(){
+		ptdetail_addfav();	
+	});
+  $('.share_btn').click(function(){
+    $(this).siblings('.shareto').toggle();
+  })
+	function ptdetail_addfav(){
+		if(popChkLogin()){
+			if($(".artctrl .addfav").hasClass("active")){
+				var url = "/app/index.php?Action=mobileaddtofav&Part=83635&Op=delfav";
+			}else{
+				var url = "/app/index.php?Action=mobileaddtofav&Part=83635&Op=addfav";
+			}
+			var a = [];
+			$.post(url,a,function(data){
+				d = eval("("+data+")");
+				if(d.stat)
+					$(".artctrl .addfav").addClass("active");
+				else
+					$(".artctrl .addfav").removeClass("active");
+				mCallBack(data);
+			});
+		}
+		else	showPopDiv($('#_pop_login.mpopdiv'),$('#_pop_login.mpopdiv .mbox'));
+	}
+	function ptdetail_chkfav(){
+		var url = "/app/index.php?Action=mobileaddtofav&Part=83635&Op=chkfav";
+		var a = [];
+		$.post(url,a,function(data){
+			d = eval("("+data+")");
+			if(d.stat)
+				$(".artctrl .addfav").addClass("active");
+		});
+	}
+	ptdetail_chkfav();
+	
+		$.hajaxOpenUrl("/app/index.php?Action=mobilestsns",'.shareto');
+	
+	
+
+	
+});
+</script>
+
+
+</div>
+
+					
+					</div>
+				</div> 
+			 
+		
+			
+			
+			
+			 
+		
+	</div>
+</div>
+	
+
+</div>
+</div>
+</main>
+
+<div id="Dyn_footer">
+<div class="footer">
+<div class="minner ">
+
+
+
+
+
+
+
+<div class="copyright">
+<div class="meditor">
+	<div style="text-align: center;">
+<p>國立臺灣海洋大學<br />
+資訊工程學系<br />
+地址：202基隆市中正區北寧路2號(資工系館312室、電綜大樓603室)<br />
+電話：+886-2-2462-2192 ext 6662<br />
+傳真：+886-2-2462-3249<br />
+E-Mail: <a href="mailto:cse@mail.ntou.edu.tw" title="聯絡mail">cse@mail.ntou.edu.tw</a></p>
+</div>
+	
+</div>
+</div>
+
+
+	<button class="toTop" role="button" title="回到頂部">
+    	<span>回到頂部</span>
+	</button>
+<script>
+	// 返回頂部
+	$(document).ready(function(){
+	    gotop();
+	}); 
+	$(window).scroll(function(){
+	    gotop();
+	});
+	$('.toTop').click(function(){
+	    $('html, body, .wrap').animate({scrollTop: '0px'}, 200);
+		 $(".focusable").focus();
+	});
+	function gotop(){
+	    var  winH = $(window).height();
+	    var  scroll = $(window).scrollTop();
+	    if(scroll > 100 ){
+	        $('.toTop').show();
+	    }
+	    else {
+	        $('.toTop').hide();
+	    }
+	}
+	</script>
+
+
+
+
+</div>
+</div>
+<!-- generated at Wed Sep 30 2026 10:38:46 --></div>
+
+
+</div>
+</div>
+<div class="fpbgvideo"></div>
+
+
+
+<div id="_pop_login" class="mpopdiv">
+	<div class="mpopbg"></div>
+	<div class="mbox">
+	</div>
+	<div id="_pop_login_alert" class="alert alert-success">登入成功</div>
+</div>
+
+
+
+
+<div id="_pop_tips" class="mtips">
+	<div class="mbox">
+	</div>
+</div>
+<div id="_pop_dialog" class="mdialog">
+	<div class="minner">
+		<div class="mcont">
+		</div>
+		<footer class="mdialog-foot">
+        	<button type="submit" class="mbtn mbtn-s">OK</button>
+        	<button type="submit" class="mbtn mbtn-c">Cancel</button>
+		</footer>
+	</div>
+</div>
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="pswp__bg"></div>
+	<div class="pswp__scroll-wrap">
+		<div class="pswp__container">
+			 <div class="pswp__item"></div>
+			 <div class="pswp__item"></div>
+			 <div class="pswp__item"></div>
+		</div>
+		<div class="pswp__ui pswp__ui--hidden">
+			<div class="pswp__top-bar">
+				<div class="pswp__counter"></div>
+				<button class="pswp__button pswp__button--close" title="Close (Esc)">Close (Esc)</button>
+				<button class="pswp__button pswp__button--share" title="Share">Share</button>
+				<button class="pswp__button pswp__button--fs" title="Toggle fullscreen">Toggle fullscreen</button>
+				<button class="pswp__button pswp__button--zoom" title="Zoom in/out">Zoom in/out</button>
+				<div class="pswp__preloader">
+					<div class="pswp__preloader__icn">
+						<div class="pswp__preloader__cut">
+							<div class="pswp__preloader__donut"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+				<div class="pswp__share-tooltip"></div> 
+			</div>
+			<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">Previous (arrow left)</button>
+			<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">Next (arrow right)</button>
+			<div class="pswp__caption">
+				<div class="pswp__caption__center"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+function popChkLogin(){
+	var hasCust= 1;
+	if(!hasCust) return false;
+
+	if(typeof(loginStat)=='undefined') {
+   	var chkstat=0;
+   	var chkUrl='/app/index.php?Action=mobilelogin';
+   	var chkData = {Op:'chklogin'};
+   	var chkObj=$.hajaxReturn(chkUrl,chkData);
+   	chkstat=chkObj.stat;
+		if(chkstat) {
+			loginStat="login"; 
+			return true;
+		}else {
+			loginStat="logout"; 
+			return false;
+		}	
+	}else {
+		if(loginStat=="login") return true;
+		else return false;
+	}
+}
+function popMemLogin(){
+   var hasPop= '';
+   var popcontent=$("#_pop_login .mbox").html();
+   if(popcontent==0||popcontent==null){
+		if(hasPop)	$.hajaxOpenUrl('/app/index.php?Action=mobileloadmod&Type=mobilepoplogin','#_pop_login .mbox','',function(){menuDropAct();});
+		else window.location.href = "/app/index.php?Action=mobilelogin";
+   }
+}
+</script>
+<!-- generated at Wed Oct 14 2026 10:49:34 --></body></html>

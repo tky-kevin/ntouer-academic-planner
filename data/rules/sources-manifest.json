@@ -1,0 +1,102 @@
+[
+  {
+    "id": "S113-01",
+    "title": "113 學年度大學部新生手冊",
+    "url": "https://cse.ntou.edu.tw/var/file/63/1063/attach/6/pta_63121_9784165_02867.pdf",
+    "file": "113-cse-handbook.pdf",
+    "locator": "印刷頁 8–12（PDF 第 10–14 頁）；核心選修圖為 PDF 第 15 頁",
+    "scope": "113 入學資工一般學士班；113 年 8 月手冊",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "0425a4dc23d58c15ed11396207b49d4aa8279479dd6cd2f18d9a5c63855806a7"
+  },
+  {
+    "id": "S113-02",
+    "title": "113 學年度大學部修業規定",
+    "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw",
+    "file": "113-cse-regulations.pdf",
+    "locator": "頁 1 第二條；頁 1–2 第三條；頁 2 第四條",
+    "scope": "官網 113 年度附件；列至 112/5/29 教務會議",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "57cb1a25a45abf5067db1da1a7c244f326b5498b24c77757cf8f2bf6c9f1c1f7"
+  },
+  {
+    "id": "S113-03",
+    "title": "113 入學適用大學部畢業資格檢核表",
+    "url": "https://cse.ntou.edu.tw/p/404-1063-83635.php?Lang=zh-tw",
+    "file": "113-cse-checklist.docx",
+    "locator": "表內（Ⅰ）共同教育、（Ⅱ）系訂必修、（Ⅲ）系內選修、（Ⅳ）外系選修及注意事項",
+    "scope": "表頭明訂 113 入學適用；自我檢核參考表",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "7f35e3fa2c6f41a94fa827771a3c2f7b41e18ddfa076573a63ec6d1e89527f27"
+  },
+  {
+    "id": "S113-04",
+    "title": "英文畢業門檻實施要點",
+    "url": "https://academic.ntou.edu.tw/p/405-1005-5111,c3081.php?Lang=zh-tw",
+    "file": "english-threshold.pdf",
+    "locator": "頁 1 第 2–5 點",
+    "scope": "106/6/26 發布版本；第 5 點明訂自 102（含）入學適用",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "657d4f6578b683ad66fb697ed7484b81b2b94cba5797e4a8121fd8ad63d81370"
+  },
+  {
+    "id": "S113-05",
+    "title": "學生免修游泳課程辦法",
+    "url": "https://r012.ntou.edu.tw/p/412-1012-2888.php?Lang=zh-tw",
+    "file": "swimming-exemption.html",
+    "locator": "第 2、3、5、6 條",
+    "scope": "102/5/27 公告；日間學士班，包含轉學生",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "721bab599c323593b0084bb0def2292eb70ce6701ffe84c9788d62ed8a2c4ec1"
+  },
+  {
+    "id": "S113-06",
+    "title": "112（含）以後入學通識課程地圖",
+    "url": "https://r082.ntou.edu.tw/p/412-1099-7484.php?Lang=zh-tw",
+    "file": "general-education-map.jpg",
+    "locator": "112 學年度以後（含）入學之學生圖片",
+    "scope": "共同教育交叉核對；本文門檻以 S113-01、03 明訂的 113 表為依據",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "14023daf4083a2d53a8f75079837c179d97e58d9651ccfb8cd3c585cf60f3557"
+  },
+  {
+    "id": "S113-07",
+    "title": "資工系承認電資學院共通課程表",
+    "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw",
+    "file": "recognized-college-courses.pdf",
+    "locator": "頁 1 課程表及備註 2",
+    "scope": "備註指向 102 入學，未明訂 113；只保存為待確認參考，不直接套用白名單",
+    "retrieved_at": "2026-10-14 Asia/Taipei",
+    "sha256": "36ce4aa96b48471015832d6d9d2bac2347e998f872a3fb5ab0e7a7d7f0707d01"
+  },
+  {
+    "id": "S113-08",
+    "title": "國立臺灣海洋大學學則",
+    "url": "https://academic.ntou.edu.tw/p/405-1005-5104,c1143.php?Lang=zh-tw",
+    "file": "university-academic-rules.pdf",
+    "locator": "第八章第 35–40 條；第 39 條畢業條件；第 40 條學位授予",
+    "scope": "現行版本（115/7/8 令）；113 入學學生畢業時適用之校級畢業條件",
+    "retrieved_at": "2026-11-16 Asia/Taipei",
+    "sha256": "6827ac3200ea83c59113e087cdfe414b9c9c45b960b838b729af45db7cb7a29f"
+  },
+  {
+    "id": "S113-09",
+    "title": "共同教育課程須知（大學部學生）",
+    "url": "https://gec.ntou.edu.tw/p/406-1027-43062,r999.php?Lang=zh-tw",
+    "file": "general-education-notice.pdf",
+    "locator": "大學部學生表：國文領域、英語文領域、博雅領域、體育課程、服務學習",
+    "scope": "115/6/9 海共同字第1150013465號令發布；113 入學適用 112（含）以後之 28 學分結構",
+    "retrieved_at": "2026-11-16 Asia/Taipei",
+    "sha256": "ae908b1167b3e1b4785ca63accf5b0826cbe8ca256b5fc9c116e5f2b39e34113"
+  },
+  {
+    "id": "S113-10",
+    "title": "共同教育英語文課程學分抵免及免修辦法",
+    "url": "https://langiae.ntou.edu.tw/p/405-1065-11986,c502.php?Lang=zh-tw",
+    "file": "english-credit-exemption.pdf",
+    "locator": "第 2 條（抵免與免修定義）、第 3 條（三級門檻對照）、第 4 條（申請時程）",
+    "scope": "115/5/14 校課程委員會通過版；第 4 條明訂 114（含）以前入學仍憑英檢成績抵免",
+    "retrieved_at": "2026-11-16 Asia/Taipei",
+    "sha256": "ac3d15f14649a8fd140aff055d894cac74db24d3a158a6f8b3e457f203304257"
+  }
+]

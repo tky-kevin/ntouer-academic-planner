@@ -1,0 +1,271 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ntouer.example/schema/rule-bundle.schema.json",
+  "title": "NTOUER 畢業規則包（Rule Bundle）",
+  "description": "描述一個系所、一個入學年度、一種學制的畢業規則。人類可讀欄位（title/reading/clauses）與機器可檢核欄位（pools/requirements）並存，發布後不可原地修改。",
+  "type": "object",
+  "required": ["schemaVersion", "bundleId", "department", "scope", "status", "sources", "clauses", "allocation", "requirements"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "規則包格式版本，例如 1.0" },
+    "bundleId": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "穩定識別，例如 cse-113-day" },
+    "title": { "type": "string", "description": "人類可讀名稱，例如 資訊工程學系 113 入學 日間學士班" },
+    "department": {
+      "type": "object",
+      "required": ["departmentId", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "departmentId": { "type": "string", "description": "系所代碼，例如 cse" },
+        "name": { "type": "string" },
+        "college": { "type": "string" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["entryYear", "studentType"],
+      "additionalProperties": false,
+      "properties": {
+        "entryYear": { "type": "integer", "minimum": 90, "maximum": 200 },
+        "studentType": { "type": "string", "description": "例如 一般日間學士班主修生" },
+        "program": { "type": "string", "enum": ["學士班", "進修學士班", "碩士班", "碩士在職專班", "博士班"] },
+        "effectiveFrom": { "type": "string", "format": "date" },
+        "effectiveTo": { "type": "string", "format": "date" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in-review", "approved", "published", "superseded"],
+      "description": "草稿不得供學生端使用；published 後不可原地修改。"
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "versionNo": { "type": "integer", "minimum": 1 },
+        "publishedBy": { "type": ["string", "null"], "description": "使用者 ID；草稿為 null" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "reviewedBy": { "type": ["string", "null"], "description": "系所管理員使用者 ID；未經系所審核時為 null" },
+        "reviewedAt": { "type": "string", "format": "date-time" },
+        "supersedes": { "type": ["string", "null"], "description": "前一版 bundleId@versionNo" },
+        "contentHash": { "type": "string", "description": "除 version 外的內容雜湊，用於偵測竄改" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sourceId", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "sourceId": { "type": "string", "pattern": "^S[0-9]{3}-[0-9]{2}$" },
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "file": { "type": "string" },
+          "locator": { "type": "string" },
+          "retrievedAt": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "clauses": {
+      "type": "array",
+      "description": "條文卡：人工可讀、貼近原文的最小單位。每個 requirement 都應指向 clause。",
+      "items": {
+        "type": "object",
+        "required": ["clauseId", "sourceId", "locator", "text"],
+        "additionalProperties": false,
+        "properties": {
+          "clauseId": { "type": "string", "pattern": "^C[0-9]{2,3}$" },
+          "sourceId": { "type": "string" },
+          "locator": { "type": "string", "description": "例如 頁 1 第二條、檢核表Ⅰ博雅" },
+          "text": { "type": "string", "description": "原文逐字或最小改寫，不得加入解釋" },
+          "reading": { "type": "string", "description": "白話說明，不得超出原文" },
+          "status": { "type": "string", "enum": ["verified", "pending", "conflict"], "default": "verified" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "allocation": {
+      "type": "object",
+      "description": "採計配置：決定一門課的學分算到哪個池、上限多少、是否可重複歸類。",
+      "required": ["totalMin", "pools"],
+      "additionalProperties": false,
+      "properties": {
+        "totalMin": { "type": "integer", "minimum": 0 },
+        "pools": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["poolId", "name", "selectors"],
+            "additionalProperties": false,
+            "properties": {
+              "poolId": { "type": "string" },
+              "name": { "type": "string" },
+              "min": { "type": "integer", "minimum": 0 },
+              "max": { "type": "integer", "minimum": 0, "description": "採計上限；null 表示不限" },
+              "selectors": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/definitions/selectorRef" }
+              },
+              "perCourseCreditsMax": { "type": "integer", "minimum": 0, "description": "單課最多計入學分，例如體育選修以 1 學分為限" },
+              "overflowFrom": { "type": "array", "items": { "type": "string" }, "description": "允許由其他池的超出量補入" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "precedence": { "type": "array", "items": { "type": "string" }, "description": "同一門課同時符合多池時的歸屬優先序" },
+        "caps": {
+          "type": "array",
+          "description": "跨池的採計上限，例如電資學院非指定學程至多 6 學分、額外共同教育抵外系至多 8 學分。",
+          "items": {
+            "type": "object",
+            "required": ["capId", "name", "selectors", "max", "clauseId"],
+            "additionalProperties": false,
+            "properties": {
+              "capId": { "type": "string" },
+              "name": { "type": "string" },
+              "selectors": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/selectorRef" } },
+              "max": { "type": "integer", "minimum": 0 },
+              "scope": { "type": "string", "enum": ["total", "pool"], "default": "total" },
+              "poolId": { "type": "string", "description": "scope=pool 時的目標池" },
+              "clauseId": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "description": "條件樹。型別見 oneOf；可巢狀 and/or。",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/requirement" }
+    },
+    "conflicts": {
+      "type": "array",
+      "description": "來源互相衝突、尚待確認的項目。存在 conflict 時整體結果不得為完全達標。",
+      "items": {
+        "type": "object",
+        "required": ["conflictId", "summary", "clauseIds"],
+        "additionalProperties": false,
+        "properties": {
+          "conflictId": { "type": "string" },
+          "summary": { "type": "string" },
+          "clauseIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "resolution": { "type": "string", "enum": ["open", "resolved-by-announcement", "resolved-by-owner"], "default": "open" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "selectorRef": { "type": "string", "pattern": "^(category|owner|tag|code|dept):[A-Za-z0-9_\\-]+$" },
+    "requirement": {
+      "oneOf": [
+        { "$ref": "#/definitions/reqTotal" },
+        { "$ref": "#/definitions/reqPool" },
+        { "$ref": "#/definitions/reqCredits" },
+        { "$ref": "#/definitions/reqCourseSet" },
+        { "$ref": "#/definitions/reqStatus" },
+        { "$ref": "#/definitions/reqLogical" }
+      ]
+    },
+    "reqBase": {
+      "type": "object",
+      "required": ["id", "kind", "name", "clauseId"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^R[0-9]{2,3}$" },
+        "kind": { "type": "string" },
+        "name": { "type": "string" },
+        "clauseId": { "type": "string" },
+        "required": { "type": "boolean", "default": true },
+        "note": { "type": "string" }
+      }
+    },
+    "reqTotal": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "properties": {
+            "kind": { "const": "total" },
+            "min": { "type": "integer", "minimum": 0 },
+            "displayedCredits": { "type": "string", "enum": ["allocated", "all-eligible"], "default": "allocated" }
+          },
+          "required": ["min"]
+        }
+      ]
+    },
+    "reqPool": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "properties": {
+            "kind": { "const": "pool" },
+            "poolId": { "type": "string" },
+            "min": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["poolId"]
+        }
+      ]
+    },
+    "reqCredits": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "description": "不消耗採計額度的子條件，例如核心 12 學分是系內 46 的子集合。",
+          "properties": {
+            "kind": { "const": "credits" },
+            "selectors": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/selectorRef" } },
+            "min": { "type": "integer", "minimum": 0 },
+            "courses": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["min"]
+        }
+      ]
+    },
+    "reqCourseSet": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "properties": {
+            "kind": { "const": "courseSet" },
+            "mode": { "type": "string", "enum": ["all", "any", "minCount", "minCredits"] },
+            "courses": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "minCount": { "type": "integer", "minimum": 1 },
+            "minCredits": { "type": "integer", "minimum": 1 },
+            "allowEquivalent": { "type": "boolean", "default": false }
+          },
+          "required": ["mode", "courses"]
+        }
+      ]
+    },
+    "reqStatus": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "description": "非學分條件，狀態由學生設定或校方認定結果提供。",
+          "properties": {
+            "kind": { "const": "status" },
+            "statusKey": { "type": "string", "description": "例如 englishThreshold、conduct、peFourSemesters、swimming" },
+            "source": { "type": "string", "enum": ["student", "school", "derived"], "default": "student" }
+          },
+          "required": ["statusKey"]
+        }
+      ]
+    },
+    "reqLogical": {
+      "allOf": [
+        { "$ref": "#/definitions/reqBase" },
+        {
+          "properties": {
+            "kind": { "type": "string", "enum": ["and", "or"] },
+            "children": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/requirement" } }
+          },
+          "required": ["children"]
+        }
+      ]
+    }
+  }
+}

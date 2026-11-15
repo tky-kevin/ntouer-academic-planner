@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ui07-demo",
+    "title": "AP-UI-07｜Iteration 1 檢核",
+    "description": "AP-US-01、02、12 · AP-FR-02、03、04、11 · AP-TC-01、04、08",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui01-sync",
+    "title": "AP-UI-01｜登入與資料同步",
+    "description": "AP-US-03、04 · AP-FR-01、02 · AP-TC-12、13",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui02-progress",
+    "title": "AP-UI-02｜情境切換與畢業缺額",
+    "description": "AP-US-02、05 · AP-FR-03、04 · AP-TC-09、14、26",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui03-override",
+    "title": "AP-UI-03｜條件覆蓋與上層重算",
+    "description": "AP-US-07 · AP-FR-03、04、06 · AP-TC-10、24",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui04-records",
+    "title": "AP-UI-04｜個人修課紀錄修正",
+    "description": "AP-US-06 · AP-FR-05 · AP-TC-11、12、15",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui05-plan",
+    "title": "AP-UI-05｜搜尋、加入計畫與模擬",
+    "description": "AP-US-08、09、10、11 · AP-FR-07、08、09、10 · AP-TC-09、16、17、23",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui06-rules",
+    "title": "AP-UI-06｜草稿、預覽與受控發布",
+    "description": "AP-US-12、13 · AP-FR-11、12、13 · AP-TC-18、19、20、23",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui08-admin-validate",
+    "title": "AP-UI-08｜規則驗證與測試",
+    "description": "AP-US-12 · AP-FR-11、17 · AP-TC-26、29～33",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui09-admin-review",
+    "title": "AP-UI-09｜審核與差異",
+    "description": "AP-US-13 · AP-FR-12、18 · AP-TC-19、20、34",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui10-admin-audit",
+    "title": "AP-UI-10｜稽核紀錄與追溯",
+    "description": "AP-US-13 · AP-FR-18 · AP-NFR-05、06 · AP-TC-34",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "ui11-admin-admins",
+    "title": "AP-UI-11｜系所管理員指派",
+    "description": "AP-US-13 · AP-FR-13 · AP-TC-27",
+    "width": 1560,
+    "height": 1100
+  },
+  {
+    "id": "story-student",
+    "title": "學生使用者故事地圖",
+    "description": "文件內嵌故事地圖；依 v0.3 切片表重繪。",
+    "width": 2160,
+    "height": 1130
+  },
+  {
+    "id": "story-maintainer",
+    "title": "規則維護者使用者故事地圖",
+    "description": "文件內嵌故事地圖；依 v0.3 切片表重繪。",
+    "width": 2160,
+    "height": 1130
+  }
+]

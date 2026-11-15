@@ -12,6 +12,7 @@
     "demo:ais": "tsx scripts/demo-ais-fixtures.ts",
     "verify:ais:live": "node --env-file-if-exists=.env.local --import tsx scripts/verify-live-ais.ts",
     "build": "tsc -b && node scripts/clean-dist.mjs && vite build && node scripts/verify-client-boundary.mjs",
+    "check:docs": "node scripts/check-doc-links.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

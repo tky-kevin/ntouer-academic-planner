@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-21",
+  "browser": "Chromium 155.0.8059.40",
+  "cpu": "Intel Core Ultra 5 125H",
+  "memoryBytes": 33786552320,
+  "node": "v24.11.1",
+  "npm": "11.6.2",
+  "trials": 100,
+  "samples": 7,
+  "conditions": 3,
+  "recordsPerSample": "0-5",
+  "under1000ms": 100,
+  "p95ms": 13.4,
+  "maxms": 15.1,
+  "timing": "capturing click through two requestAnimationFrame callbacks; verify result DOM",
+  "scope": "I1 local built preview only"
+}

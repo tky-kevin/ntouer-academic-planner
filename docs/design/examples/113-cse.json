@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "bundleId": "cse-113-day",
+  "title": "資訊工程學系 113 入學 日間學士班（驗證樣本）",
+  "department": { "departmentId": "cse", "name": "資訊工程學系", "college": "電機資訊學院" },
+  "scope": { "entryYear": 113, "studentType": "一般日間學士班主修生", "program": "學士班" },
+  "status": "draft",
+  "version": { "versionNo": 1, "publishedBy": null, "reviewedBy": null, "supersedes": null },
+  "sources": [
+    { "sourceId": "S113-02", "title": "113 學年度大學部修業規定", "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw", "file": "113-cse-regulations.pdf", "locator": "頁 1 第二條；頁 1–2 第三條" },
+    { "sourceId": "S113-03", "title": "113 入學適用大學部畢業資格檢核表", "url": "https://cse.ntou.edu.tw/p/404-1063-83635.php?Lang=zh-tw", "file": "113-cse-checklist.docx", "locator": "（Ⅰ）共同教育、（Ⅱ）系訂必修、（Ⅲ）系內選修、（Ⅳ）外系選修" },
+    { "sourceId": "S113-08", "title": "國立臺灣海洋大學學則", "url": "https://academic.ntou.edu.tw/p/405-1005-5104,c1143.php?Lang=zh-tw", "file": "university-academic-rules.pdf", "locator": "第 39 條" },
+    { "sourceId": "S113-09", "title": "共同教育課程須知", "url": "https://gec.ntou.edu.tw/p/406-1027-43062,r999.php?Lang=zh-tw", "file": "general-education-notice.pdf", "locator": "大學部學生表" }
+  ],
+  "clauses": [
+    { "clauseId": "C01", "sourceId": "S113-02", "locator": "第二條", "text": "學生除必須修習校訂共同必修科目28學分，本系自訂必修科目50學分外，另須至少選修57學分；總計須至少修習135學分方能畢業。", "reading": "三個學分池與總學分下限。" },
+    { "clauseId": "C02", "sourceId": "S113-02", "locator": "第三條二（一）", "text": "系內選修科目至少需修滿46學分，其中核心選修科目至少修滿12學分。", "reading": "核心 12 為系內 46 的子集合，不是額外 12。" },
+    { "clauseId": "C03", "sourceId": "S113-02", "locator": "第三條二（一）5", "text": "電資學院非上述學程之課程以6學分為上限。", "reading": "採計上限 6。" },
+    { "clauseId": "C04", "sourceId": "S113-02", "locator": "第三條二（二）5", "text": "共同教育課程至多抵免 8 學分。", "reading": "額外共同教育可抵外系選修，最多 8。" },
+    { "clauseId": "C05", "sourceId": "S113-03", "locator": "（Ⅰ）博雅(通識)領域", "text": "本領域課程包括人文探索、社會脈動、科技創新與跨域永續等四大子領域，跨域永續至少需修二學分，各領域至多認列四學分。", "reading": "四領域各有 4 學分上限，跨域永續另設 2 學分下限。" },
+    { "clauseId": "C06", "sourceId": "S113-03", "locator": "（Ⅰ）體育領域", "text": "體育領域：四門都要是0學分的體育課。課號不得相同。", "reading": "四門 0 學分、課號不得重複，屬非學分條件。" },
+    { "clauseId": "C07", "sourceId": "S113-03", "locator": "（Ⅱ）系訂專業必修", "text": "計算機概論、程式設計、微積分（上）（下）、離散數學、程式設計(二)、資料結構、演算法、數位邏輯、數位邏輯實驗、電腦網路、計算機組織學、線性代數、機率論、作業系統、資工系專題(一)(二)、資訊專題討論。", "reading": "18 個指定必修節點，合計 50 學分。" },
+    { "clauseId": "C08", "sourceId": "S113-08", "locator": "第 39 條", "text": "學生修業期滿，合於下列各款規定，並完成校內審核作業者，准予畢業：一、修滿本校規定年限及規定科目與學分。二、體育成績四學期均及格。三、操行成績各學期均及格。", "reading": "除學分外，操行與體育成績也是畢業條件。" },
+    { "clauseId": "C09", "sourceId": "S113-09", "locator": "體育課程備註", "text": "須修滿四學期之零學分必修課程，其中至少必須修習游泳課程一學期……免修者應另修習一門體育課程。", "reading": "游泳為體育內的必要一學期；免修需補一門。" },
+    { "clauseId": "C10", "sourceId": "S113-09", "locator": "英語文領域備註", "text": "大二進階英文：須修滿二學分。修習門檻：限大二（含）以上學生，或已抵免大一英文四學分之大一學生始可修習。", "reading": "進階英文 2 學分另有修習資格限制。" }
+  ],
+  "allocation": {
+    "totalMin": 135,
+    "precedence": ["ce", "req", "inner", "outside"],
+    "pools": [
+      { "poolId": "ce", "name": "共同教育", "min": 28, "selectors": ["category:CE"] },
+      { "poolId": "req", "name": "系訂必修", "min": 50, "selectors": ["category:REQ"] },
+      { "poolId": "inner", "name": "系內選修", "min": 46, "selectors": ["owner:own", "tag:program"] },
+      { "poolId": "outside", "name": "外系選修", "selectors": ["owner:other"] }
+    ],
+    "caps": [
+      { "capId": "CAP-COLLEGE", "name": "電資學院非指定學程", "selectors": ["tag:collegeNonProgram"], "max": 6, "clauseId": "C03" },
+      { "capId": "CAP-EXTRA-CE", "name": "額外共同教育抵外系", "selectors": ["tag:extraCE"], "max": 8, "clauseId": "C04" },
+      { "capId": "CAP-HUM", "name": "人文探索上限", "selectors": ["tag:domainHuman"], "max": 4, "clauseId": "C05" },
+      { "capId": "CAP-SOC", "name": "社會脈動上限", "selectors": ["tag:domainSociety"], "max": 4, "clauseId": "C05" },
+      { "capId": "CAP-TECH", "name": "科技創新上限", "selectors": ["tag:domainTech"], "max": 4, "clauseId": "C05" },
+      { "capId": "CAP-SUST", "name": "跨域永續上限", "selectors": ["tag:domainSustain"], "max": 4, "clauseId": "C05" }
+    ]
+  },
+  "requirements": [
+    { "id": "R01", "kind": "total", "name": "總學分", "clauseId": "C01", "min": 135 },
+    { "id": "R02", "kind": "pool", "name": "共同教育學分", "clauseId": "C01", "poolId": "ce", "min": 28 },
+    { "id": "R03", "kind": "pool", "name": "系訂必修學分", "clauseId": "C01", "poolId": "req", "min": 50 },
+    {
+      "id": "R04", "kind": "courseSet", "name": "18 門指定必修", "clauseId": "C07", "mode": "all",
+      "courses": ["程式設計", "離散數學", "計算機概論", "微積分(上)", "微積分(下)", "程式設計(二)", "線性代數", "數位邏輯", "數位邏輯實驗", "資料結構", "機率論", "計算機組織學", "演算法", "電腦網路", "作業系統", "資工系專題(一)", "資工系專題(二)", "資訊專題討論"],
+      "note": "課號對應待建立；以課名作課程鍵，正式版改課號。"
+    },
+    { "id": "R05", "kind": "credits", "name": "選修學分 57", "clauseId": "C01", "min": 57, "selectors": ["tag:inner", "owner:other"], "note": "57 = 系內 46 + 外系；外系不另設 11 的獨立下限。" },
+    { "id": "R06", "kind": "credits", "name": "系內選修 46", "clauseId": "C02", "min": 46, "selectors": ["tag:inner"] },
+    { "id": "R07", "kind": "credits", "name": "核心選修 12", "clauseId": "C02", "min": 12, "selectors": ["tag:core"] },
+    { "id": "R08", "kind": "credits", "name": "國文 4", "clauseId": "C01", "min": 4, "selectors": ["tag:chinese"] },
+    { "id": "R09", "kind": "credits", "name": "大一英文 4", "clauseId": "C01", "min": 4, "selectors": ["tag:english"] },
+    { "id": "R10", "kind": "credits", "name": "進階英文 2", "clauseId": "C10", "min": 2, "selectors": ["tag:advancedEnglish"] },
+    { "id": "R11", "kind": "credits", "name": "海洋科學概論 2", "clauseId": "C01", "min": 2, "selectors": ["tag:ocean"] },
+    { "id": "R12", "kind": "credits", "name": "人工智慧概論 2", "clauseId": "C01", "min": 2, "selectors": ["tag:ai"] },
+    { "id": "R13", "kind": "credits", "name": "博雅 14", "clauseId": "C05", "min": 14, "selectors": ["tag:general"] },
+    { "id": "R14", "kind": "credits", "name": "跨域永續至少 2", "clauseId": "C05", "min": 2, "selectors": ["tag:domainSustain"] },
+    { "id": "R15", "kind": "status", "name": "英文畢業門檻", "clauseId": "C01", "statusKey": "englishThreshold", "source": "student" },
+    { "id": "R16", "kind": "status", "name": "操行成績各學期及格", "clauseId": "C08", "statusKey": "conduct", "source": "school" },
+    { "id": "R17", "kind": "status", "name": "體育四學期", "clauseId": "C06", "statusKey": "peFourSemesters", "source": "derived" },
+    { "id": "R18", "kind": "status", "name": "游泳課程一學期（含免修）", "clauseId": "C09", "statusKey": "swimming", "source": "derived" },
+    { "id": "R19", "kind": "status", "name": "進階英文修習資格", "clauseId": "C10", "statusKey": "advancedEnglishEligibility", "source": "derived", "required": false, "note": "先修性質，於規劃情境提示，不阻擋畢業判定。" }
+  ],
+  "conflicts": [
+    {
+      "conflictId": "X01",
+      "summary": "電子商務學程採計：修業規定以排除四門描述，檢核表改列八門白名單，兩者集合不同。",
+      "clauseIds": ["C03"],
+      "resolution": "open"
+    }
+  ]
+}

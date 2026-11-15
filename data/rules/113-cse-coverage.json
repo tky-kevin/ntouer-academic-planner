@@ -1,0 +1,1018 @@
+{
+  "scope": {
+    "department": "資訊工程學系",
+    "entry_year": 113,
+    "student_type": "一般日間學士班主修生"
+  },
+  "status": "文件化覆蓋草稿；非發布規則、非完整正式審查、不可直接執行",
+  "checked_on": "2026-11-16",
+  "sources": [
+    {
+      "id": "S113-01",
+      "title": "113 學年度大學部新生手冊",
+      "url": "https://cse.ntou.edu.tw/var/file/63/1063/attach/6/pta_63121_9784165_02867.pdf",
+      "file": "113-cse-handbook.pdf",
+      "locator": "印刷頁 8–12（PDF 第 10–14 頁）；核心選修圖為 PDF 第 15 頁",
+      "scope": "113 入學資工一般學士班；113 年 8 月手冊",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "0425a4dc23d58c15ed11396207b49d4aa8279479dd6cd2f18d9a5c63855806a7"
+    },
+    {
+      "id": "S113-02",
+      "title": "113 學年度大學部修業規定",
+      "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw",
+      "file": "113-cse-regulations.pdf",
+      "locator": "頁 1 第二條；頁 1–2 第三條；頁 2 第四條",
+      "scope": "官網 113 年度附件；列至 112/5/29 教務會議",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "57cb1a25a45abf5067db1da1a7c244f326b5498b24c77757cf8f2bf6c9f1c1f7"
+    },
+    {
+      "id": "S113-03",
+      "title": "113 入學適用大學部畢業資格檢核表",
+      "url": "https://cse.ntou.edu.tw/p/404-1063-83635.php?Lang=zh-tw",
+      "file": "113-cse-checklist.docx",
+      "locator": "表內（Ⅰ）共同教育、（Ⅱ）系訂必修、（Ⅲ）系內選修、（Ⅳ）外系選修及注意事項",
+      "scope": "表頭明訂 113 入學適用；自我檢核參考表",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "7f35e3fa2c6f41a94fa827771a3c2f7b41e18ddfa076573a63ec6d1e89527f27"
+    },
+    {
+      "id": "S113-04",
+      "title": "英文畢業門檻實施要點",
+      "url": "https://academic.ntou.edu.tw/p/405-1005-5111,c3081.php?Lang=zh-tw",
+      "file": "english-threshold.pdf",
+      "locator": "頁 1 第 2–5 點",
+      "scope": "106/6/26 發布版本；第 5 點明訂自 102（含）入學適用",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "657d4f6578b683ad66fb697ed7484b81b2b94cba5797e4a8121fd8ad63d81370"
+    },
+    {
+      "id": "S113-05",
+      "title": "學生免修游泳課程辦法",
+      "url": "https://r012.ntou.edu.tw/p/412-1012-2888.php?Lang=zh-tw",
+      "file": "swimming-exemption.html",
+      "locator": "第 2、3、5、6 條",
+      "scope": "102/5/27 公告；日間學士班，包含轉學生",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "721bab599c323593b0084bb0def2292eb70ce6701ffe84c9788d62ed8a2c4ec1"
+    },
+    {
+      "id": "S113-06",
+      "title": "112（含）以後入學通識課程地圖",
+      "url": "https://r082.ntou.edu.tw/p/412-1099-7484.php?Lang=zh-tw",
+      "file": "general-education-map.jpg",
+      "locator": "112 學年度以後（含）入學之學生圖片",
+      "scope": "共同教育交叉核對；本文門檻以 S113-01、03 明訂的 113 表為依據",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "14023daf4083a2d53a8f75079837c179d97e58d9651ccfb8cd3c585cf60f3557"
+    },
+    {
+      "id": "S113-07",
+      "title": "資工系承認電資學院共通課程表",
+      "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw",
+      "file": "recognized-college-courses.pdf",
+      "locator": "頁 1 課程表及備註 2",
+      "scope": "備註指向 102 入學，未明訂 113；只保存為待確認參考，不直接套用白名單",
+      "retrieved_at": "2026-10-14 Asia/Taipei",
+      "sha256": "36ce4aa96b48471015832d6d9d2bac2347e998f872a3fb5ab0e7a7d7f0707d01"
+    },
+    {
+      "id": "S113-08",
+      "title": "國立臺灣海洋大學學則",
+      "url": "https://academic.ntou.edu.tw/p/405-1005-5104,c1143.php?Lang=zh-tw",
+      "file": "university-academic-rules.pdf",
+      "locator": "第八章第 35–40 條；第 39 條畢業條件；第 40 條學位授予",
+      "scope": "現行版本（115/7/8 令）；113 入學學生畢業時適用之校級畢業條件",
+      "retrieved_at": "2026-11-16 Asia/Taipei",
+      "sha256": "6827ac3200ea83c59113e087cdfe414b9c9c45b960b838b729af45db7cb7a29f"
+    },
+    {
+      "id": "S113-09",
+      "title": "共同教育課程須知（大學部學生）",
+      "url": "https://gec.ntou.edu.tw/p/406-1027-43062,r999.php?Lang=zh-tw",
+      "file": "general-education-notice.pdf",
+      "locator": "大學部學生表：國文領域、英語文領域、博雅領域、體育課程、服務學習",
+      "scope": "115/6/9 海共同字第1150013465號令發布；113 入學適用 112（含）以後之 28 學分結構",
+      "retrieved_at": "2026-11-16 Asia/Taipei",
+      "sha256": "ae908b1167b3e1b4785ca63accf5b0826cbe8ca256b5fc9c116e5f2b39e34113"
+    },
+    {
+      "id": "S113-10",
+      "title": "共同教育英語文課程學分抵免及免修辦法",
+      "url": "https://langiae.ntou.edu.tw/p/405-1065-11986,c502.php?Lang=zh-tw",
+      "file": "english-credit-exemption.pdf",
+      "locator": "第 2 條（抵免與免修定義）、第 3 條（三級門檻對照）、第 4 條（申請時程）",
+      "scope": "115/5/14 校課程委員會通過版；第 4 條明訂 114（含）以前入學仍憑英檢成績抵免",
+      "retrieved_at": "2026-11-16 Asia/Taipei",
+      "sha256": "ac3d15f14649a8fd140aff055d894cac74db24d3a158a6f8b3e457f203304257"
+    }
+  ],
+  "rules": [
+    {
+      "id": "AP-113-R01",
+      "name": "總學分",
+      "rule": "至少 135，依可採計有效學分計算",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "手冊 p11；修業第 2 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R02",
+      "name": "共同教育學分",
+      "rule": "28；各子要求分開檢查",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10–11；檢核表Ⅰ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R03",
+      "name": "系訂必修學分",
+      "rule": "50；並檢查指定必修完成，不以學分總和取代",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "手冊 p11；修業第 2 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R04",
+      "name": "指定必修完整性",
+      "rule": "下列 18 項課程節點全部滿足；微積分分上、下",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p11；檢核表Ⅱ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "官方課號與等價替代待對應；不以課名模糊匹配認定完成。"
+    },
+    {
+      "id": "AP-113-R05",
+      "name": "選修學分",
+      "rule": "至少 57；系內與外系歸類不得重複增加總學分",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "手冊 p11；修業第 2 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R06",
+      "name": "系內選修",
+      "rule": "至少 46；只採已確認可列系內的課程",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（一）；檢核表Ⅲ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R07",
+      "name": "核心選修",
+      "rule": "至少 12；為系內選修的子集合",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "PDF p15 核心選修圖；修業第 3 條二（一）",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "四領域課名清單見下表；課號對應待完成，不推論每領域皆必修。「12 學分是否另含每領域下限」官方未明文（須知與課程地圖均只寫至少 12），列待釐清並向系辦確認。"
+    },
+    {
+      "id": "AP-113-R08",
+      "name": "國文",
+      "rule": "4；課號不同",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ國文",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R09",
+      "name": "大一英文",
+      "rule": "上下各 2，共 4",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ外文",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R10",
+      "name": "進階英文",
+      "rule": "2；獨立於英文畢業門檻與英文精進",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ外文",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R11",
+      "name": "海洋科學概論",
+      "rule": "2，指定課程",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ博雅",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R12",
+      "name": "人工智慧概論",
+      "rule": "2，指定課程",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ博雅",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R13",
+      "name": "博雅通識",
+      "rule": "14；不把上述兩門指定概論的 4 學分重複列入這 14",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10；檢核表Ⅰ博雅",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R14",
+      "name": "博雅子領域上限",
+      "rule": "人文探索、社會脈動、科技創新、跨域永續各至多認列 4",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10 博雅備註；檢核表Ⅰ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "需課程子領域欄位；超額不能以全數計入必要 14。"
+    },
+    {
+      "id": "AP-113-R15",
+      "name": "跨域永續最低",
+      "rule": "至少 2，納入博雅 14 的子條件",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10 博雅備註；檢核表Ⅰ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R16",
+      "name": "體育四門",
+      "rule": "四門皆 0 學分，課號不得相同",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p10 四學期；檢核表Ⅰ體育",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "以完成門數及唯一課號計，不增加畢業學分；缺課號則待確認。"
+    },
+    {
+      "id": "AP-113-R17",
+      "name": "游泳課程",
+      "rule": "至少一學期；免修依已登錄結果處理",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-05"
+      ],
+      "locator": "手冊 p10 體育備註；免修第 2、5 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "課程完成與畢業門檻分開；AIS 可辨識時提供自動參考，無資料可手動設定。"
+    },
+    {
+      "id": "AP-113-R18",
+      "name": "游泳條件狀態（檢核表勾選格）",
+      "rule": "0 學分；獨立勾選格，其狀態由 R17 完成或免修認定推得",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-05"
+      ],
+      "locator": "手冊 p10；免修第 2、3、5 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "官方並無「另須通過獨立游泳檢測」的畢業門檻：50 公尺檢測是免修辦法的申請證明途徑，不是畢業考。免修另含競賽證明與符合期限之醫療證明；平台不代辦或驗證官方審查。"
+    },
+    {
+      "id": "AP-113-R19",
+      "name": "英文畢業門檻",
+      "rule": "符合要點第 2 點任一檢定或第 3 點英文精進及格替代；0 學分",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-04"
+      ],
+      "locator": "手冊 p10–11；英文第 2、3 點",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "官方要求系所審核登錄；平台個人設定不等同校方認定，也不改變大一英文與進階英文學分。"
+    },
+    {
+      "id": "AP-113-R20",
+      "name": "英語文學分抵免",
+      "rule": "以英語文抵免及免修辦法第 3 條三級對照為準：GEPT 中高級初試抵 2、中高級複試抵 4、高級初試抵 6（TOEIC 707／785／850 等各級同）；手冊僅摘錄 GEPT",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-10"
+      ],
+      "locator": "抵免及免修第 3 條；手冊 p10 大一英文備註",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "113 級屬 114（含）以前入學，仍憑英檢成績抵免，須於每學期第 3 階段電腦選課期間申請，逾期不受理。只有抵免才計入學分；不得看到英檢達標便自動贈送學分，也不得把 115 學年度起的免修制套用到 113 級。"
+    },
+    {
+      "id": "AP-113-R21",
+      "name": "軍訓與體育排除",
+      "rule": "軍訓及體育學分不納入畢業總學分",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-03"
+      ],
+      "locator": "手冊 p12；檢核表Ⅰ軍訓及體育",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R22",
+      "name": "指定學程與系內選修",
+      "rule": "系所認可選修及軟工、RFID、3D 多媒體、物聯網學程可列系內",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（一）1–2；檢核表Ⅲ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "採計白名單與課號待整理；學程與畢業條件可共同滿足，總學分仍只計一次。"
+    },
+    {
+      "id": "AP-113-R23",
+      "name": "海洋事務與資源管理學程",
+      "rule": "指定三類課程可列系內，以兩門為限，可與學程兩用",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（一）3；檢核表Ⅲ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "三類為學程必修、海洋基礎科學、海洋資源與保育；課程白名單待整理。"
+    },
+    {
+      "id": "AP-113-R24",
+      "name": "地理資訊應用學程",
+      "rule": "系內至多兩門；計算機概論、資料庫系統、程式設計不列此採計",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（一）4；檢核表Ⅲ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "這裡的資料庫系統排除僅限學程抵用途徑，不排除本系正常核心選修。"
+    },
+    {
+      "id": "AP-113-R25",
+      "name": "電資學院非指定學程",
+      "rule": "列系內選修至多 6；實際認可課程待確認",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-07"
+      ],
+      "locator": "修業第 3 條二（一）5；參考表備註 2",
+      "verification_status": "門檻已核對；白名單適用年度待確認",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "門檻已核對。手冊 p14 備註實際指向 106 學年度修業規定，但該檔無白名單附表；現存唯一附表為 102 版（S113-07）。113 適用清單查無官方版本，須向系辦索取，不直接套用 102 或 106。"
+    },
+    {
+      "id": "AP-113-R26",
+      "name": "額外共同教育抵外系",
+      "rule": "額外共同教育最多採計 8；已用於共同必修者不再分配至外系",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-01",
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "手冊 p12；修業第 3 條二（二）；檢核表Ⅳ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": ""
+    },
+    {
+      "id": "AP-113-R27",
+      "name": "外系外文例外",
+      "rule": "外系外文可列外系選修，不包含在額外共同教育 8 的額度",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-03"
+      ],
+      "locator": "檢核表Ⅳ第 3 項",
+      "verification_status": "檢核表已核對；與正式規定的對應待確認",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "以開課系所及類別辨識，不能把所有語言課程一律排除在 8 之外。"
+    },
+    {
+      "id": "AP-113-R28",
+      "name": "系內轉列外系與不重複抵用",
+      "rule": "系內選修可填外系配置；已抵用學程、輔系或必修者不得再列外系",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（二）1–3；檢核表Ⅳ",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "系內最低 46、選修最低 57、核心最低 12 為包含關係；不另設外系至少 11 的獨立硬門檻。"
+    },
+    {
+      "id": "AP-113-R29",
+      "name": "電子商務學程採計",
+      "rule": "修業規定為除四門外可採；檢核表為八門白名單，兩者不同",
+      "handling": "尚未支援",
+      "sources": [
+        "S113-02",
+        "S113-03"
+      ],
+      "locator": "修業第 3 條二（二）4；檢核表Ⅳ第 4 項",
+      "verification_status": "來源衝突待釐清",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "未確認前保持可見的待確認採計條件；不得默默擇一、從缺漏推定不採計或重複計入。"
+    },
+    {
+      "id": "AP-113-R30",
+      "name": "十門必修的本系修習限制",
+      "rule": "修業列出的十門必修須在本系修畢",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條一（一）第一表",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "需要開課系所與正式抵免資料；缺資料不自行斷定合法，以個人修正補足。"
+    },
+    {
+      "id": "AP-113-R31",
+      "name": "四類數學必修重修限制",
+      "rule": "首次需在本系；未通過後可至本校電資或工學院所屬系修習",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條一（一）第二表",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "離散數學、微積分、線性代數、機率論；缺修習次序或認定資料時待確認。"
+    },
+    {
+      "id": "AP-113-R32",
+      "name": "轉系轉學與境外抵免",
+      "rule": "依正式抵免結果、科目與學分對應處理；境外來源須符合規定資格",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條三、五、七",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "不自動審核境外學校資格；個人修正直接生效但仍只供自主規劃。"
+    },
+    {
+      "id": "AP-113-R33",
+      "name": "研究所課程抵用互斥",
+      "rule": "計入學士畢業學分者不可另抵本系研究所課程；反之亦然",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條六",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "需個人用途設定，不能從研究所課程名稱推定排除或採計。"
+    },
+    {
+      "id": "AP-113-R34",
+      "name": "雙主修加修資工",
+      "rule": "外系生加修需資工全部必修及選修 15，其中核心 12",
+      "handling": "尚未支援",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條四",
+      "verification_status": "已核對；首批產品適用身分以外",
+      "planned_phase": "後續身分擴充",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "不套用至一般資工主修生；首批仍只支援 113 資工一般主修。"
+    },
+    {
+      "id": "AP-113-R35",
+      "name": "程式設計（二）先修",
+      "rule": "程式設計成績至少 50 才可修",
+      "handling": "尚未支援",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "手冊 p11；修業第 4 條一",
+      "verification_status": "已核對；S 功能",
+      "planned_phase": "MVP 後",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "50 分是先修門檻，不是已取得學分的及格門檻。"
+    },
+    {
+      "id": "AP-113-R36",
+      "name": "資料結構先修",
+      "rule": "程式設計或程式設計（二）任一至少 50 才可修",
+      "handling": "尚未支援",
+      "sources": [
+        "S113-01",
+        "S113-02"
+      ],
+      "locator": "手冊 p11；修業第 4 條二",
+      "verification_status": "已核對；S 功能",
+      "planned_phase": "MVP 後",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "不可改成兩門都及格；畢業採計仍依已及格資料。"
+    },
+    {
+      "id": "AP-113-R37",
+      "name": "英語門檻不適用身分",
+      "rule": "官方語言含英語的所屬國家，或具語言障礙證明等，依正式認定處理",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-04"
+      ],
+      "locator": "第 2 點末段",
+      "verification_status": "已核對；個案認定待資料",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "不推測使用者國籍與障礙；平台不收證明，由本人設定已認定結果。"
+    },
+    {
+      "id": "AP-113-R38",
+      "name": "其他正式替代或特殊認定",
+      "rule": "主任／課程委員會特殊決定，及未提供的替代公告，個別保留來源及認定",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-02"
+      ],
+      "locator": "第 3 條七；第 5 條",
+      "verification_status": "條款已核對；尚無完整替代公告清單",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "已知必要替代規定未建模仍屬範圍缺漏，不能靠覆蓋其他條件掩蓋。"
+    },
+    {
+      "id": "AP-113-R39",
+      "name": "課程地圖中的附屬實習",
+      "rule": "地圖列程式設計實習、程式設計實習（二）、計算機概論實習、資料結構實習；必修科目表未另列學分",
+      "handling": "尚未支援",
+      "sources": [
+        "S113-01"
+      ],
+      "locator": "PDF p15 必修課程列；對照印刷 p11",
+      "verification_status": "是否獨立必要條件及課號待確認",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "保留範圍提示；不擅自新增學分，也不因 50 學分表未另列而忽略實習可能的完成要求。"
+    },
+    {
+      "id": "AP-113-R40",
+      "name": "操行成績",
+      "rule": "各學期操行成績均及格；非學分條件，無法由修課資料推定",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-08"
+      ],
+      "locator": "學則第 39 條第 3 款",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "與體育成績同屬學則畢業條件，不增加也不扣減學分；平台只呈現已認定／未認定，不代校方判定，也不得因學分滿足即宣告可畢業。"
+    },
+    {
+      "id": "AP-113-R41",
+      "name": "進階英文修習門檻",
+      "rule": "限大二（含）以上，或已抵免大一英文 4 學分之大一學生，始可修進階英文",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-09"
+      ],
+      "locator": "共同教育課程須知英語文領域備註 1(2)",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "與 R10 的 2 學分要求分開：這是修課資格，不是額外學分；與 R35、R36 同屬先修性質但列為必要條件節點。"
+    },
+    {
+      "id": "AP-113-R42",
+      "name": "游泳免修後補修體育",
+      "rule": "依免修辦法免修游泳者，應另修習一門體育課程",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-09",
+        "S113-05"
+      ],
+      "locator": "共同教育課程須知體育課程備註；免修第 2 條",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "免修只免除游泳那一門，不減少四學期體育；補修的一門仍為 0 學分且不計畢業學分。"
+    },
+    {
+      "id": "AP-113-R43",
+      "name": "博雅不得抵國文",
+      "rule": "博雅領域所修學分不得抵用國文領域學分",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-09"
+      ],
+      "locator": "共同教育課程須知博雅領域備註 3",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "科目歸類互斥：同一門課不得同時計入國文 4 與博雅 14。"
+    },
+    {
+      "id": "AP-113-R44",
+      "name": "英語抵免與免修區別",
+      "rule": "抵免始給學分且限入（轉）學時一次辦理；免修不給學分並須加修同等學分；113 級適用憑英檢成績抵免之舊制",
+      "handling": "學生手動設定（規劃）",
+      "sources": [
+        "S113-10",
+        "S113-09"
+      ],
+      "locator": "抵免及免修第 2 條、第 4 條一（二）；須知英語文領域 2(2)",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "115 學年度起新生改為免修並取消英檢抵免；不得把 115 制套用到 113 級，也不得把免修當成已取得 6 學分。"
+    },
+    {
+      "id": "AP-113-R45",
+      "name": "體育選修學分不計",
+      "rule": "體育室每學期開設之選修體育 1 學分，除系有特殊規定外，不列計最低畢業學分",
+      "handling": "自動檢核（規劃）",
+      "sources": [
+        "S113-09"
+      ],
+      "locator": "共同教育課程須知體育課程備註",
+      "verification_status": "已核對",
+      "planned_phase": "I2–I3",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "資工系未另訂特殊規定，故一律排除；與 R21 為同一效果的不同來源描述。"
+    },
+    {
+      "id": "AP-113-R46",
+      "name": "同等學力補修學分",
+      "rule": "以同等學力入學（含國外高中二年級程度）者，除畢業總學分外另應補修至少 12 學分",
+      "handling": "尚未支援；範圍提示",
+      "sources": [
+        "S113-08"
+      ],
+      "locator": "學則第 36 條第 2 項",
+      "verification_status": "已核對",
+      "planned_phase": "後續身分擴充",
+      "implementation_status": "尚未接入正式引擎；本次完成文件及覆蓋登錄",
+      "notes": "首批適用身分為一般日間學士班主修生，不含此類入學者；保留範圍提示，不併入 135。"
+    }
+  ],
+  "required_courses": [
+    {
+      "id": "AP-113-REQ-C01",
+      "name": "程式設計",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C02",
+      "name": "離散數學",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C03",
+      "name": "計算機概論",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C04",
+      "name": "微積分（上）",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C05",
+      "name": "微積分（下）",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C06",
+      "name": "程式設計（二）",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C07",
+      "name": "線性代數",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C08",
+      "name": "數位邏輯",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C09",
+      "name": "數位邏輯實驗",
+      "credits": 1,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C10",
+      "name": "資料結構",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C11",
+      "name": "機率論",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C12",
+      "name": "計算機組織學",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C13",
+      "name": "演算法",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C14",
+      "name": "電腦網路",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C15",
+      "name": "作業系統",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C16",
+      "name": "資工系專題（一）",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C17",
+      "name": "資工系專題（二）",
+      "credits": 3,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    },
+    {
+      "id": "AP-113-REQ-C18",
+      "name": "資訊專題討論",
+      "credits": 1,
+      "course_code": null,
+      "source": "S113-01 p11 / S113-03 Ⅱ"
+    }
+  ],
+  "core_courses": [
+    {
+      "id": "AP-113-CORE-C01",
+      "field": "計算機系統",
+      "name": "數位系統設計",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C02",
+      "field": "計算機系統",
+      "name": "微處理器原理與組合語言",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C03",
+      "field": "計算機系統",
+      "name": "計算機系統設計",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C04",
+      "field": "計算機系統",
+      "name": "嵌入式系統設計",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C05",
+      "field": "計算機系統",
+      "name": "計算機結構",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C06",
+      "field": "軟體",
+      "name": "JAVA 程式設計",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C07",
+      "field": "軟體",
+      "name": "程式語言",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C08",
+      "field": "軟體",
+      "name": "編譯器",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C09",
+      "field": "軟體",
+      "name": "資料庫系統",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C10",
+      "field": "軟體",
+      "name": "系統程式",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C11",
+      "field": "軟體",
+      "name": "軟體工程",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C12",
+      "field": "智慧科技（AI）",
+      "name": "機器學習技術",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C13",
+      "field": "智慧科技（AI）",
+      "name": "人工智慧",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    },
+    {
+      "id": "AP-113-CORE-C14",
+      "field": "資訊安全",
+      "name": "資訊安全導論",
+      "course_code": null,
+      "source": "S113-01 PDF p15"
+    }
+  ]
+}

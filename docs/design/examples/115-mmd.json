@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "bundleId": "mmd-115-day",
+  "title": "商船學系 115 入學 日間學士班（驗證樣本）",
+  "department": { "departmentId": "mmd", "name": "商船學系", "college": "海運暨管理學院" },
+  "scope": { "entryYear": 115, "studentType": "一般日間學士班主修生", "program": "學士班" },
+  "status": "draft",
+  "version": { "versionNo": 1, "publishedBy": null, "reviewedBy": null, "supersedes": null },
+  "sources": [
+    { "sourceId": "S115-01", "title": "商船學系修業規定（學士班課程）", "url": "https://mmd.ntou.edu.tw/p/412-1051-7483.php?Lang=zh-tw", "locator": "115 學年度大學部課程設計介紹" },
+    { "sourceId": "S115-02", "title": "商船學系學士班課程設計介紹（PDF）", "url": "https://mmd.ntou.edu.tw/var/file/51/1051/img/172722310.pdf", "locator": "表格：系定主領域選修學分、領域選修學分" }
+  ],
+  "clauses": [
+    { "clauseId": "C01", "sourceId": "S115-01", "locator": "115 學年度大學部", "text": "115學年度大學部入學學生，最低畢業學分總數為136學分，包括：共同教育課程 28 學分、系定專業必修學分 70 學分、必修總學分數 98 學分、系定主領域選修學分 38 學分。", "reading": "四個數字：136＝28＋70＋38，必修合計 98。" },
+    { "clauseId": "C02", "sourceId": "S115-01", "locator": "115 學年度大學部", "text": "核心課程：必修課程共98學分（含共同教育課程28學分與系訂專業必修70學分）。管理級專業選修課程18學分。", "reading": "主領域選修 38 內另含管理級專業選修 18 的子條件。" },
+    { "clauseId": "C03", "sourceId": "S115-02", "locator": "表：領域選修", "text": "系訂主領域選修學分至少36學分，建議依學群選課，外系相關課程選修至多8學分（含各航運講座）。", "reading": "主領域選修為 36／38 的版本差異；外系相關課程有 8 學分上限。", "status": "pending", "note": "36 與 38 為不同年度版本，需系所確認 115 適用值。" },
+    { "clauseId": "C04", "sourceId": "S115-02", "locator": "航行／船務領域", "text": "航行領域建議必選課程19學分（進階航海人員課程19/34）。船務領域建議必選課程14學分（基礎課程14/34）。", "reading": "領域建議必選為建議性質，未列為硬性門檻。", "status": "pending" },
+    { "clauseId": "C05", "sourceId": "S115-02", "locator": "海上實習", "text": "暑假期間分三階段開設海上實習課程，為選修課程。", "reading": "實習是否為畢業必要條件需系所確認，本樣本先不列為必要條件。" }
+  ],
+  "allocation": {
+    "totalMin": 136,
+    "precedence": ["ce", "req", "mainField"],
+    "pools": [
+      { "poolId": "ce", "name": "共同教育", "min": 28, "selectors": ["category:CE"] },
+      { "poolId": "req", "name": "系定專業必修", "min": 70, "selectors": ["category:REQ"] },
+      { "poolId": "mainField", "name": "系定主領域選修", "min": 38, "selectors": ["tag:mainField"] }
+    ],
+    "caps": [
+      { "capId": "CAP-OUTSIDE", "name": "外系相關課程上限", "selectors": ["owner:other"], "max": 8, "scope": "pool", "poolId": "mainField", "clauseId": "C03" }
+    ]
+  },
+  "requirements": [
+    { "id": "R01", "kind": "total", "name": "總學分", "clauseId": "C01", "min": 136 },
+    { "id": "R02", "kind": "pool", "name": "共同教育", "clauseId": "C01", "poolId": "ce", "min": 28 },
+    { "id": "R03", "kind": "pool", "name": "系定專業必修", "clauseId": "C01", "poolId": "req", "min": 70 },
+    { "id": "R04", "kind": "credits", "name": "必修合計 98", "clauseId": "C02", "min": 98, "selectors": ["category:CE", "category:REQ"] },
+    { "id": "R05", "kind": "pool", "name": "系定主領域選修 38", "clauseId": "C01", "poolId": "mainField", "min": 38 },
+    { "id": "R06", "kind": "credits", "name": "管理級專業選修 18", "clauseId": "C02", "min": 18, "selectors": ["tag:managerial"], "note": "主領域選修的子集合，不額外增加總學分。" },
+    { "id": "R07", "kind": "status", "name": "操行成績各學期及格", "clauseId": "C01", "statusKey": "conduct", "source": "school", "note": "校級條件，樣本僅示範掛載方式。" },
+    { "id": "R08", "kind": "status", "name": "海上實習（待確認）", "clauseId": "C05", "statusKey": "seaTraining", "source": "student", "required": false, "note": "官方文件列為選修，尚未確認為畢業必要條件。" }
+  ],
+  "conflicts": [
+    {
+      "conflictId": "X01",
+      "summary": "系定主領域選修學分下限在不同文件為 36 與 38；115 學年度頁面寫 38，較舊的課程設計 PDF 寫 36。",
+      "clauseIds": ["C01", "C03"],
+      "resolution": "open"
+    }
+  ]
+}
