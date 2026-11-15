@@ -1,6 +1,10 @@
 # NTOUER Academic Planner — Iteration 1 Demo
 
+[![CI](https://github.com/tky-kevin/ntouer-academic-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/tky-kevin/ntouer-academic-planner/actions/workflows/ci.yml)
+
 以 React、TypeScript、Vite 建立的前端單頁 Demo。流程為「選取模擬修課紀錄 → 執行學分檢核 → 顯示結果」。
+
+本檔只講程式碼；需求、設計與規則資料的入口是 [docs/README.md](docs/README.md)。
 
 **開發測試規則，僅檢核部分條件。這個 Demo 不判定正式畢業資格，也不是完整產品 MVP。**
 
@@ -85,6 +89,23 @@ src/
 採計順序：同 `recordId` 保留首次出現；只納入 `passed`；同 `courseCode` 保留第一筆及格紀錄。未及格或未知狀態不占用同課的及格採計位置，因此較早的不及格紀錄不會阻止後來及格。總學分只計一次，分類按 required/elective 分開。缺額為 `max(門檻 − 已取得, 0)`。
 
 每項結果提供條件 ID、門檻、已取得學分、缺額、達標狀態與採計紀錄；報告包含規則版本、部分範圍、整體測試條件狀態與排除原因。函式不修改輸入。
+
+## CI
+
+`.github/workflows/ci.yml` 在 `push` 到 `main` 與每個 `pull_request` 執行兩個 job，不需 secrets、不連外部服務，每個 job 上限 10 分鐘：
+
+| Job | 內容 |
+| --- | --- |
+| `web` | `npm ci` → `npm run build` → `npm test` |
+| `docs` | `node docs/design/spike/run-cases.mjs`（27 項須全過）→ `node scripts/check-doc-links.mjs` → `docs/design/openapi.yaml` 存在時 `npx @redocly/cli lint` |
+
+推送前可在本機預跑同一組指令：
+
+```powershell
+npm ci ; npm run build ; npm test
+node docs/design/spike/run-cases.mjs
+node scripts/check-doc-links.mjs   # 或 npm run check:docs
+```
 
 ## 驗證
 

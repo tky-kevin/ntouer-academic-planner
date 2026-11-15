@@ -1,0 +1,82 @@
+name: CI
+
+# 基本 CI：push 到 main 與所有 pull_request 都跑。
+# 不使用 secrets、不連外部服務（OpenAPI lint 用 npx 從 npm registry 取官方 CLI）。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# 同一分支有新的一輪就取消舊作業，避免重複排隊。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22.x"
+  # spike 案例數；新增案例時改這一個數字（run-cases.mjs 的輸出須同時符合）。
+  SPIKE_EXPECTED_CASES: "27"
+
+jobs:
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: 安裝相依套件
+        run: npm ci
+
+      - name: 型別檢查與建置
+        run: npm run build
+
+      - name: 單元測試
+        run: npm test
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # 27 項必須全數通過：run-cases.mjs 失敗會非 0 結束（set -o pipefail 讓 tee 不吃掉離開碼），
+      # 另外再比對摘要行，避免案例被刪掉後「少數通過」也變綠。
+      - name: 規則引擎 spike（必須 ${{ env.SPIKE_EXPECTED_CASES }} 項全數通過）
+        run: |
+          set -o pipefail
+          node docs/design/spike/run-cases.mjs | tee spike-output.log
+          grep -q "${SPIKE_EXPECTED_CASES} 通過、0 失敗" spike-output.log || {
+            echo "::error::spike 未達 ${SPIKE_EXPECTED_CASES} 項全數通過，請看上方輸出。"
+            exit 1
+          }
+
+      - name: 文件相對連結檢查
+        run: node scripts/check-doc-links.mjs
+
+      # openapi.yaml 是 Iter2 後續產出；還沒建之前不讓 CI 紅燈。
+      - name: OpenAPI lint（docs/design/openapi.yaml 存在時才跑）
+        run: |
+          if [ -f docs/design/openapi.yaml ]; then
+            npx --yes @redocly/cli@latest lint docs/design/openapi.yaml
+          else
+            echo "docs/design/openapi.yaml 尚未建立，略過 OpenAPI lint。"
+          fi
