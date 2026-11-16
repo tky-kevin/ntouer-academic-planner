@@ -1,22 +1,31 @@
 // 進入點：讀環境 → 建立 pg pool → 掛上 handler → 監聽。
 // 只用 node:http 與 pg（ADR-0004：不引入 ORM）。
+import { existsSync } from 'node:fs'
 import { createServer } from 'node:http'
+import path from 'node:path'
 import { Pool } from 'pg'
 import { createApp } from './app.js'
 import type { QueryFn } from './app.js'
-import { loadDotEnv, readAuthConfig, readConfig } from './env.js'
-import type { AuthConfigValues } from './env.js'
+import { loadDotEnv, readAisConfig, readAuthConfig, readConfig } from './env.js'
+import type { AisConfigValues, AuthConfigValues } from './env.js'
 import { createRulesRoutes } from './routes/rules.js'
 import { createProgressRoutes } from './routes/progress.js'
 import { createAuthRoutes } from './routes/auth.js'
+import { createSyncRoutes } from './routes/sync.js'
+import { createAdminRoutes } from './routes/admin.js'
+import { createStaticRoutes } from './static.js'
+import { AisSyncService } from './ais/sync.js'
+import { loadClassificationTable } from './ais/classify.js'
 
 loadDotEnv()
 
 let config: ReturnType<typeof readConfig>
 let authConfig: AuthConfigValues
+let aisConfig: AisConfigValues
 try {
   config = readConfig()
   authConfig = readAuthConfig()
+  aisConfig = readAisConfig()
 } catch (error) {
   console.error(JSON.stringify({ level: 'error', message: error instanceof Error ? error.message : String(error) }))
   process.exit(1)
@@ -40,13 +49,45 @@ const query: QueryFn = async (text, params) => {
   return { rows: result.rows }
 }
 
+// 課程分類資料是同步的必要輸入：壞掉時寧可起不來，也不要同步出錯誤的分類。
+let syncService: AisSyncService
+try {
+  syncService = new AisSyncService({ config: aisConfig, query, classification: loadClassificationTable() })
+} catch (error) {
+  console.error(
+    JSON.stringify({
+      level: 'error',
+      message: `無法載入課程分類資料（data/rules/113-cse-classification.json）：${error instanceof Error ? error.message : String(error)}`,
+    }),
+  )
+  process.exit(1)
+}
+
+// 前端建置產物存在才掛靜態服務；沒 build 過就只提供 API（訊息會顯示在啟動日誌）。
+const distDir = path.resolve(process.cwd(), 'dist')
+const staticRoutes = existsSync(path.join(distDir, 'index.html')) ? createStaticRoutes({ root: distDir }) : []
+
+if (staticRoutes.length === 0) {
+  console.log(
+    JSON.stringify({
+      level: 'info',
+      message: 'dist/index.html 不存在：只提供 API。要讓 Google 登入與前端同源，請先 npm run build。',
+    }),
+  )
+}
+
+const identityOptions = { devUserSub: process.env.DEV_USER_SUB, nodeEnv: process.env.NODE_ENV }
+
 const server = createServer(
   createApp({
     query,
     routes: [
       ...createRulesRoutes({ query }),
-      ...createProgressRoutes({ query, devUserSub: process.env.DEV_USER_SUB }),
+      ...createProgressRoutes({ query, ...identityOptions }),
       ...createAuthRoutes({ query, config: authConfig }),
+      ...createSyncRoutes({ query, service: syncService, ...identityOptions }),
+      ...createAdminRoutes({ query, ...identityOptions }),
+      ...staticRoutes,
     ],
   }),
 )
@@ -60,6 +101,7 @@ async function shutdown(signal: string): Promise<void> {
   if (closing) return
   closing = true
   console.log(JSON.stringify({ level: 'info', message: `收到 ${signal}，關閉中` }))
+  syncService.disposeAll()
   server.close()
   await pool.end().catch(() => undefined)
   process.exit(0)

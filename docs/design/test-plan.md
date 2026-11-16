@@ -31,8 +31,9 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | Job | 指令 | 涵蓋 |
 | --- | --- | --- |
-| `web` | `npm ci` → `npm run build` → `npm test` | L0、L1（目前 5 檔 47 測試） |
+| `web` | `npm ci` → `npm run build` → `npm test` | L0、L1（目前 29 檔 286 測試） |
 | `docs` | `node docs/design/spike/run-cases.mjs` | spike 27 項（歷史證據；已移植到 `ruleEngine.test.ts`） |
+| `docs` | `node scripts/verify-rule-coverage.mjs` | 46 條覆蓋清單 → `clauseId` 對照（#18） |
 | `docs` | `node scripts/check-doc-links.mjs` | 文件相對連結 |
 | `docs` | `npx @redocly/cli lint docs/design/openapi.yaml` | OpenAPI 可解析 |
 
@@ -69,11 +70,11 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 **現況**：**未量測**。`@vitest/coverage-v8` 尚未安裝，所以 CI 沒有覆蓋率數字。
 
-要啟用的話是三個步驟：`npm i -D @vitest/coverage-v8`、`vitest run --coverage`、在 `vite.config.ts` 設 `coverage.thresholds`。這會讓 `web` job 多約 3 秒。**I2 不啟用**，理由：目前 47 個測試的分佈（引擎 14、元件 4、AIS 29）本來就不是照覆蓋率長的，先量數字只會誘導去補無關的檔案。
+要啟用的話是三個步驟：`npm i -D @vitest/coverage-v8`、`vitest run --coverage`、在 `vite.config.ts` 設 `coverage.thresholds`。這會讓 `web` job 多約 3 秒。**I2 不啟用**，理由：目前 286 個測試的分佈不是照覆蓋率長的，先量數字只會誘導去補無關的檔案。
 
 ## 5. TC-01～TC-34 自動化對照表
 
-層級代碼見 §1；「現況」只有三種：**自動**（有可執行的測試）、**spike**（由 `run-cases.mjs` 覆蓋，CI 會跑）、**未實作**。
+層級代碼見 §1；「現況」只有四種：**自動**（有可執行的測試且進 CI）、**部分**（核心有測試，但某一層或某個情境還沒驗）、**spike**（由 `run-cases.mjs` 覆蓋，CI 會跑）、**未實作**。把「有測試」寫成自動、但其實只驗了 fake DB 的，一律標部分。
 
 | TC | 情境 | 層級 | 現況 | 落點／缺口 |
 | --- | --- | --- | --- | --- |
@@ -86,39 +87,39 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | TC-07 | 簡單重修 | L0 | 自動 | `ruleEngine.edge.test.ts`（先不及格後及格） |
 | TC-08 | 部分範圍 | L1 | 自動 | `ProgressPage.test.tsx`（持續顯示部分檢核提示） |
 | TC-09 | 三情境 | L0 | 自動 | `ruleEngine.test.ts` 案例 9（completed／inProgress 切換） |
-| TC-10 | 條件覆蓋 | L0＋L2 | 未實作 | I2：覆蓋套用於節點結果，不改學分 |
-| TC-11 | 個人修正 | L2 | 未實作 | I2：修正儲存、重算、還原 |
-| TC-12 | 同步失敗及變更 | L2 | 未實作 | I2：`student_sync_state` ＋ `previous_raw`（[database-design.md](database-design.md) §3.11、§3.15） |
-| TC-13 | 身分與儲存 | L2＋L3 | 未實作 | I2：cookie 工作階段、跨使用者拒絕（[ADR-0003](adr/0003-google-oidc-identity.md)） |
+| TC-10 | 條件覆蓋 | L0＋L2 | 部分 | `progress.test.ts`（節點覆蓋與上層重算）；端點以 fake DB 覆蓋，缺真實 DB 端到端 |
+| TC-11 | 個人修正 | L0＋L2 | 部分 | `progress.test.ts`（`toEngineRecords` 套用 credits／status／category）；修正的寫入與還原端點未實作 |
+| TC-12 | 同步失敗及變更 | L0＋L2 | 自動 | `sync.test.ts`（登入失敗不動 `student_records`、只寫 `last_result=failed`；成功才 upsert ＋ `previous_raw`）（[database-design.md](database-design.md) §3.11、§3.15） |
+| TC-13 | 身分與儲存 | L2＋L3 | 部分 | `oidc.test.ts`、`cookies.test.ts`、`session.db.test.ts`、`can.test.ts`；**真人 Google 登入待驗**（見 validation 紀錄） |
 | TC-14 | 必修及未知 | L0 | 自動 | `ruleEngine.test.ts` 案例 2（必修）與 7（未知狀態） |
 | TC-15 | 免修與重複分類 | L0 | 自動 | `ruleEngine.test.ts` 案例 6（免修不給學分）；「兩類互斥」待補 |
 | TC-16 | 查詢與缺額 | L2 | 未實作 | I3：課程查詢 API（Step 5 清單中的待擴充端點） |
 | TC-17 | 衝堂與未知 | L2 | 未實作 | I3：正式班別資料 |
-| TC-18 | 發布權限 | L2 | 未實作 | I2：權限矩陣（[system-design.md](system-design.md) §8） |
-| TC-19 | 版本更新 | L2 | 未實作 | I2：`rule_versions` 狀態機與 `superseded` |
+| TC-18 | 發布權限 | L2 | 自動 | `admin.test.ts`（401／403／跨系所／代理發布） |
+| TC-19 | 版本更新 | L2 | 自動 | `admin.test.ts`（draft→…→published 全程、非法轉移 409；`superseded` 未觸發） |
 | TC-20 | 覆蓋遷移 | L0＋L2 | 未實作 | I2：節點 ID 穩定 ＋ `retired`（system-design §4.2） |
 | TC-21 | PDF 草稿 | M | 未實作 | I2 可行性試作：只驗「草稿不自動發布」 |
 | TC-22 | AI 與先修 | M | 未實作 | S 階段（MVP 後） |
-| TC-23 | 寫入失敗 | L2 | 未實作 | I2：交易與原子發布（NFR-08） |
+| TC-23 | 寫入失敗 | L2 | 部分 | 發布與快照 upsert 都用單一 statement（`persist.ts`）；**故障注入測試未做** |
 | TC-24 | 覆蓋與上層重算 | L0 | 自動 | `ruleEngine.test.ts` 案例 7（未知 → 衝突解除）；OR 分支待補 |
-| TC-25 | 指定必修缺漏 | L0 | 未實作 | 引擎已支援 `courseSet`，尚無案例（案例 3 只驗學分缺額） |
-| TC-26 | 規則覆蓋範圍 | M | 未實作 | 可寫成資料檢核腳本，比對覆蓋清單與規則包 |
-| TC-27 | 管理員生命週期 | L2 | 未實作 | I2：`department_admins` 的有效列（[database-design.md](database-design.md) §3.4） |
+| TC-25 | 指定必修缺漏 | L0 | 自動 | `ruleEngine.edge.test.ts`（學分足夠但缺一門必修 → notMet；全到齊 → met） |
+| TC-26 | 規則覆蓋範圍 | M | 自動 | `scripts/verify-rule-coverage.mjs`（CI `docs` job；46 條皆有對照或附理由） |
+| TC-27 | 管理員生命週期 | L2 | 自動 | `admin.test.ts`（有無有效系所管理員決定代理發布）、`can.test.ts`（24 格矩陣） |
 | TC-28 | 修正輸入與還原 | L2 | 未實作 | I2：輸入驗證與零學分免修 |
 | TC-29 | 採計上限 | L0 | 自動 | `ruleEngine.test.ts` 案例 4（9 學分只認 6、博雅單領域上限） |
 | TC-30 | 重複採計 | L0 | 自動 | `ruleEngine.test.ts` 案例 5（同課只計一次、單一池） |
 | TC-31 | 抵免與免修 | L0 | 自動 | `ruleEngine.test.ts` 案例 6（抵免給學分、免修不給） |
 | TC-32 | 例外衝突 | L0 | 自動 | `ruleEngine.test.ts` 案例 7（未解衝突停在待確認） |
 | TC-33 | 多系所格式 | L0 | 自動 | `ruleEngine.test.ts` 案例 8（135／136、子集合不重複計入） |
-| TC-34 | 稽核追溯 | L2 | 未實作 | I2：`review_records` 不可變 ＋ 來源追溯 |
+| TC-34 | 稽核追溯 | L2 | 自動 | `admin.test.ts`（每一步狀態變更都寫 `review_records`；cursor 分頁） |
 
 ### 5.1 統計
 
 | 狀態 | 條數 | 佔比 | 證據來源 |
 | --- | --- | --- | --- |
-| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 18 檔 164 測試（含 `ruleEngine.test.ts` 27、`ruleEngine.edge.test.ts` 5、`ProgressPage.test.tsx` 8、`can.test.ts` 32） |
-| spike（`docs` job） | **0**（已全數移植；spike 仍跑，當歷史證據） | 0% | 27 項案例 |
-| 未實作 | **17** | 50% | 逐條列在上表 |
+| 自動（`npm test` 或 CI 腳本） | **24**（TC-01～09、12、14、15、18、19、24～27、29～34） | 71% | 29 檔 286 測試；另加 `scripts/verify-rule-coverage.mjs` |
+| 部分 | **4**（TC-10、11、13、23） | 12% | 見上表逐條說明 |
+| 未實作 | **6**（TC-16、17、20、21、22、28） | 18% | I3 或 MVP 後 |
 | 合計 | 34 | 100% | — |
 
 > 誠實說明：TC-01～08 現在由正式引擎（`ruleEngine`）與學生端頁面承接；引擎的 27＋5 項案例是 113 資工與商船的真實規則，不是 I1 的三條測試門檻。

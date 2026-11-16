@@ -35,15 +35,36 @@ export interface ProgressData {
   dataSyncedAt: string | null
 }
 
+/** `apiFetch` 從錯誤 envelope 帶回來的額外資訊；mock 階段可以完全不提供。 */
+export interface ProgressApiErrorOptions {
+  /** HTTP 狀態碼（例如 401／404／502）。 */
+  status?: number
+  /** 後端說這個請求重試是否有意義。 */
+  retryable?: boolean
+  /** `error.details`，例如 `[{ field: 'AIS_ACCOUNT', reason: 'not-configured' }]`。 */
+  details?: unknown[]
+}
+
 export class ProgressApiError extends Error {
   readonly code: string
   readonly requestId: string | null
+  readonly status: number | undefined
+  readonly retryable: boolean
+  readonly details: unknown[] | undefined
 
-  constructor(code: string, message: string, requestId: string | null = null) {
+  constructor(
+    code: string,
+    message: string,
+    requestId: string | null = null,
+    options: ProgressApiErrorOptions = {},
+  ) {
     super(message)
     this.name = 'ProgressApiError'
     this.code = code
     this.requestId = requestId
+    this.status = options.status
+    this.retryable = options.retryable ?? false
+    this.details = options.details
   }
 }
 

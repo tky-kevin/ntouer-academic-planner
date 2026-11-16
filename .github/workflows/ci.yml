@@ -73,6 +73,10 @@ jobs:
       - name: 文件相對連結檢查
         run: node scripts/check-doc-links.mjs
 
+      # Issue #18：46 條覆蓋清單 → clauseId 的對照；缺對照或缺 reason 就非 0 結束。
+      - name: 規則覆蓋對照（46/46 或全數附理由）
+        run: node scripts/verify-rule-coverage.mjs
+
       # openapi.yaml 是 Iter2 後續產出；還沒建之前不讓 CI 紅燈。
       - name: OpenAPI lint（docs/design/openapi.yaml 存在時才跑）
         run: |

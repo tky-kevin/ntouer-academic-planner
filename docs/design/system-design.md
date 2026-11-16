@@ -254,6 +254,24 @@ classDiagram
 
 I1 引擎會被替換而不是擴充；現有 8 個測試案例保留為回歸底線。
 
+### 5.5 分類未確認時的判定（真實 AIS 資料的必要條件）
+
+真實 AIS 成績只提供「必修／選修／通識」與課名，**沒有開課系所**，因此無法自動判定「系內選修 46」或「核心選修 12」。如果引擎把「還沒分類」的紀錄當成「不符合 selector」，就會把未知說成缺額，違反 SRS 8.4 與 NFR-06。
+
+規則（`src/engine/ruleEngine.ts` 的 `credits` 節點）：
+
+```
+若 credits 條件算出 notMet，且本次參與計算的紀錄中存在「已採計但分類未確認」者
+→ 節點狀態回 unknown（不是 notMet）
+```
+
+- 只影響 `credits`（tag 型學分條件）；`total`／`pool`／`courseSet`／`status` 不受影響，因為它們的分類依據是 category 或課號本身。
+- `total` 仍計入這些學分：池的歸屬用 `owner` 兜底，不會漏算總學分。
+- 已達門檻時就是 `met`，不會被未分類紀錄拖成 `unknown`。
+- 對應測試：`src/engine/ruleEngine.unclassified.test.ts`（5 案例）。
+
+**分類資料的來源**：`data/rules/113-cse-classification.json`，逐條附 `sourceId` 與 `locator`。只採用官方檢核表／修業規定明列的課名或 AIS 明確欄位（選別＝通識）；對不上就寫 `unknown` 並在同步結果的 `unmatched` 列出，讓使用者用個人修正處理，**不以課名相似度猜測**。這份資料與 Issue #18 的 `113-cse-coverage-map.json`（ruleId → clauseId）是兩件事：前者決定「這門課算哪一類」，後者決定「這條規則可追溯到哪一條文」。
+
 ## 6. 邊緣案例與測試設計
 
 本節保留案例的設計意圖；每一條 `TC` 落在哪一層、目前有沒有可執行的證據、覆蓋率目標與 fixtures 策略，以 [test-plan.md](test-plan.md) 為準。
@@ -581,6 +599,56 @@ sequenceDiagram
 - 使用者 A 改 `userId` 打 B 的資料 → 403；`deptScopes` 以外的系所操作 → 403 `AUTH_DEPT_OUT_OF_SCOPE`。
 - 登出後用同一 cookie 再打 `GET /auth/session` → 401。
 
+### 14.4 AIS 教務資料同步（FR-02）
+
+Google 身分（14.1）與 AIS 登入是**兩件事**：前者是 Planner 的帳戶，後者只是取得修課資料的手段，不建立 Planner 的工作階段。
+
+**流程（三段，見 api-spec §7.6）**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as 學生
+    participant B as 瀏覽器
+    participant A as Planner API
+    participant AIS as AIS
+
+    U->>B: 按「同步教務資料」
+    B->>A: POST /api/me/sync/ais
+    A->>AIS: GET /Default.aspx（登入頁）
+    AIS-->>A: 表單 ＋ 驗證碼 PNG
+    A->>A: 記憶體建立 pending（syncId、5 分鐘期限）
+    A-->>B: 202 { syncId, captchaImage, expiresAt, accountMasked }
+    B-->>U: 顯示驗證碼圖片
+    U->>B: 輸入四碼
+    B->>A: POST /api/me/sync/ais/{syncId} { captcha }
+    A->>AIS: POST 登入（驗證碼）
+    AIS-->>A: 驗證成功（session cookie 只在記憶體）
+    A->>AIS: GET 歷年成績（＋設定時的當學期課表）
+    AIS-->>A: HTML
+    A->>A: normalize → classify（113-cse-classification.json）
+    A->>A: 單一 statement upsert student_records ＋ 清掉 AIS 已移除的紀錄
+    A->>A: 更新 student_sync_state.last_success_at
+    A->>AIS: 登出（不論成敗）
+    A-->>B: 200 { counts, unmatched, profile.missing, warnings }
+    B-->>U: 顯示同步結果，重新載入進度
+```
+
+**帳密的邊界（NFR-04）**
+
+| 位置 | 允許 | 說明 |
+| --- | --- | --- |
+| 部署環境變數／`.env.local` | ✅ | `AIS_ACCOUNT`／`AIS_PASSWORD`；檔案已 gitignore，只在伺服器上 |
+| 伺服器記憶體（pending） | ✅ | 登入完成即丟棄；pending 有 TTL，取消／逾時就清掉 |
+| 資料庫 | ❌ | 只存正規化後的修課快照與 `student_sync_state` |
+| 日誌／回應／前端儲存 | ❌ | 回應只給 `accountMasked`；錯誤訊息不含帳密 |
+
+**一次同步只收一次驗證碼**：AIS 驗證碼錯誤時會換一張新圖並重試，但本流程在使用者送出後就把輸入通道關閉——第二次要求會直接失敗（`CAPTCHA_RETRY_REQUIRED`），使用者重新開始。這樣不會出現「伺服器在等人輸入、前端卻已經顯示完成」的鬼狀態。
+
+**分類與未知**：課名對不到官方清單的課程一律記 `category=unknown`，列在 `unmatched`，並讓 §5.5 的規則把相關學分條件停在 `unknown`。**不會**用課名相似度猜系內／外系。
+
+**已知限制（I2）**：目前的部署模型是「一個學生、一份 AIS 憑證」。多使用者上線前必須改成每位使用者各自的 AIS 憑證（或一次性的授權流程），並補上相應的稽核；在那之前 `AIS_ACCOUNT` 只能是部署者本人，文件與畫面都要這樣寫，不能假裝支援多人。
+
 ## 15. 環境、部署與可觀測性
 
 決策見 [ADR-0006](adr/0006-deployment-platform-and-ci.md)。本節寫「跑起來之後怎麼知道它正常」。
@@ -589,8 +657,10 @@ sequenceDiagram
 
 | 環境 | 用途 | 資料庫 | 現況 |
 | --- | --- | --- | --- |
-| Dev | 本機開發；Vite dev server ＋ 容器化 PostgreSQL | 可重建（migrate ＋ seed） | **已具備** |
-| Prod／Demo | 學生與管理者實際使用 | 持久、需備份 | **尚無主機**；I2 只交付可部署產出（Dockerfile ＋ 啟動腳本 ＋ 環境變數清單） |
+| Dev | 本機開發；Vite dev server（5173，`/api`、`/auth` proxy 到 3000）或同源 3000 | 可重建（migrate ＋ seed） | **已具備** |
+| Prod／Demo | 學生與管理者實際使用；同源單一服務（API 也服務 `dist/`） | 持久、需備份 | **可部署產出已交付**：`Dockerfile`（multi-stage、非 root、HEALTHCHECK）、`compose.yaml`（db ＋ app）、`scripts/docker-entrypoint.sh`、`.dockerignore`、`.env.example` |
+
+「可部署」不等於「已部署」：目前沒有對外主機，I2 的驗證都在本機同源 3000 上完成。
 
 不設 Staging：5 人團隊多一層環境只有維運成本（ADR-0006）。
 
@@ -603,12 +673,29 @@ sequenceDiagram
 
 CI 兩個 job：`web`（npm ci → build → test）、`docs`（spike 27 項 → 連結檢查 → OpenAPI lint）。**不使用 secrets、不連外部服務**；紅燈不得用 `continue-on-error` 掩蓋。
 
-### 15.3 部署流程（取得主機後）
+### 15.3 部署流程
 
-1. 建置產出（`npm run build` → `dist/`）
-2. 套用遷移（`npm run db:migrate`，由部署者手動執行，不進 CI）
+**一鍵本機／示範（同源單一服務）**
+
+```bash
+docker compose up -d --build      # db（127.0.0.1:5433）＋ app（127.0.0.1:3000）
+curl -s http://127.0.0.1:3000/healthz
+```
+
+`scripts/docker-entrypoint.sh` 依序做：等資料庫 → `node scripts/db/migrate.mjs` →（`SEED_ON_START=1` 時）`node scripts/db/seed.mjs` → 啟動 API。這只是把 ADR-0004 的「部署者手動跑遷移」自動化，同一支腳本仍可手動執行；正式環境把 `SEED_ON_START` 留空（預設 `0`）。
+
+**映像內容**：`node:22-alpine` multi-stage；runtime 只帶 production 相依＋`tsx`、`dist/`、`server/`、`src/engine/`、`db/`、`scripts/`、`data/`、`docs/design/examples/`；以 `node` 使用者執行、不掛載原始碼。API 同時服務 `dist/`（`server/static.ts`），所以 OIDC 的 redirect URI 與 cookie 都留在同一個 origin。
+
+**容器環境變數**：`HOST=0.0.0.0`（容器內必須，否則 port mapping 收不到）、`DATABASE_URL`（由 compose 覆蓋成 `db:5432`）、`PORT`、`SESSION_SECRET`、`GOOGLE_CLIENT_ID`／`GOOGLE_CLIENT_SECRET`／`GOOGLE_REDIRECT_URI`（與 14.1 一致：`http://localhost:3000/auth/callback`）、`AIS_*`、`SEED_ON_START`。compose 內的 `planner/planner` 只是本機開發值。
+
+**取得主機後的步驟**
+
+1. `npm run build` → `dist/`（或直接 build 映像）
+2. 套用遷移（entrypoint 會做，或手動 `npm run db:migrate`）
 3. 重啟服務並打 `/healthz`
-4. 以一個真實帳號走一次登入 → 進度頁，確認規則版本正確
+4. 以真實帳號走一次：Google 登入 → 同步 AIS → 進度頁，確認規則版本與資料時間正確
+
+`HEALTHCHECK` 只是「每 15 秒打一次 `/healthz`（含 `select 1`）」，容器 healthy 不等於 §15.5 的監控已到位。
 
 ### 15.4 日誌欄位
 

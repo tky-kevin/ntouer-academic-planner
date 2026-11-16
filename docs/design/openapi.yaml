@@ -25,7 +25,9 @@ tags:
   - name: auth
     description: 登入工作階段。OIDC 的 start／callback 端點尚未納入本檔，流程見 api-spec.md §6.1。
   - name: student
-    description: 學生端查詢：個人進度與規則版本內容。
+    description: 學生端查詢與學籍：個人進度、規則版本內容、學籍補齊。
+  - name: sync
+    description: AIS 教務資料同步（驗證碼兩段式）。帳密不落庫、不進日誌、不回前端。
 
 servers:
   - url: '{protocol}://{host}'
@@ -235,6 +237,227 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /api/me/sync/ais:
+    post:
+      tags: [sync]
+      operationId: startAisSync
+      summary: 開始一次 AIS 教務資料同步
+      description: |
+        第一步（共三段）。伺服器用 `AIS_ACCOUNT`／`AIS_PASSWORD`（或請求 body 的
+        臨時憑證）向 AIS 登入到「需要圖形驗證碼」為止，回傳驗證碼圖片與一次性的
+        `syncId`；使用者看完圖後用 `POST /api/me/sync/ais/{syncId}` 送出四碼。
+
+        帳密只存在伺服器記憶體，登入後立刻丟棄：不寫入資料庫、不寫入日誌、
+        不回傳給前端（只回遮蔽後的 `accountMasked`）。驗證碼輸入期限預設 5 分鐘。
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncStartRequest'
+      responses:
+        '202':
+          description: 等待驗證碼輸入
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStartResponse'
+        '400':
+          description: 沒設定帳密（`AIS_CREDENTIALS_NOT_CONFIGURED`）或只帶一半憑證（`REQUEST_INVALID`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 請求來源與站台不同源（`AUTH_ORIGIN_MISMATCH`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 同一使用者已有未完成的同步（`SYNC_ALREADY_RUNNING`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: 連不上 AIS（`SYNC_FAILED`，`error.code` 為上游原因）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/me/sync/ais/{syncId}:
+    post:
+      tags: [sync]
+      operationId: completeAisSync
+      summary: 送出驗證碼並完成同步
+      description: |
+        第二步。成功後把 AIS 成績（與設定時的當學期課表）正規化成 `student_records`
+        快照，並更新 `student_sync_state.last_success_at`。失敗時**不清空**既有快照。
+      parameters:
+        - name: syncId
+          in: path
+          required: true
+          description: '`POST /api/me/sync/ais` 回傳的一次性識別碼'
+          schema:
+            type: string
+            minLength: 16
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncCompleteRequest'
+      responses:
+        '200':
+          description: 同步完成
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncResultResponse'
+        '400':
+          description: 驗證碼格式不對（`SYNC_CAPTCHA_INVALID`）或 body 不合法（`REQUEST_INVALID`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 請求來源與站台不同源（`AUTH_ORIGIN_MISMATCH`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到這個同步（`SYNC_NOT_FOUND`；可能已完成、已取消或已過期）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 驗證碼已過期（`SYNC_EXPIRED`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: |
+            AIS 同步失敗（`SYNC_FAILED`）。`error.code` 為上游具體原因，例如
+            `AIS_LOGIN_REJECTED`、`CAPTCHA_RECOGNITION_EXHAUSTED`、`AIS_TIMEOUT`、
+            `AIS_STUDENT_IDENTITY_MISMATCH`。前次成功快照仍在。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [sync]
+      operationId: cancelAisSync
+      summary: 取消未完成的同步
+      description: 使用者關閉對話框時呼叫；已完成的同步不會被撤銷。
+      parameters:
+        - name: syncId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 已取消（無 body）
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 請求來源與站台不同源（`AUTH_ORIGIN_MISMATCH`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到這個同步（`SYNC_NOT_FOUND`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/me/profile:
+    patch:
+      tags: [student]
+      operationId: updateMyProfile
+      summary: 補齊系所／入學年度／學制
+      description: |
+        `GET /api/me/progress` 需要系所與入學年度才能選出規則包。AIS 成績頁若帶系所
+        名稱，同步時會自動對應；入學年度**不推論**（年級不等於入學年度），由學生填寫。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilePatch'
+      responses:
+        '200':
+          description: 更新後的學籍屬性
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: 欄位不合法或未知欄位（`REQUEST_INVALID`，`details` 指出欄位）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 請求來源與站台不同源（`AUTH_ORIGIN_MISMATCH`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   securitySchemes:
     sessionCookie:
@@ -279,8 +502,21 @@ components:
         - RULE_VALIDATION_FAILED
         - RULE_TEST_FAILED
         - SYNC_FAILED
+        - SYNC_ALREADY_RUNNING
+        - SYNC_NOT_FOUND
+        - SYNC_EXPIRED
+        - SYNC_CAPTCHA_INVALID
+        - AIS_CREDENTIALS_NOT_CONFIGURED
+        - AIS_LOGIN_REJECTED
+        - CAPTCHA_RECOGNITION_EXHAUSTED
+        - AIS_TIMEOUT
+        - AIS_UNAVAILABLE
+        - AIS_STUDENT_IDENTITY_MISMATCH
         - RATE_LIMITED
         - INTERNAL
+      x-code-note: |
+        錯誤碼是開放集合（api-spec §5.3）：AIS 上游還有其他具體代碼
+        （例如 AIS_GRADES_CONTRACT_CHANGED），客戶端必須容忍未知 `code`。
 
     ErrorDetail:
       type: object
@@ -555,5 +791,178 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/RuleVersionData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    SyncStartRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        全部選填。帶了 `account` 與 `password` 就用這次的臨時憑證；
+        都不帶就用部署環境的 `AIS_ACCOUNT`／`AIS_PASSWORD`。
+        只帶其中一個會回 400 `REQUEST_INVALID`。
+      properties:
+        account:
+          type: string
+          minLength: 4
+          description: AIS 學號；只存在記憶體，登入後丟棄
+        password:
+          type: string
+          minLength: 1
+          description: AIS 密碼；不落庫、不進日誌、不回前端
+
+    SyncStartData:
+      type: object
+      required: [syncId, captchaImage, expiresAt, accountMasked, source]
+      properties:
+        syncId:
+          type: string
+          description: 一次性識別碼；完成或取消後失效
+        captchaImage:
+          type: string
+          pattern: '^data:image/png;base64,'
+          description: 驗證碼 PNG 的 data URL，前端直接當 <img src>
+        expiresAt:
+          type: string
+          format: date-time
+          description: 驗證碼輸入期限
+        accountMasked:
+          type: string
+          description: 遮蔽後的 AIS 帳號，例如 `B12****78`
+        source:
+          type: string
+          enum: [env, request]
+
+    SyncStartResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/SyncStartData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    SyncCompleteRequest:
+      type: object
+      additionalProperties: false
+      required: [captcha]
+      properties:
+        captcha:
+          type: string
+          pattern: '^[A-Za-z0-9]{4}$'
+          description: 四碼英數字；大小寫不拘，伺服器轉大寫
+
+    SyncCounts:
+      type: object
+      required: [total, passed, failed, inProgress, unknown]
+      properties:
+        total: { type: integer, minimum: 0 }
+        passed: { type: integer, minimum: 0 }
+        failed: { type: integer, minimum: 0 }
+        inProgress: { type: integer, minimum: 0 }
+        unknown: { type: integer, minimum: 0 }
+
+    UnmatchedCourse:
+      type: object
+      description: 分類未確認的課程；不得把未知說成已通過或已排除
+      required: [courseCode, courseName, reason]
+      properties:
+        courseCode: { type: string }
+        courseName: { type: string }
+        reason: { type: string }
+
+    SyncProfile:
+      type: object
+      required: [deptId, entryYear, program, missing]
+      properties:
+        deptId:
+          type: [string, 'null']
+        entryYear:
+          type: [integer, 'null']
+        program:
+          type: string
+        missing:
+          type: array
+          description: 尚缺的學籍欄位；非空時要用 PATCH /api/me/profile 補齊
+          items:
+            type: string
+            enum: [deptId, entryYear]
+
+    SyncResultData:
+      type: object
+      required: [status, counts, dataSyncedAt, unmatched, profile, warnings, persisted]
+      properties:
+        status:
+          type: string
+          const: succeeded
+        counts:
+          $ref: '#/components/schemas/SyncCounts'
+        dataSyncedAt:
+          type: string
+          format: date-time
+        unmatched:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnmatchedCourse'
+        profile:
+          $ref: '#/components/schemas/SyncProfile'
+        warnings:
+          type: array
+          description: 這次同步的已知限制（例如沒有讀課表）
+          items:
+            type: string
+        persisted:
+          type: object
+          required: [insertedOrUpdated, removed]
+          properties:
+            insertedOrUpdated: { type: integer, minimum: 0 }
+            removed:
+              type: integer
+              minimum: 0
+              description: AIS 已沒有、被移除的舊紀錄數（只清 `ais:` 開頭）
+
+    SyncResultResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/SyncResultData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    ProfilePatch:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        deptId:
+          type: string
+          description: 必須存在於 departments.dept_id
+        entryYear:
+          type: integer
+          minimum: 100
+          maximum: 130
+          description: 民國年；與 users.entry_year 的 CHECK 一致
+        program:
+          type: string
+          enum: [day, night]
+
+    ProfileData:
+      type: object
+      required: [deptId, entryYear, program]
+      properties:
+        deptId:
+          type: [string, 'null']
+        entryYear:
+          type: [integer, 'null']
+        program:
+          type: string
+
+    ProfileResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProfileData'
         meta:
           $ref: '#/components/schemas/Meta'

@@ -1,0 +1,33 @@
+{
+  "courses": [
+    { "courseName": "程式設計", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "離散數學", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "計算機概論", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "微積分(上)", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "微積分(下)", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "程式設計(二)", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "線性代數", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "數位邏輯", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "數位邏輯實驗", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "資料結構", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "機率論", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "計算機組織學", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "演算法", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "電腦網路", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "作業系統", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "資工系專題(一)", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "資工系專題(二)", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "資訊專題討論", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "國文領域（一）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "國文領域（二）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "大一英文（上）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "大一英文（下）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "進階英文", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "海洋科學概論", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "人工智慧概論", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "體育（一）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "體育（二）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "體育（三）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" },
+    { "courseName": "體育（四）", "courseCode": null, "evidence": "官方檢核表與修業規定未列課號" }
+  ]
+}

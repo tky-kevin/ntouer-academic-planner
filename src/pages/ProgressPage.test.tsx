@@ -1,9 +1,16 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ProgressPage from './ProgressPage'
 import { ProgressApiError, loadMockProgress } from '../data/mockProgress'
+
+// 預設 loader 已改成真實 API（src/api/progress）。既有案例不注入 load prop 的地方
+// 仍以 mock 資料驅動，這裡只把 API 模組換成 loadMockProgress，斷言維持原樣。
+vi.mock('../api/progress', () => ({
+  loadProgress: async (scenario: 'completed' | 'inProgress' | 'planned') =>
+    (await import('../data/mockProgress')).loadMockProgress(scenario),
+}))
 
 describe('學生端進度頁（UI-02）', () => {
   it('unknown 條件顯示「尚未確認」而不是未通過', async () => {
@@ -70,5 +77,45 @@ describe('學生端進度頁（UI-02）', () => {
     const pending = () => new Promise<never>(() => undefined)
     render(<ProgressPage load={pending} />)
     expect(screen.getByRole('status')).toHaveTextContent('載入中')
+  })
+
+  it('401 顯示 Google 登入入口，且不顯示錯誤碼', async () => {
+    const signedOut = async () => {
+      throw new ProgressApiError('AUTH_REQUIRED', '請先登入。', 'req-401')
+    }
+    render(<ProgressPage load={signedOut} />)
+    expect(await screen.findByRole('heading', { name: '請用 Google 登入' })).toBeVisible()
+    expect(screen.getByRole('link', { name: '用 Google 登入' })).toHaveAttribute('href', '/auth/google/start')
+    expect(screen.queryByText('AUTH_REQUIRED')).not.toBeInTheDocument()
+    expect(screen.queryByText('req-401')).not.toBeInTheDocument()
+  })
+
+  it('RULE_BUNDLE_NOT_FOUND 提到系所／入學年度時顯示補齊表單', async () => {
+    const missingProfile = async () => {
+      throw new ProgressApiError(
+        'RULE_BUNDLE_NOT_FOUND',
+        '你的帳號還沒有系所與入學年度，無法決定要套用哪一份規則。',
+        'req-404',
+      )
+    }
+    render(<ProgressPage load={missingProfile} />)
+    expect(await screen.findByRole('heading', { name: '補齊系所與入學年度' })).toBeVisible()
+    expect(screen.getByLabelText('系所代碼')).toBeVisible()
+    expect(screen.queryByText('無法載入進度')).not.toBeInTheDocument()
+  })
+
+  it('提示條的資料時間是資料驅動的', async () => {
+    const unsynced = async () => ({ ...(await loadMockProgress('completed')), dataSyncedAt: null })
+    render(<ProgressPage load={unsynced} />)
+    expect(await screen.findByText(/尚未同步教務資料/)).toBeVisible()
+  })
+
+  it('「同步教務資料」按鈕會開啟對話框', async () => {
+    const user = userEvent.setup()
+    render(<ProgressPage />)
+    await screen.findByRole('heading', { name: '畢業進度' })
+    await user.click(screen.getByRole('button', { name: '同步教務資料' }))
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    expect(screen.getByRole('heading', { name: '同步教務資料' })).toBeVisible()
   })
 })

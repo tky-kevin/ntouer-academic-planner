@@ -372,6 +372,12 @@ interface EvalContext {
   caps: readonly CapDef[]
   statuses: Partial<Record<string, RequirementState>>
   totalCredits: number
+  /**
+   * 已採計但**分類未確認**的紀錄數（例如 AIS 只給「選修」，無法判斷是系內或外系）。
+   * tag 型學分條件在這種情況下不得斷言「未達成」——那是把未知當成失敗，
+   * 違反 SRS §8.4 與 NFR-06；應回 unknown 讓畫面顯示「尚未確認」。
+   */
+  unresolvedCount: number
 }
 
 function evaluateRequirement(node: RequirementNode, ctx: EvalContext): RequirementResult {
@@ -391,10 +397,13 @@ function evaluateRequirement(node: RequirementNode, ctx: EvalContext): Requireme
     case 'credits': {
       const { total, counted, skipped } = sumWithCaps(ctx.records, node.selectors ?? [], ctx.caps, node.poolId)
       const min = node.min ?? 0
+      const reached = stateFromCredits(total, min)
+      // 還有分類未確認的紀錄時，缺額可能只是「還沒分類」，不是真的缺。
+      const state: RequirementState = reached === NOT_MET && ctx.unresolvedCount > 0 ? UNKNOWN : reached
       return {
         ...base,
         kind: 'credits',
-        state: stateFromCredits(total, min),
+        state,
         credits: total,
         min,
         gap: Math.max(0, min - total),
@@ -456,7 +465,19 @@ export function evaluate(
   const { poolTotals, claimed, trace } = allocate(bundle, eligible)
   const totalCredits = Object.values(poolTotals).reduce((sum, value) => sum + value, 0)
 
-  const ctx: EvalContext = { records: eligible, poolTotals, pools, caps, statuses, totalCredits }
+  const unresolvedCount = eligible.filter(
+    (record) => record.status !== 'planned' && (!record.category || record.category === 'unknown'),
+  ).length
+
+  const ctx: EvalContext = {
+    records: eligible,
+    poolTotals,
+    pools,
+    caps,
+    statuses,
+    totalCredits,
+    unresolvedCount,
+  }
   const requirements = bundle.requirements.map((requirement) => evaluateRequirement(requirement, ctx))
   const required = requirements.filter((requirement) => requirement.required)
 
@@ -494,10 +515,16 @@ export function validateBundle(bundle: RuleBundle): BundleValidation {
   const clauseIds = new Set((bundle.clauses ?? []).map((clause) => clause.clauseId))
   const poolIds = new Set((bundle.allocation?.pools ?? []).map((pool) => pool.poolId))
 
-  const duplicates = (values: readonly string[]): string[] => values.filter((value, index) => values.indexOf(value) !== index)
-  if (duplicates([...sourceIds]).length > 0) errors.push('sourceId 重複')
+  const duplicates = (values: readonly string[]): string[] =>
+    values.filter((value, index) => values.indexOf(value) !== index)
+  // 注意：要用「原始陣列」檢查重複，不能拿 Set 再比——Set 已經去重，永遠抓不到重複。
+  if (duplicates((bundle.sources ?? []).map((source) => source.sourceId)).length > 0) {
+    errors.push('sourceId 重複')
+  }
   if (duplicates((bundle.clauses ?? []).map((clause) => clause.clauseId)).length > 0) errors.push('clauseId 重複')
-  if (duplicates((bundle.requirements ?? []).map((requirement) => requirement.id)).length > 0) errors.push('requirement id 重複')
+  if (duplicates((bundle.requirements ?? []).map((requirement) => requirement.id)).length > 0) {
+    errors.push('requirement id 重複')
+  }
 
   for (const clause of bundle.clauses ?? []) {
     if (!sourceIds.has(clause.sourceId)) errors.push(`clause ${clause.clauseId} 指向不存在的 source ${clause.sourceId}`)

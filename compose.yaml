@@ -1,0 +1,49 @@
+# 一個指令起整套系統：PostgreSQL 16 ＋ API（同源服務；前端靜態檔在映像的 dist/）。
+#
+#   docker compose up -d --build
+#   curl http://127.0.0.1:3000/healthz
+#
+# 資料庫帳密 planner/planner 只供**本機開發**，與 .env.example 的 DATABASE_URL 一致；
+# 正式環境請由部署平台注入環境變數，不要沿用這組值。這裡沒有寫死任何 Google／session 金鑰：
+# 那些一律來自 .env.local（未提交）或部署環境。
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: planner
+      POSTGRES_PASSWORD: planner
+      POSTGRES_DB: planner
+    # 只綁本機，不對外開放資料庫。
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - planner-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U planner -d planner"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.local
+    environment:
+      # 覆蓋 .env.local 的 localhost：容器內要用 service 名稱連 db。
+      DATABASE_URL: postgres://planner:planner@db:5432/planner
+      # 應用程式預設只綁 127.0.0.1；容器內要綁 0.0.0.0 才吃得到 port mapping。
+      HOST: 0.0.0.0
+      # 本機 demo：第一次起就建好 dev-student 與規則版本（seed 可重複執行）。
+      # entrypoint 的預設是 0（正式環境不自動寫入種子資料）。
+      SEED_ON_START: "1"
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  planner-db-data:
