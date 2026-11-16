@@ -1,3 +1,4 @@
+process.env.AIS_MENU_EXPAND_DELAY_MS = '0'
 // 新版 AIS MenuTree（__doPostBack）的解析與導覽。
 // 2026-11-17 實測：AIS 改成標準 ASP.NET TreeView，舊版 TreeView_PopulateNode 解析直接失敗。
 import { readFileSync } from 'node:fs'

@@ -50,7 +50,15 @@ export async function openAisFeature(
   const menuHtml = aisText(menu, `read_${options.operation}`, ["text/html"]);
   options.assertAuthenticated(menuHtml);
   let state = parseAisMenuPage(menuHtml);
+  // AIS 是舊版 ASP.NET 站台：短時間連續 postback 會回 403 系統錯誤頁。
+  // 每次展開之間留一點間隔；測試可設 AIS_MENU_EXPAND_DELAY_MS=0。
+  const delayMs = Math.min(5_000, Math.max(0, Number(process.env.AIS_MENU_EXPAND_DELAY_MS ?? 250) || 0));
+  const pause = async (): Promise<void> => {
+    if (delayMs <= 0) return;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  };
   const expand = async (node: AisMenuNode): Promise<void> => {
+    await pause();
     const expanded = await session.transport.execute({
       operation: `expand_${options.operation}_menu_group`,
       method: "POST",

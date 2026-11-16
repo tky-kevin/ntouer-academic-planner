@@ -1,3 +1,4 @@
+process.env.AIS_MENU_EXPAND_DELAY_MS = '0'
 // 選單導覽的失敗診斷：四種失敗要回不同的代碼，否則線上出錯無法分辨原因。
 // 這是 Planner 對 upstream 的唯一行為外修改（見 server/ais/README.md）。
 import { describe, expect, it } from 'vitest'
