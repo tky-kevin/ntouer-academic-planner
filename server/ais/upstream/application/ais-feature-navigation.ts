@@ -1,12 +1,24 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { aisText } from "./ais-response.js";
 import type { GatewaySession } from "./ports/gateway-session.js";
 import {
   applyAisMenuExpandCallback,
   buildAisMenuExpandBody,
   parseAisMenuPage,
+  type AisMenuState,
 } from "../protocol/ais/menu-tree-parser.js";
 import { parseAisFeatureLoader } from "../protocol/ais/feature-loader-parser.js";
 import { AisProtocolError } from "../protocol/ais/protocol-error.js";
+
+/**
+ * Planner 對 upstream 的唯一修改：把「選單導覽失敗」拆成可診斷的代碼，
+ * 並在 AIS_DEBUG_DUMP 開啟時把當下的選單節點存檔。
+ *
+ * 為什麼：原本所有失敗都丟 menu_tree_contract_changed，線上出錯時無法分辨是
+ * 「群組改名」「目標頁改名」「loader 換路徑」還是「頁面格式真的變了」。
+ * 行為不變（仍然是 fail-closed、仍然要求唯一候選），只是讓失敗可被診斷。
+ */
 
 const mainFrameUrl = new URL("https://ais.ntou.edu.tw/MainFrame.aspx");
 const menuUrl = new URL("https://ais.ntou.edu.tw/MenuTree.aspx");
@@ -40,9 +52,12 @@ export async function openAisFeature(
 
   for (const segment of options.menuGroups) {
     const matches = state.nodes.filter(
-      (node) => node.kind === "group" && node.title === segment,
+      (node) => node.kind === "group" && sameTitle(node.title, segment),
     );
-    if (matches.length !== 1 || matches[0] === undefined) changed();
+    if (matches.length === 0) fail(state, options, "menu_group_not_found");
+    if (matches.length > 1 || matches[0] === undefined) {
+      fail(state, options, "menu_target_ambiguous");
+    }
     const node = matches[0];
     const expanded = await session.transport.execute({
       operation: `expand_${options.operation}_menu_group`,
@@ -67,17 +82,44 @@ export async function openAisFeature(
   }
 
   const targets = state.nodes.filter(
-    (node) => node.kind === "page" && node.title === options.targetTitle,
+    (node) => node.kind === "page" && sameTitle(node.title, options.targetTitle),
   );
+  if (targets.length === 0) fail(state, options, "menu_target_not_found");
+  if (targets.length > 1) fail(state, options, "menu_target_ambiguous");
   const target = targets[0];
+  if (target === undefined || target.loaderUrl === null) {
+    fail(state, options, "menu_loader_mismatch");
+  }
+  const directQuery = samePath(target.loaderUrl, options.expectedQueryUrl);
+  // 新版 MenuTree 的頁面連結可能不帶 progcd；帶了就必須相符，沒帶則以路徑判定。
+  const programOk =
+    target.programCode === null ||
+    target.programCode === options.expectedProgramCode;
   if (
-    targets.length !== 1 ||
-    target?.loaderUrl === null ||
-    target === undefined ||
-    target.loaderUrl.href !== options.expectedLoaderUrl.href ||
-    target.programCode !== options.expectedProgramCode
-  )
-    changed();
+    (!directQuery && !samePath(target.loaderUrl, options.expectedLoaderUrl)) ||
+    !programOk
+  ) {
+    fail(state, options, "menu_loader_mismatch");
+  }
+
+  // 有些版本的選單直接連查詢頁，有些連 loader（loader 會用 script 轉到查詢頁）。
+  if (directQuery) {
+    const page = await session.transport.execute({
+      operation: `read_${options.operation}_query_page`,
+      method: "GET",
+      url: target.loaderUrl,
+      headers: {
+        accept: "text/html,application/xhtml+xml",
+        referer: menuUrl.href,
+      },
+      maximumResponseBytes: 524_288,
+      timeoutMs: 10_000,
+    });
+    const html = aisText(page, `read_${options.operation}`, ["text/html"]);
+    options.assertAuthenticated(html);
+    return { queryUrl: target.loaderUrl, html };
+  }
+
   const loaderUrl = target.loaderUrl;
   const loader = await session.transport.execute({
     operation: `open_${options.operation}_feature`,
@@ -115,6 +157,76 @@ export async function openAisFeature(
   return { queryUrl, html };
 }
 
-function changed(): never {
-  throw new AisProtocolError("menu_tree_contract_changed");
+/** 路徑比對忽略大小寫與 query（`?progcd=` 會隨版本改變）。 */
+function samePath(left: URL, right: URL): boolean {
+  return left.pathname.toLowerCase() === right.pathname.toLowerCase();
+}
+
+
+
+/** AIS 選單標題偶爾多一個空白或全形空白；比對前先去掉所有空白。 */
+function sameTitle(left: string, right: string): boolean {
+  return normalizeTitle(left) === normalizeTitle(right);
+}
+
+function normalizeTitle(value: string): string {
+  return value.replace(/[\s\u3000]+/gu, "").trim();
+}
+
+type FailCode =
+  | "menu_group_not_found"
+  | "menu_target_not_found"
+  | "menu_target_ambiguous"
+  | "menu_loader_mismatch";
+
+function fail(
+  state: AisMenuState,
+  options: Readonly<{
+    menuGroups: readonly string[];
+    targetTitle: string;
+    expectedLoaderUrl: URL;
+    expectedProgramCode: string;
+    operation: "timetable" | "grades";
+  }>,
+  code: FailCode,
+): never {
+  debugMenu(state, options, code);
+  throw new AisProtocolError(code);
+}
+
+/**
+ * `AIS_DEBUG_DUMP` 有設才寫檔（統一由 transport.ts 的 dumpResponse 決定目錄）。
+ * 只寫選單標題、種類、programCode 與 loader URL，不寫任何個人資料。
+ */
+function debugMenu(
+  state: AisMenuState,
+  options: Readonly<{
+    targetTitle: string;
+    expectedProgramCode: string;
+    operation: "timetable" | "grades";
+  }>,
+  code: FailCode,
+): void {
+  const dir = process.env.AIS_DEBUG_DUMP?.trim();
+  if (!dir) return;
+  try {
+    mkdirSync(dir, { recursive: true });
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const file = path.join(dir, `${stamp}-${options.operation}-${code}.json`);
+    const payload = {
+      operation: options.operation,
+      code,
+      expectedTargetTitle: options.targetTitle,
+      expectedProgramCode: options.expectedProgramCode,
+      nodes: state.nodes.map((node) => ({
+        title: node.title,
+        kind: node.kind,
+        programCode: node.programCode,
+        loaderPath: node.loaderUrl?.pathname ?? null,
+      })),
+    };
+    writeFileSync(file, JSON.stringify(payload, null, 2), "utf8");
+  } catch {
+    // 除錯輸出失敗不影響錯誤路徑。
+  }
 }

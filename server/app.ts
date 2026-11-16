@@ -159,6 +159,11 @@ export function createApp({ query, routes = [], logger = console }: AppOptions):
     }
 
     send(res, requestId, reply)
+    // system-design §15.4 的日誌欄位：錯誤碼要能被監控與排查，不能只記 HTTP 狀態。
+    const body = reply.body as { error?: { code?: unknown } } | undefined
+    const errorCode = body && typeof body === 'object' && body.error && typeof body.error.code === 'string'
+      ? body.error.code
+      : undefined
     logger.info(
       JSON.stringify({
         level: 'info',
@@ -167,6 +172,7 @@ export function createApp({ query, routes = [], logger = console }: AppOptions):
         path: url.pathname,
         status: reply.status,
         durationMs: Date.now() - startedAt,
+        ...(errorCode ? { errorCode } : {}),
       }),
     )
   }
