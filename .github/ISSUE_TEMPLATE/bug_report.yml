@@ -1,0 +1,83 @@
+name: 缺陷回報
+description: 行為與規格不符、資料錯誤、或畫面說謊（把未知顯示為達標）。
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **回報前先看**：`docs/design/test-plan.md` §6 的嚴重度定義。
+        S1（算錯學分、把未知顯示為達標、發布了不該發布的版本）請直接在標題加 `S1`，並優先修。
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 實際發生什麼
+      description: 看到什麼、在哪一頁、用哪個規則版本。
+      placeholder: |
+        例：在進度頁把情境切到「修課中」，總學分顯示 135，但規則版本是 cse-113-day@3。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期結果
+      description: 依哪一條需求或驗收案例？請引用編號。
+      placeholder: 例：依 TC-09，三情境的總學分應分別為 6／9／12。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重現步驟
+      description: 讓別人可以照著重跑。有帳號狀態（登入／未登入）請一併寫。
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 嚴重度
+      description: 定義見 docs/design/test-plan.md §6。
+      options:
+        - "S1：算錯學分／未知顯示為達標／發布錯誤版本"
+        - "S2：權限或稽核紀錄不正確"
+        - "S3：文案、版面、非關鍵提示"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 主要區域
+      options:
+        - area:frontend（學生端／管理端畫面）
+        - area:backend（API、權限、排程）
+        - area:db（schema、遷移、seed）
+        - area:infra（CI、部署、監控）
+        - area:rules（規則包、驗證器、引擎）
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 環境
+      description: 瀏覽器與版本、Node 版本、是否為 CI 建置。
+      placeholder: 例：Chrome 142 / Windows 11 / Node 24.11.1 / 本機 npm run dev
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 證據
+      description: 截圖、`requestId`、console 錯誤、失敗的測試名稱。**不要貼帳密或完整個資**。
+    validations:
+      required: false
