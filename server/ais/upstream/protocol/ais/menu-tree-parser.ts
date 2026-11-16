@@ -203,7 +203,8 @@ function parsePostbackMenuNodes(html: string): readonly AisMenuNode[] {
       // href 是 JavaScript 字串，`\\` 是跳脫過的單一反斜線（路徑分隔）。
       const argument = rawArgument.replace(/\\\\/gu, "\\");
       const nodePath = argument.slice(1);
-      if (!/^[A-Za-z0-9_\\-]{1,160}$/u.test(nodePath)) contractChanged();
+      // ASP.NET TreeView 的路徑會用 `$` 當節點序號（例如 `NTOU\\STU\\STU$0002`）。
+      if (!/^[A-Za-z0-9_$\\.-]{1,200}$/u.test(nodePath)) contractChanged();
       const key = `group\u0000${title}\u0000${nodePath}`;
       if (seen.has(key)) continue;
       seen.add(key);
