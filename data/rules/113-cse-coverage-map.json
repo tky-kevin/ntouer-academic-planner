@@ -1,0 +1,74 @@
+{
+  "mappings": [
+    { "ruleId": "AP-113-R01", "clauseId": "C01", "reason": "" },
+    { "ruleId": "AP-113-R02", "clauseId": "C01", "reason": "" },
+    { "ruleId": "AP-113-R03", "clauseId": "C01", "reason": "" },
+    { "ruleId": "AP-113-R04", "clauseId": "C07", "reason": "" },
+    { "ruleId": "AP-113-R05", "clauseId": "C01", "reason": "" },
+    { "ruleId": "AP-113-R06", "clauseId": "C02", "reason": "" },
+    { "ruleId": "AP-113-R07", "clauseId": "C02", "reason": "" },
+    { "ruleId": "AP-113-R08", "clauseId": "C11", "reason": "" },
+    { "ruleId": "AP-113-R09", "clauseId": "C12", "reason": "" },
+    { "ruleId": "AP-113-R10", "clauseId": "C10", "reason": "" },
+    { "ruleId": "AP-113-R11", "clauseId": "C13", "reason": "" },
+    { "ruleId": "AP-113-R12", "clauseId": "C13", "reason": "" },
+    { "ruleId": "AP-113-R13", "clauseId": "C13", "reason": "" },
+    { "ruleId": "AP-113-R14", "clauseId": "C05", "reason": "" },
+    { "ruleId": "AP-113-R15", "clauseId": "C05", "reason": "" },
+    { "ruleId": "AP-113-R16", "clauseId": "C06", "reason": "" },
+    { "ruleId": "AP-113-R17", "clauseId": "C09", "reason": "" },
+    { "ruleId": "AP-113-R18", "clauseId": "C09", "reason": "" },
+    {
+      "ruleId": "AP-113-R19",
+      "clauseId": null,
+      "reason": "英文畢業門檻實施要點（S113-04）不在本規則包 sources；C08 只處理學則畢業條件，無可對應 clause"
+    },
+    {
+      "ruleId": "AP-113-R20",
+      "clauseId": null,
+      "reason": "英語文抵免及免修辦法（S113-10）不在本規則包 sources；C10 只涵蓋進階英文學分與修習門檻，未涵蓋抵免"
+    },
+    { "ruleId": "AP-113-R21", "clauseId": "C14", "reason": "" },
+    { "ruleId": "AP-113-R22", "clauseId": "C15", "reason": "" },
+    { "ruleId": "AP-113-R23", "clauseId": "C16", "reason": "" },
+    { "ruleId": "AP-113-R24", "clauseId": "C17", "reason": "" },
+    { "ruleId": "AP-113-R25", "clauseId": "C03", "reason": "" },
+    { "ruleId": "AP-113-R26", "clauseId": "C04", "reason": "" },
+    { "ruleId": "AP-113-R27", "clauseId": "C19", "reason": "" },
+    { "ruleId": "AP-113-R28", "clauseId": "C18", "reason": "" },
+    {
+      "ruleId": "AP-113-R29",
+      "clauseId": null,
+      "reason": "修業規定（四門排除）與檢核表（八門白名單）來源衝突且未解決（conflicts X01），無單一 clause 可代表，待釐清前不對應"
+    },
+    { "ruleId": "AP-113-R30", "clauseId": "C20", "reason": "" },
+    { "ruleId": "AP-113-R31", "clauseId": "C21", "reason": "" },
+    { "ruleId": "AP-113-R32", "clauseId": "C22", "reason": "" },
+    { "ruleId": "AP-113-R33", "clauseId": "C23", "reason": "" },
+    { "ruleId": "AP-113-R34", "clauseId": "C24", "reason": "" },
+    { "ruleId": "AP-113-R35", "clauseId": "C26", "reason": "" },
+    { "ruleId": "AP-113-R36", "clauseId": "C27", "reason": "" },
+    {
+      "ruleId": "AP-113-R37",
+      "clauseId": null,
+      "reason": "英文畢業門檻實施要點（S113-04）不在本規則包 sources；不適用身分屬個案認定，無可對應 clause"
+    },
+    { "ruleId": "AP-113-R38", "clauseId": "C25", "reason": "" },
+    {
+      "ruleId": "AP-113-R39",
+      "clauseId": null,
+      "reason": "附屬實習僅見於 S113-01 手冊 PDF p15，該來源不在本規則包 sources，且是否為獨立必要條件待確認"
+    },
+    { "ruleId": "AP-113-R40", "clauseId": "C08", "reason": "" },
+    { "ruleId": "AP-113-R41", "clauseId": "C10", "reason": "" },
+    { "ruleId": "AP-113-R42", "clauseId": "C09", "reason": "" },
+    { "ruleId": "AP-113-R43", "clauseId": "C28", "reason": "" },
+    {
+      "ruleId": "AP-113-R44",
+      "clauseId": null,
+      "reason": "免修不給學分、須加修同等學分之定義在 S113-10 第2條，該來源不在 sources；C10 僅涵蓋進階英文"
+    },
+    { "ruleId": "AP-113-R45", "clauseId": "C29", "reason": "" },
+    { "ruleId": "AP-113-R46", "clauseId": "C30", "reason": "" }
+  ]
+}

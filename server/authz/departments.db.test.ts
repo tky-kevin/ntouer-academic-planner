@@ -8,6 +8,16 @@ import { loadDotEnv, readConfig } from '../env.js'
 let pool: Pool
 let query: QueryFn
 let userId: string
+// db/seed 另外種了 cse 的 dev-admin；這個測試驗的是「撤銷後 count 歸零」，
+// 先把它暫時移開，afterAll 原樣放回，避免改動 seed 的狀態。
+let otherCseAdmins: Array<{
+  dept_id: string
+  user_id: string
+  granted_by: string
+  granted_at: Date
+  revoked_at: Date | null
+  revoked_by: string | null
+}> = []
 
 beforeAll(async () => {
   loadDotEnv()
@@ -20,6 +30,16 @@ beforeAll(async () => {
   if (rows.rowCount === 0) throw new Error('需要先跑 `npm run db:migrate` 與 `npm run db:seed`')
   userId = rows.rows[0].user_id
 
+  otherCseAdmins = (
+    await pool.query(
+      `select dept_id, user_id, granted_by, granted_at, revoked_at, revoked_by
+         from department_admins
+        where dept_id = 'cse' and user_id <> $1`,
+      [userId],
+    )
+  ).rows
+  await pool.query('delete from department_admins where dept_id = $1 and user_id <> $2', ['cse', userId])
+
   await pool.query(
     `insert into department_admins (dept_id, user_id, granted_by)
      values ('cse', $1, $1)
@@ -30,6 +50,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
   if (userId) await pool.query('delete from department_admins where user_id = $1', [userId])
+  for (const admin of otherCseAdmins) {
+    await pool.query(
+      `insert into department_admins (dept_id, user_id, granted_by, granted_at, revoked_at, revoked_by)
+       values ($1, $2, $3, $4, $5, $6)
+       on conflict (dept_id, user_id) do update
+         set granted_by = excluded.granted_by, granted_at = excluded.granted_at,
+             revoked_at = excluded.revoked_at, revoked_by = excluded.revoked_by`,
+      [admin.dept_id, admin.user_id, admin.granted_by, admin.granted_at, admin.revoked_at, admin.revoked_by],
+    )
+  }
   await pool?.end()
 })
 

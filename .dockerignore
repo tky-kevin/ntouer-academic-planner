@@ -1,0 +1,21 @@
+# 不要把本機的相依、產物、環境檔或憑證送進 build context。
+node_modules
+dist
+*.tsbuildinfo
+
+# 環境檔：`.env.example` 是可提交範本，保留；其餘 `.env*`（含 .env.local）一律排除。
+.env*
+!.env.example
+
+tmp
+secrets
+.vitest
+output
+client_secret*.json
+
+# 與建置無關的本機／版控產物
+.git
+.github
+.impeccable
+.playwright-cli
+spike-output.log

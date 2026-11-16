@@ -103,6 +103,7 @@ export class GradesService {
           expectedProgramCode: "STU2020",
           expectedQueryUrl: gradesUrl,
           operation: "grades",
+          directQueryFirst: true,
           assertAuthenticated: (html) => {
             if (looksLikeLogin(html)) {
               session.authenticated = false;
@@ -148,7 +149,7 @@ export class GradesService {
             },
             body: detail.body,
             maximumResponseBytes: 1_048_576,
-            timeoutMs: 15_000,
+            timeoutMs: 45_000,
           });
           callback = aisText(detailResponse, "read_grades", [
             "text/plain",
@@ -171,7 +172,7 @@ export class GradesService {
               },
               body: postbackBody,
               maximumResponseBytes: 1_048_576,
-              timeoutMs: 15_000,
+              timeoutMs: 45_000,
             });
             callback = aisText(detailResult, "read_grades", [
               "text/plain",

@@ -11,7 +11,7 @@
 | [spike/](spike/) | 可執行的引擎可行性驗證（不是產品程式碼） | 實作、驗收 |
 | [database-design.md](database-design.md) | 欄位級資料庫設計：ER、型別與約束、索引理由、遷移順序、seed、快取、保留政策 | 實作（後端、DB）、評閱者 |
 | [api-spec.md](api-spec.md) | HTTP 介面契約：回應 envelope、錯誤碼、版本策略、認證標頭、端點規格 | 實作（前後端）、評閱者 |
-| [openapi.yaml](openapi.yaml) | 上面那份契約的機器可讀版（OpenAPI 3.1，先收 3 個 path） | 實作、驗證器 |
+| [openapi.yaml](openapi.yaml) | 上面那份契約的機器可讀版：OpenAPI 3.1，6 個 path／8 個 operation；管理端見 api-spec §7.8 | 實作、驗證器 |
 | [ui-ux-spec.md](ui-ux-spec.md) | sitemap、使用流程、design tokens、元件清單、四種狀態、無障礙與對比實測 | 實作（前端）、評閱者 |
 
 | [test-plan.md](test-plan.md) | 測試落點：層級與工具、CI 執行方式、fixtures 策略、覆蓋率目標、TC-01～34 對照表 | 實作、評閱者 || [design-system.html](design-system.html) | 上面那份規格的**可視版本**：色票、字級、間距、元件、四種狀態、對比表（直接載入 `src/styles.css`） | 實作（前端）、評閱者 |
@@ -40,6 +40,8 @@
 | 使用者角色、目標與範圍 | [docs/requirements/urd.md](../requirements/urd.md) | 引用 |
 | 46 條規定、來源定位與處理方式 | [data/rules/113-cse-coverage-list.md](../../data/rules/113-cse-coverage-list.md) | 引用條號 |
 | 上述清單的機器可讀登錄 | [data/rules/113-cse-coverage.json](../../data/rules/113-cse-coverage.json) | 引用 |
+| 46 條 ruleId → 規則包 `clauseId` 的對照 | [data/rules/113-cse-coverage-map.json](../../data/rules/113-cse-coverage-map.json) | 引用 `ruleId`／`clauseId` |
+| AIS 課名 → 規則包分類與 tag | [data/rules/113-cse-classification.json](../../data/rules/113-cse-classification.json) | 引用規則 id |
 | 官方來源的網址、取得日、SHA256 | [data/rules/sources-manifest.json](../../data/rules/sources-manifest.json) | 引用 source ID |
 | 規則包格式（節點、池、上限、衝突） | [rule-model.md](rule-model.md) ＋ [rule-bundle.schema.json](rule-bundle.schema.json) | 引用節點名 |
 | 兩份系所樣本的實際數字（135／136 等） | [examples/](examples/) | 引用檔名，不重算 |

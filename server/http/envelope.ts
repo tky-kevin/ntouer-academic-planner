@@ -18,6 +18,13 @@ export type ErrorCode =
   | 'RATE_LIMITED'
   | 'INTERNAL'
 
+/**
+ * 錯誤碼是開放集合：api-spec §5.3 規定新增錯誤碼不算破壞性變更，客戶端必須容忍未知 code。
+ * AIS 同步會回報上游的具體代碼（例如 `AIS_LOGIN_REJECTED`），那些不逐一列舉在這裡，
+ * 但仍然只能透過 `fail()` 產生，形狀不會走鐘。
+ */
+export type ErrorCodeLike = ErrorCode | (string & {})
+
 export interface Meta {
   requestId: string
   generatedAt: string
@@ -25,7 +32,7 @@ export interface Meta {
 }
 
 export interface ApiError {
-  code: ErrorCode
+  code: string
   message: string
   details?: unknown[]
   retryable: boolean
@@ -63,7 +70,7 @@ export function ok<T>(data: T, meta: Meta): OkBody<T> {
 }
 
 export function fail(
-  error: { code: ErrorCode; message: string; details?: unknown[]; retryable: boolean },
+  error: { code: ErrorCodeLike; message: string; details?: unknown[]; retryable: boolean },
   meta: Meta,
 ): ErrorBody {
   const body: ApiError = { code: error.code, message: error.message, retryable: error.retryable }

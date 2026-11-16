@@ -214,3 +214,56 @@ svg { flex-shrink: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* ── 表單與對話框（同步教務資料、補齊系所） ───────────────────── */
+.intro-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; justify-content: flex-end; }
+.button-primary { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 40px; padding: var(--space-2) var(--space-5); border: 1px solid var(--teal); border-radius: var(--radius-control); background: var(--teal); color: #fff; font-weight: var(--weight-semibold); font-size: var(--fs-sm); text-decoration: none; transition: background var(--motion-fast); }
+.button-primary:hover { background: var(--teal-hover); border-color: var(--teal-hover); }
+.button-primary:active { background: var(--teal-active); }
+.sync-button { white-space: nowrap; }
+.state-panel .button-primary { justify-self: start; }
+
+.profile-message { margin-top: var(--space-5); color: var(--muted); font-size: var(--fs-sm); }
+.profile-form-fields { display: grid; gap: var(--space-5); margin-top: var(--space-4); max-width: 460px; }
+.profile-form-actions { display: flex; align-items: center; gap: var(--space-3); }
+
+.form-field { display: grid; gap: var(--space-2); }
+.form-field label { font-size: var(--fs-sm); font-weight: var(--weight-semibold); color: var(--ink); }
+.form-field input, .form-field select { min-height: 42px; padding: var(--space-2) var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--fg); font: inherit; }
+.form-field input[aria-invalid="true"] { border-color: var(--state-unmet-fg); }
+.field-error { color: var(--state-unmet-fg); font-size: var(--fs-xs); }
+.field-hint { color: var(--muted); font-size: var(--fs-xs); }
+
+.dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: var(--space-5); background: rgba(18, 52, 61, .45); }
+.dialog { width: min(520px, 100%); max-height: calc(100vh - 2 * var(--space-5)); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-surface); padding: var(--space-6); display: grid; gap: var(--space-4); }
+.dialog:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.dialog-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.dialog-head h2 { font-size: var(--fs-h2); }
+.dialog-close { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--muted); font-size: 1.1rem; line-height: 1; }
+.dialog-close:hover { background: var(--surface-hover); color: var(--ink); }
+.dialog-body { display: grid; gap: var(--space-3); }
+.dialog-body h3 { font-size: var(--fs-h3); }
+.dialog-body p { font-size: var(--fs-sm); color: var(--muted); }
+.dialog-account strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.dialog-captcha { display: block; border: 1px solid var(--line); border-radius: var(--radius-block); background: var(--surface-alt); image-rendering: -webkit-optimize-contrast; }
+.dialog-form { display: grid; gap: var(--space-3); }
+.dialog-form .form-field input { max-width: 160px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: var(--fs-h3); letter-spacing: .25em; text-transform: uppercase; }
+.dialog-countdown { font-size: var(--fs-sm); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dialog-actions { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; margin-top: var(--space-1); }
+.dialog-actions .button-secondary { justify-self: auto; margin-top: 0; }
+.dialog-summary { display: flex; flex-wrap: wrap; gap: var(--space-5); margin: 0; }
+.dialog-summary dt { font-size: var(--fs-xs); color: var(--muted); }
+.dialog-summary dd { margin: 0; font-size: var(--fs-h3); font-weight: var(--weight-bold); font-variant-numeric: tabular-nums; }
+.dialog-list { margin: 0; padding-left: var(--space-5); font-size: var(--fs-sm); color: var(--muted); }
+.dialog-warnings { color: var(--notice-fg); }
+.dialog-note { font-size: var(--fs-xs); color: var(--muted); }
+.dialog .alert { margin-top: 0; }
+
+@media (max-width: 850px) {
+  .intro-actions { justify-content: flex-start; }
+}
+@media (max-width: 580px) {
+  .dialog { padding: var(--space-5); }
+  .dialog-summary { gap: var(--space-4); }
+}
+

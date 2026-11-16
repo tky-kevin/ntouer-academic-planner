@@ -239,7 +239,7 @@ erDiagram
 | `course_code` | `text` | 否 | — | 課號；未取得時以課名代替並標記 |
 | `course_name` | `text` | 是 | — | 課名 |
 | `credits` | `numeric(4,1)` | 否 | — | 學分，`>= 0` |
-| `category` | `text` | 否 | `'unknown'` | 規則包的課程分類：`CE`（共同教育）／`REQ`（專業必修）／`ELE`（選修）；`required`／`elective`／`unknown` 是 AIS 同步的粗略值，待映射（I3） |
+| `category` | `text` | 否 | `'unknown'` | 規則包的課程分類：`CE`（共同教育）／`REQ`（專業必修）／`ELE`（選修）。AIS 同步會用 `data/rules/113-cse-classification.json` 對照課名，對不上的寫 `unknown`（不猜）；`required`／`elective` 是舊的粗略值，同步不再寫入 |
 | `status` | `text` | 否 | — | `passed`／`failed`／`inProgress`／`transfer`／`waived`／`unknown` |
 | `tags` | `text[]` | 否 | `'{}'` | 規則包 selector 用的標籤：`inner`／`core`／`chinese`／`english`／`general`／`domainHuman`… |
 | `owner` | `text` | 否 | `'own'` | `own`（本系）／`other`（外系）；對應 selector `owner:*` |
@@ -251,7 +251,7 @@ erDiagram
 
 - `pk (user_id, record_key)`、`idx (user_id, course_code)`、`idx gin (tags)`、`check (credits >= 0)`、`check (category in (…))`、`check (status in (…))`、`check (owner in ('own','other'))`。
 - 理由：以 `(user_id, record_key)` 當主鍵，同步就是 upsert，天然去重；`previous_raw` 讓「同步後某欄位變了」可以並列比較，而不必另開歷史表。
-- 理由（`category`／`tags`／`owner`）：這三欄是規則引擎 selector 的輸入（`docs/design/system-design.md` §5）。`category` 用規則包的詞彙（`CE`／`REQ`／`ELE`），否則 `category:CE` 的 pool 永遠是空的；`tags` 與 `owner` 同理。I2 由 seed 與測試提供，AIS 同步要怎麼映射到這些值需與系所確認（I3），**不在這裡猜**。
+- 理由（`category`／`tags`／`owner`）：這三欄是規則引擎 selector 的輸入（`docs/design/system-design.md` §5）。`category` 用規則包的詞彙（`CE`／`REQ`／`ELE`），否則 `category:CE` 的 pool 永遠是空的；`tags` 與 `owner` 同理。I2 起 AIS 同步用 `data/rules/113-cse-classification.json`（逐條附官方來源 locator）填值，對不上就留 `unknown` 並在同步結果的 `unmatched` 列出，**不以課名相似度猜測**；系內／外系選修的 `inner`／`core` 標籤仍無法從 AIS 欄位判定。
 
 ### 3.12 `student_overrides`（個人修正）
 
@@ -446,6 +446,6 @@ FR-18「已發布版本與其稽核紀錄不得被刪除或改寫」不能只靠
 
 1. **`credits` 是否需要 0.5 學分？** 目前 113 資工與 115 商船的條文都是整數學分，用 `numeric(4,1)` 是保險。若確定只有整數，可改 `smallint` 並少一層轉型。
 2. **`program` 的列舉值**：目前只出現 `day`（日間學士班）。進修學士班、碩士班的代碼需向教務確認，未確認前不建立。
-3. **`term` 的格式**：暫定 `113-1`（學年-學期）。若 AIS 原始格式不同（如 `1131`），需在 `student_sync_state` 之外另存原始值以免失真。
+3. **`term` 的格式**：統一用 `113-1`（學年-學期）。AIS 原始值（`1131`）記在 `raw.termId`，同步寫入時轉換（`server/ais/sync.ts` 的 `toTermLabel`），因此不會失真；seed 的 `113-1` 與同步資料可以直接比較。
 4. **個資保留期限**：學校對修課紀錄與計畫的保存年限若另有規範，本文件 §9 需調整。
-5. **`BOOTSTRAP_ADMIN_EMAIL` 的實際帳號**：需由你指定一個 Google 帳號作為第一位系統管理員。
+5. **`BOOTSTRAP_ADMIN_EMAIL` 的實際帳號**：需由你指定一個 Google 帳號作為第一位系統管理員。目前 I2 的系所管理員以受控 SQL／種子設定（`department_admins`），指派端點屬 I3。

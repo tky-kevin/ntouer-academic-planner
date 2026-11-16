@@ -23,6 +23,11 @@ beforeAll(async () => {
   if (seeded.rowCount === 0) throw new Error('需要先跑 `npm run db:migrate` 與 `npm run db:seed`（會建立 dev-student）')
 
   // seed 預設把樣本種成 draft；學生端只能讀 published。
+  // 先讓這個 bundle 只剩一個 published：測試不該假設「資料庫沒有其他已發布版本」，
+  // 例如跑過管理端發布流程後會有 cse-113-day@2。
+  await pool.query(
+    "update rule_versions set status = 'superseded' where bundle_id = 'cse-113-day' and version_id <> 'cse-113-day@1' and status = 'published'",
+  )
   await pool.query(
     "update rule_versions set status = 'published', published_at = now() where version_id = 'cse-113-day@1'",
   )

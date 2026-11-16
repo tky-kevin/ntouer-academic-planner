@@ -11,10 +11,11 @@ export class ScriptedTransport implements AisTransport {
   private cursor = 0
   constructor(private readonly steps: readonly FixtureStep[]) {}
   async execute(request: AisRequest): Promise<AisResponse> {
-    const step = this.steps[this.cursor++]
+    const step = this.steps[this.cursor]
     if (!step || request.operation !== step.operation || (step.method && step.method !== request.method)) {
       throw new Error(`Fixture operation mismatch: expected ${step?.operation ?? 'end'}, received ${request.operation}`)
     }
+    this.cursor += 1
     this.requests.push(request)
     const value = step.fixture ? fixture(step.fixture) : step.body ?? ''
     return { status: step.status ?? 200, headers: new Headers({ 'content-type': step.contentType ?? 'text/html; charset=utf-8' }), body: typeof value === 'string' ? new TextEncoder().encode(value) : value }

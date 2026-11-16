@@ -59,4 +59,29 @@ describe('引擎邊界案例', () => {
     expect(result.requirements[0].state).toBe('met')
     expect(result.requirements[0].gap).toBe(0)
   })
+
+  it('學分足夠但指定必修缺漏 → 未完成（TC-25）', () => {
+    const withCourseSet: RuleBundle = {
+      ...bundle,
+      requirements: [
+        { id: 'R1', name: '總學分', kind: 'total', min: 4 },
+        { id: 'R4', name: '指定必修', kind: 'courseSet', mode: 'all', courses: ['程式設計', '資料結構'] },
+      ],
+    }
+    const result = evaluate(withCourseSet, [rec('程式設計', 6), rec('通識A', 6)])
+    expect(result.requirements[0].state).toBe('met')
+    expect(result.requirements[1].state).toBe('notMet')
+    expect(result.requirements[1].missing).toContain('資料結構')
+    expect(result.overall).toBe('incomplete')
+  })
+
+  it('指定必修全部到齊才算達成（TC-25 的另一半）', () => {
+    const withCourseSet: RuleBundle = {
+      ...bundle,
+      requirements: [{ id: 'R4', name: '指定必修', kind: 'courseSet', mode: 'all', courses: ['程式設計', '資料結構'] }],
+    }
+    const result = evaluate(withCourseSet, [rec('程式設計', 3), rec('資料結構', 3)])
+    expect(result.requirements[0].state).toBe('met')
+    expect(result.overall).toBe('complete')
+  })
 })

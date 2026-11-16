@@ -1,8 +1,48 @@
+import { mkdirSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
 import { CookieJar } from 'tough-cookie'
 import type { AisRequest, AisResponse, AisTransport, AisTransportFactory } from './upstream/application/ports/ais-transport.js'
 import { PlannerAisError } from './errors.js'
 
 const origin = 'https://ais.ntou.edu.tw'
+
+/**
+ * 除錯用：`AIS_DEBUG_DUMP=<目錄>` 時把每個 AIS 回應的 body 存檔（不含 cookie／header）。
+ * 只在「頁面改版導致 contractChanged」時用；內容含個人成績，目錄必須在 gitignore 內（預設 tmp/）。
+ * 平常不設，這個函式直接 no-op。
+ */
+function dumpResponse(request: AisRequest, status: number, bytes: Uint8Array): void {
+  const dir = process.env.AIS_DEBUG_DUMP?.trim()
+  if (!dir) return
+  try {
+    mkdirSync(dir, { recursive: true })
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+    const safeOperation = request.operation.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 60)
+    const file = path.join(dir, `${stamp}-${String(status)}-${safeOperation}.txt`)
+    const header = `# operation=${request.operation}\n# url=${request.url.href}\n# status=${status}\n\n`
+    writeFileSync(file, header + Buffer.from(bytes).toString('utf8'), 'utf8')
+  } catch {
+    // 除錯輸出失敗不影響同步。
+  }
+}
+
+/** 請求失敗（timeout／連線錯誤）沒有 response 可以 dump，改記一行錯誤中繼資料。 */
+function dumpFailure(request: AisRequest, code: string): void {
+  const dir = process.env.AIS_DEBUG_DUMP?.trim()
+  if (!dir) return
+  try {
+    mkdirSync(dir, { recursive: true })
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+    const safeOperation = request.operation.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 60)
+    writeFileSync(
+      path.join(dir, `${stamp}-error-${safeOperation}.txt`),
+      `# operation=${request.operation}\n# method=${request.method}\n# url=${request.url.href}\n# timeoutMs=${request.timeoutMs}\n# error=${code}\n`,
+      'utf8',
+    )
+  } catch {
+    // 除錯輸出失敗不影響流程。
+  }
+}
 
 /** Server-only, one CookieJar per session. Cookies/HTML are never part of Planner snapshots. */
 export class FetchAisTransport implements AisTransport {
@@ -65,14 +105,20 @@ export class FetchAisTransport implements AisTransport {
         let offset = 0
         for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length }
         // Cookies are internal even at the transport boundary.
+        dumpResponse(request, response.status, bytes)
         const safeHeaders = new Headers(response.headers)
         safeHeaders.delete('set-cookie')
         return { status: response.status, headers: safeHeaders, body: bytes }
       }
       throw new PlannerAisError('contractChanged', 'AIS_REDIRECT_LIMIT')
     } catch (error) {
-      if (error instanceof PlannerAisError) throw error
-      throw new PlannerAisError('externalUnavailable', controller.signal.aborted ? 'AIS_TIMEOUT' : 'AIS_FETCH_FAILED', true)
+      if (error instanceof PlannerAisError) {
+        dumpFailure(request, error.code)
+        throw error
+      }
+      const code = controller.signal.aborted ? 'AIS_TIMEOUT' : 'AIS_FETCH_FAILED'
+      dumpFailure(request, code)
+      throw new PlannerAisError('externalUnavailable', code, true)
     } finally { clearTimeout(timer) }
   }
 }

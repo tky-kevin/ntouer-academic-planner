@@ -110,6 +110,15 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | `RULE_VALIDATION_FAILED` | 422 | 結構驗證失敗（管理端送審前） | 顯示逐條錯誤，修正規則 | 否 |
 | `RULE_TEST_FAILED` | 422 | 測試案例未全數通過，不能送審 | 顯示失敗案例 | 否 |
 | `SYNC_FAILED` | 502 | 教務（AIS）同步失敗，或外部回應逾時 | 保留前次快照並提供重試（TC-12） | 是 |
+| `SYNC_ALREADY_RUNNING` | 409 | 同一使用者已有一個未完成的同步 | 先完成或取消既有同步 | 否 |
+| `SYNC_NOT_FOUND` | 404 | `syncId` 不存在、已完成、已取消或已過期 | 重新開始同步 | 否 |
+| `SYNC_EXPIRED` | 409 | 驗證碼輸入期限已過（預設 5 分鐘） | 重新開始同步 | 是 |
+| `SYNC_CAPTCHA_INVALID` | 400 | 驗證碼不是四碼英數字 | 修正後重送 | 否 |
+| `AIS_CREDENTIALS_NOT_CONFIGURED` | 400 | 伺服器沒有 `AIS_ACCOUNT`／`AIS_PASSWORD`，請求也沒帶 | 在 `.env.local` 補設定或帶入臨時憑證 | 否 |
+| `AIS_LOGIN_REJECTED` | 502 | AIS 拒絕登入（帳密或驗證碼錯誤） | 重新開始同步並重新輸入驗證碼 | 是 |
+| `CAPTCHA_RECOGNITION_EXHAUSTED` | 502 | 驗證碼連續錯誤達上限 | 重新開始同步 | 是 |
+| `AIS_TIMEOUT`／`AIS_UNAVAILABLE` | 502 | AIS 逾時或連不上 | 稍後重試；前次快照仍在 | 是 |
+| `AIS_STUDENT_IDENTITY_MISMATCH` | 502 | 成績頁學號與登入帳號不一致 | 停止，不要重試；確認帳號 | 否 |
 | `RATE_LIMITED` | 429 | 超過速率限制（I2 未啟用，保留代碼） | 依 `Retry-After` 重試 | 是 |
 | `INTERNAL` | 500 | 未預期的伺服器錯誤 | 顯示 `requestId` 並請使用者回報 | 不一定 |
 
@@ -134,26 +143,35 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 ## 6. 端點清單
 
-本批 OpenAPI 只收 3 個 path（見 §7），其餘已在下方登記但尚未進 `openapi.yaml`，避免一次擴充太多而失去審閱意義。
+本批 OpenAPI 收 8 個 path：§7.1–§7.4（`/auth/session`、`/api/me/progress`、`/api/rules/{versionId}`）加上 §7.6–§7.7 的 AIS 同步三支與學籍補齊。其餘管理端端點已在下方登記但尚未進 `openapi.yaml`，避免一次擴充太多而失去審閱意義。`GET /healthz` 是維運檢查，刻意不進（§7.5）。
 
 | 方法 | 路徑 | 用途 | 權限 | 本批 openapi |
 | --- | --- | --- | --- | --- |
 | GET | `/auth/session` | 目前工作階段（角色、系所範圍、到期） | 已登入 | ✅ |
 | DELETE | `/auth/session` | 登出並撤銷工作階段 | 已登入 | ✅ |
 | GET | `/api/me/progress` | 三情境進度與缺額 | 學生本人 | ✅ |
+| POST | `/api/me/sync/ais` | 開始 AIS 同步（回驗證碼圖片與 `syncId`） | 學生本人 | ✅ |
+| POST | `/api/me/sync/ais/{syncId}` | 送出驗證碼完成同步並寫入快照 | 學生本人 | ✅ |
+| DELETE | `/api/me/sync/ais/{syncId}` | 取消未完成的同步 | 學生本人 | ✅ |
+| PATCH | `/api/me/profile` | 補齊系所／入學年度／學制 | 學生本人 | ✅ |
 | GET | `/api/rules/{versionId}` | 取特定版本（含來源與條文） | 已登入 | ✅ |
 | GET | `/auth/google/start` | 開始 Google OIDC（302 到 Google） | 匿名 | 待擴充 |
 | GET | `/auth/callback` | OIDC 回呼；交換 token、建立工作階段 | 匿名 | 待擴充 |
-| GET | `/healthz` | 健康檢查（DB 連線、`select 1`） | 匿名 | 待擴充（規格見 §7.5） |
+| GET | `/healthz` | 健康檢查（DB 連線、`select 1`） | 匿名 | 規格見 §7.5（刻意不進 openapi） |
 | POST | `/api/check` | 帶入情境與狀態執行檢核 | 學生本人 | 待擴充 |
 | GET | `/api/rules` | 依 `dept`／`year` 取最新已發布版本 | 已登入 | 待擴充 |
-| POST | `/api/admin/rules/{bundleId}/draft` | 建立草稿 | 系所管理員 | 待擴充 |
-| PUT | `/api/admin/rules/{versionId}` | 更新草稿 | 系所管理員 | 待擴充 |
-| POST | `/api/admin/rules/{versionId}/validate`｜`/test`｜`/submit` | 結構驗證／測試／送審 | 系所管理員 | 待擴充 |
-| POST | `/api/admin/rules/{versionId}/approve`｜`/reject`｜`/publish` | 審核與發布 | 系所管理員／系統管理員 | 待擴充 |
-| GET | `/api/admin/rules/{versionId}/diff` | 與前一版差異 | 系所管理員 | 待擴充 |
-| GET | `/api/admin/audit` | 稽核紀錄 | 系所管理員／系統管理員 | 待擴充 |
-| POST | `/api/admin/departments/{deptId}/admins` | 指派／撤銷管理員 | 系統管理員 | 待擴充 |
+| POST | `/api/admin/rules/{bundleId}/draft` | 建立草稿（201；省略 payload 時複製最新版） | 系所管理員 | 已實作（§7.8，未進 openapi） |
+| GET | `/api/admin/rules/{versionId}` | 讀取任一狀態的版本（含 payload 與 `allowedActions`） | 系所管理員 | 已實作（§7.8） |
+| PUT | `/api/admin/rules/{versionId}` | 更新草稿 | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/validate` | 結構驗證（422 `RULE_VALIDATION_FAILED`） | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/test` | 以測試紀錄跑引擎（422 `RULE_TEST_FAILED`） | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/submit` | 送審 → `in-review` | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/approve` | 核准 → `approved` | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/reject` | 退回 → `draft`（`reason` 必填） | 系所管理員 | 已實作（§7.8） |
+| POST | `/api/admin/rules/{versionId}/publish` | 發布 → `published`（`proxy` 依 §8） | 系所管理員／系統管理員 | 已實作（§7.8） |
+| GET | `/api/admin/rules/{versionId}/diff` | 與前一版差異 | 系所管理員 | 已實作（§7.8） |
+| GET | `/api/admin/audit` | 稽核紀錄（`limit`／`cursor`／`versionId`，禁 `offset`） | 系所管理員／系統管理員 | 已實作（§7.8） |
+| POST | `/api/admin/departments/{deptId}/admins` | 指派／撤銷管理員 | 系統管理員 | 待擴充（I3） |
 
 ### 6.1 `/auth/google/start` 與 `/auth/callback`（已設計，未進 openapi）
 
@@ -316,6 +334,144 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | 未匹配路徑 | 404 `RESOURCE_NOT_FOUND`，形狀同 §3.2（`data` → `error`） |
 
 **為什麼 503 也用 envelope：** 監控與前端共用同一個解析路徑；`/healthz` 若例外回純文字，維運腳本就得為它寫第二套判斷。
+
+### 7.6 AIS 同步（三段：開始／送驗證碼／取消）
+
+**為什麼是三段而不是一支端點：** AIS 登入需要圖形驗證碼，且只有人能讀。開始的請求拿到驗證碼圖片後就結束，使用者看完圖再送出四碼；伺服器在記憶體裡保存「等待驗證碼」的登入狀態（預設 5 分鐘），不保存到資料庫。
+
+**帳密的存放位置（NFR-04）：** 優先使用部署環境的 `AIS_ACCOUNT`／`AIS_PASSWORD`（`.env.local` 或平台環境變數），請求 body 也可臨時帶 `account`／`password`。兩者都**不**寫入資料庫、**不**寫入日誌、**不**回傳給前端（回應只給 `accountMasked`）。資料庫只存同步後的正規化快照與 `student_sync_state`。
+
+**單一 AIS 身分的限制：** I2 的部署是「一個學生、一份 AIS 憑證」。多使用者上線前必須改成每人各自的 AIS 憑證（見 §11 待確認第 5 點），在那之前 `AIS_ACCOUNT` 只能是部署者本人。
+
+#### 7.6.1 `POST /api/me/sync/ais`
+
+**請求 body**（`additionalProperties: false`；全部選填）
+
+| 欄位 | 型別 | 說明 |
+| --- | --- | --- |
+| `account` | string | 臨時覆蓋的 AIS 學號；與 `password` 必須成對出現 |
+| `password` | string | 臨時覆蓋的 AIS 密碼；只存在記憶體，登入後立刻丟棄 |
+
+**回應 202**
+
+```json
+{
+  "data": {
+    "syncId": "k3Jd…",
+    "captchaImage": "data:image/png;base64,iVBORw0…",
+    "expiresAt": "2026-11-17T04:35:00+08:00",
+    "accountMasked": "B12****78",
+    "source": "env"
+  },
+  "meta": { "requestId": "…", "generatedAt": "…" }
+}
+```
+
+| 欄位 | 說明 |
+| --- | --- |
+| `captchaImage` | PNG data URL；前端直接當 `<img src>`，不要另外存檔 |
+| `expiresAt` | 驗證碼輸入期限；過了就必須重新開始 |
+| `source` | `env`（用部署設定）或 `request`（用這次帶入的憑證） |
+
+**狀態碼**：202；400 `AIS_CREDENTIALS_NOT_CONFIGURED`（兩邊都沒有帳密）、400 `REQUEST_INVALID`（只帶一半憑證）；401 `AUTH_REQUIRED`；403 `AUTH_ORIGIN_MISMATCH`；409 `SYNC_ALREADY_RUNNING`；502 `SYNC_FAILED`（連 AIS 就失敗，例如 `AIS_UNAVAILABLE`）。
+
+#### 7.6.2 `POST /api/me/sync/ais/{syncId}`
+
+**請求 body**
+
+| 欄位 | 型別 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `captcha` | string | 是 | 四碼英數字；大小寫不拘，伺服器轉大寫 |
+
+**回應 200**
+
+```json
+{
+  "data": {
+    "status": "succeeded",
+    "counts": { "total": 63, "passed": 58, "failed": 2, "inProgress": 5, "unknown": 1 },
+    "dataSyncedAt": "2026-11-17T04:32:10+08:00",
+    "unmatched": [
+      { "courseCode": "B9999", "courseName": "機器學習", "reason": "AIS 只標示「選修」，沒有開課系所，無法判定系內或外系選修" }
+    ],
+    "profile": { "deptId": "cse", "entryYear": 113, "program": "day", "missing": [] },
+    "warnings": ["未設定 AIS_TIMETABLE_YEAR／AIS_TIMETABLE_TERM，這次同步不含本學期修課中資料。"],
+    "persisted": { "insertedOrUpdated": 63, "removed": 0 }
+  },
+  "meta": { "requestId": "…", "generatedAt": "…" }
+}
+```
+
+| 欄位 | 說明 |
+| --- | --- |
+| `counts` | 寫入快照的紀錄數（依狀態分）；`total` 不一定等於修課門數（同一門課重修會是多筆） |
+| `unmatched` | **分類未確認**的課程。前端必須列出筆數，不得把未知說成已通過或已排除 |
+| `profile.missing` | `deptId`／`entryYear`；非空時前端要引導使用者用 §7.7 補齊，否則 `/api/me/progress` 會找不到規則包 |
+| `persisted.removed` | AIS 已經沒有、因此被移除的舊紀錄數（只清 `ais:` 開頭的紀錄，個人修正不動） |
+
+**狀態碼**：200；400 `SYNC_CAPTCHA_INVALID`／`REQUEST_INVALID`；401 `AUTH_REQUIRED`；403 `AUTH_ORIGIN_MISMATCH`；404 `SYNC_NOT_FOUND`；409 `SYNC_EXPIRED`；502 `SYNC_FAILED`——`error.code` 會是上游的具體原因（`AIS_LOGIN_REJECTED`、`CAPTCHA_RECOGNITION_EXHAUSTED`、`AIS_TIMEOUT`、`AIS_STUDENT_IDENTITY_MISMATCH` 等），`error.message` 是中文說明，**不含帳密、HTML 或 Cookie**。
+
+**失敗時的行為**：不清空既有快照、不改 `student_sync_state.last_success_at`；只把 `last_result='failed'` 與穩定的 `last_error_code` 寫進去，畫面因此還能顯示「上次成功同步時間」。
+
+#### 7.6.3 `DELETE /api/me/sync/ais/{syncId}`
+
+取消尚未完成的同步（例如使用者關掉對話框）。**狀態碼**：204（無 body）；401；403 `AUTH_ORIGIN_MISMATCH`；404 `SYNC_NOT_FOUND`。
+
+### 7.7 `PATCH /api/me/profile`
+
+補齊 `/api/me/progress` 決定規則包所需的學籍屬性。AIS 成績頁若帶系所名稱，同步時會自動對應 `departments.name`；入學年度**不會**自動推論（年級不等於入學年度），一律由學生填寫。
+
+**請求 body**（`additionalProperties: false`；至少一個欄位）
+
+| 欄位 | 型別 | 限制 |
+| --- | --- | --- |
+| `deptId` | string | 必須存在於 `departments.dept_id` |
+| `entryYear` | integer | 100–130（民國年；與 `users.entry_year` 的 CHECK 一致） |
+| `program` | enum | `day`／`night` |
+
+**回應 200**：`{ "data": { "deptId": "cse", "entryYear": 113, "program": "day" } }`
+**狀態碼**：200；400 `REQUEST_INVALID`（`details` 指出欄位與原因）；401 `AUTH_REQUIRED`；403 `AUTH_ORIGIN_MISMATCH`。
+
+### 7.8 管理端發布流程（已實作，未進 openapi）
+
+實作在 `server/routes/admin.ts`；狀態機、權限矩陣與稽核欄位以 [system-design.md](system-design.md) §7、§8 為準，本節只固定 HTTP 形狀。**這批刻意不進 `openapi.yaml`**：管理端路徑與錯誤碼還會隨 I3 的 UI 整合調整。
+
+**共同規則**
+
+- 身分：`planner_session` → `resolveIdentity()`；沒有身分 401 `AUTH_REQUIRED`。
+- 權限：`loadDeptScopes()` ＋ `can()`（24 格矩陣）；不在範圍 403 `AUTH_DEPT_OUT_OF_SCOPE`，完全沒有管理權 403 `AUTH_FORBIDDEN`。
+- CSRF：所有 POST／PUT／PATCH／DELETE 檢查同源 `Origin`，不同源 403 `AUTH_ORIGIN_MISMATCH`（沒有 `Origin` 的 curl 放行）。
+- 一律 `Cache-Control: no-store`；成功 `{data,meta}`、失敗 `{error,meta}`。
+- 請求 body 上限 1 MiB；未知欄位拒絕（400 `REQUEST_INVALID` ＋ `details`）。
+
+| 端點 | 請求 | 成功（200／201） | 主要錯誤 |
+| --- | --- | --- | --- |
+| `POST /api/admin/rules/{bundleId}/draft` | `{ payload? }`；省略時複製最新版本 | **201** `{ versionId, bundleId, versionNo, status, schemaVersion, contentHash, createdAt }` | 400、404 `RULE_BUNDLE_NOT_FOUND` |
+| `GET /api/admin/rules/{versionId}` | — | `{ versionId, bundleId, versionNo, status, schemaVersion, contentHash, publishedAt, proxy, payload, allowedActions }` | 400、401、403、404 `RULE_VERSION_NOT_FOUND` |
+| `PUT /api/admin/rules/{versionId}` | `{ payload }` | `{ versionId, status, contentHash, updatedAt }` | 400、409 `RULE_VERSION_IMMUTABLE`（非 draft） |
+| `POST …/validate` | `{}` | `{ versionId, valid: true, errors: [], checkedAt }` | 422 `RULE_VALIDATION_FAILED`（`details` 逐條，狀態留在 draft） |
+| `POST …/test` | `{ records?, scenario?, statuses? }` | `{ versionId, suite, scenario, passed, failed, overall, totalCredits, results }` | 422 `RULE_TEST_FAILED` |
+| `POST …/submit` | `{}` | `{ versionId, status: in-review, submittedAt }` | 409（狀態不是 draft） |
+| `POST …/approve` | `{}` | `{ versionId, status: approved, reviewedBy, reviewedAt }` | 409（狀態不是 in-review） |
+| `POST …/reject` | `{ reason }`（必填，≤2000 字） | `{ versionId, status: draft, notes, reviewedBy, reviewedAt }` | 400、409 |
+| `POST …/publish` | `{}` | `{ versionId, status: published, publishedAt, publishedBy, proxy, superseded[] }` | 422（投影／驗證失敗）、403（代理發布條件不符）、409（狀態不是 approved） |
+| `GET …/diff` | — | `{ versionId, bundleId, versionNo, status, previousVersionId, summary, requirements, clauses, sources }` | 404 |
+| `GET /api/admin/audit` | `limit?`（預設 50）、`cursor?`（`record_id`）、`versionId?` | `{ items[], nextCursor, limit }` | 400（拒 `offset`）、403 |
+
+**`allowedActions`**：由狀態與 `can()` 共同決定——`draft`→`validate`／`test`（需 `validateDraft`）、`submit`（需 `editDraft`）；`in-review`→`approve`／`reject`（需 `reviewDraft`）；`approved`→`publish`（需 `publishVersion`）；`published`／`superseded`／暫態→`[]`。
+
+**diff 形狀**：`requirements`／`clauses`／`sources` 三個區塊，各自是 `{ added[], removed[], changed[] }`；`changed` 的每一筆附 `before`／`after` 與逐欄位 `changes[]`。`summary` 是三區塊的計數總和；第一版的 `previousVersionId` 為 `null`、全部列為 `added`。
+
+**`/test` 的語意**：有帶 `records` 就用 provided-records 跑；沒帶就用空資料檢核，檢查三態、缺額與門檻的一致性、`and`/`or` 與子節點一致、`overall` 與三態一致。**空資料的缺額不算失敗**（缺資料不等於規則錯）。
+
+**交易邊界**：`QueryFn` 是 `pool.query`，跨 statement 的 `BEGIN/COMMIT` 會落在不同連線，因此所有狀態轉移都寫成**單一 statement 的 data-modifying CTE**（狀態更新 ＋ `review_records` 一起成立或一起不成立）。發布前先把 payload 投影到 `rule_sources`／`rule_clauses`（0017 的 trigger 要求 published 前完成），再 supersede 舊版。
+
+**已知限制（不假裝）**
+
+1. `review_records.action` 的 CHECK 目前只有八個值，沒有 `updated`，所以 `PUT` 改草稿內容**不會**單獨留一列稽核；`validate`／`submit` 會帶新的 `content_hash`，事後可從版本內容與發布紀錄追。
+2. 跨系所的拒絕沒有專屬 action 可寫，因此只回 403、不寫 `review_records`（不用 `rejected` 冒充）。
+3. `POST /api/admin/departments/{deptId}/admins` 尚未實作；I2 的系所管理員以受控 SQL／種子設定（符合 SRS FR-12 的「受控設定」）。
+4. `validateBundle()` 只驗結構與參照，不驗語意（例如 selector 指到不存在的 tag 仍會通過）；`/test` 的空資料檢核與發布前的投影檢查才是第二、三道關卡。
 
 ## 8. 分頁、排序與速率
 

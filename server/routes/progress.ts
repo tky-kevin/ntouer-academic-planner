@@ -4,6 +4,7 @@
 // 身分：`#22` 之前沒有 session，用 DEV_USER_SUB 指定一筆 users（Issue #13）。
 import type { QueryFn, Reply, Route, RouteContext } from '../app.js'
 import { fail, isoNow, makeMeta, ok } from '../http/envelope.js'
+import { resolveIdentity } from '../auth/identity.js'
 import { combineAnd, combineOr, evaluate } from '../../src/engine/ruleEngine.js'
 import type {
   CourseRecordInput,
@@ -214,11 +215,12 @@ function unauthorized(requestId: string): Reply {
 
 export interface ProgressRouteOptions {
   query: QueryFn
-  /** #22 之前的開發身分：users.google_sub。 */
-  devUserSub: string | undefined
+  /** 開發身分：沒有 planner_session 且非 production 時，用這筆 users.google_sub 當登入者。 */
+  devUserSub?: string
+  nodeEnv?: string
 }
 
-export function createProgressRoutes({ query, devUserSub }: ProgressRouteOptions): Route[] {
+export function createProgressRoutes({ query, devUserSub, nodeEnv }: ProgressRouteOptions): Route[] {
   return [
     {
       method: 'GET',
@@ -237,10 +239,11 @@ export function createProgressRoutes({ query, devUserSub }: ProgressRouteOptions
         }
         const includeTrace = traceParam !== 'false'
 
-        if (!devUserSub) return unauthorized(requestId)
+        const identity = await resolveIdentity(ctx.req, query, { devUserSub, nodeEnv })
+        if (!identity) return unauthorized(requestId)
 
-        const students = await query(`select user_id, dept_id, entry_year, program from users where google_sub = $1`, [
-          devUserSub,
+        const students = await query(`select user_id, dept_id, entry_year, program from users where user_id = $1::uuid`, [
+          identity.userId,
         ])
         const student = students.rows[0] as StudentRow | undefined
         if (!student) return unauthorized(requestId)
@@ -287,12 +290,17 @@ export function createProgressRoutes({ query, devUserSub }: ProgressRouteOptions
           }
         } else {
           if (!student.dept_id || !student.entry_year) {
+            const missing = [
+              ...(student.dept_id ? [] : ['deptId']),
+              ...(student.entry_year ? [] : ['entryYear']),
+            ]
             return {
               status: 404,
               body: fail(
                 {
                   code: 'RULE_BUNDLE_NOT_FOUND',
                   message: '你的帳號還沒有系所與入學年度，無法決定要套用哪一份規則。',
+                  details: missing.map((field) => ({ field, reason: 'missing-profile' })),
                   retryable: false,
                 },
                 makeMeta(requestId),

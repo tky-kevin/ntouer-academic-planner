@@ -81,6 +81,6 @@ npm run verify:ais:live
 
 upstream/ 保留 NTOUer 本機 project-voyager 的 protocol/application snapshot，來源 revision 與每檔原始 SHA-256 記錄在 upstream/SOURCE.json；來源 LICENSE 原文保存在 upstream/LICENSE。本次依使用者要求在本專案整理模組，沒有修改來源專案，也不另行授予來源軟體的授權。
 
-Planner 修改的來源檔：grades-service.ts 新增 typed readSnapshot，讓歷年與學年資料不經僅接受 semester 的舊 API projection；timetable-service.ts 新增 typed readSnapshot，保留時段與節次，readSemester 維持舊 projection 行為。其餘來源檔保持 snapshot 原文。Cookie transport、Planner DTO、轉換、client、fixture consumer 及測試由本專案管理。
+Planner 修改的來源檔：grades-service.ts 新增 typed readSnapshot，讓歷年與學年資料不經僅接受 semester 的舊 API projection；timetable-service.ts 新增 typed readSnapshot，保留時段與節次，readSemester 維持舊 projection 行為；ais-feature-navigation.ts 把選單導覽失敗拆成可診斷代碼（`menu_group_not_found`／`menu_target_not_found`／`menu_target_ambiguous`／`menu_loader_mismatch`），並在 `AIS_DEBUG_DUMP` 開啟時把當下選單節點存檔（只寫標題與 loader 路徑，不含個資）。其餘來源檔保持 snapshot 原文。Cookie transport、Planner DTO、轉換、client、fixture consumer 及測試由本專案管理。
 
 更新來源時先比對 SOURCE.json，再手動合併這兩處差異並重跑 fixture 測試；不執行會覆寫本地修改的自動同步腳本。

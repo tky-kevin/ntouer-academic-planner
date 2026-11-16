@@ -1,0 +1,342 @@
+{
+  "schemaVersion": "1.0",
+  "appliesTo": { "bundleId": "cse-113-day", "departmentId": "cse", "entryYear": 113 },
+  "purpose": "把 AIS 修課紀錄對到規則包需要的分類與標籤。只採用官方文件明列的名稱或 AIS 明確欄位；對不上的寫 unknown，由畫面顯示待確認並允許個人修正，不猜測。",
+  "limitations": [
+    "AIS 成績頁只提供選別（必修／選修／通識），沒有開課系所，因此無法自動判定「系內選修／外系選修」。",
+    "博雅子領域（人文探索／社會脈動／科技創新／跨域永續）在 AIS 成績頁沒有欄位；只有課程名稱本身含領域名稱時才自動標記。",
+    "核心選修清單在課程地圖（PDF），未數位化；未對到者標 unknown。"
+  ],
+  "sources": [
+    {
+      "sourceId": "S113-03",
+      "title": "113 入學適用大學部畢業資格檢核表",
+      "url": "https://cse.ntou.edu.tw/p/404-1063-83635.php?Lang=zh-tw",
+      "locator": "（Ⅰ）共同教育、（Ⅱ）系訂專業必修；文字版 data/rules/sources/113-cse-checklist-extracted.txt"
+    },
+    {
+      "sourceId": "S113-02",
+      "title": "113 學年度大學部修業規定",
+      "url": "https://cse.ntou.edu.tw/p/405-1063-45650,c7910.php?Lang=zh-tw",
+      "locator": "第二條、第三條二（一）"
+    },
+    {
+      "sourceId": "S113-09",
+      "title": "共同教育課程須知",
+      "url": "https://gec.ntou.edu.tw/p/406-1027-43062,r999.php?Lang=zh-tw",
+      "locator": "大學部學生表；體育與英語文領域備註"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "EX-01",
+      "match": { "kind": "prefix", "value": "軍訓" },
+      "reason": "檢核表明訂軍訓不列入畢業學分計算。",
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／軍訓"
+    },
+    {
+      "id": "EX-02",
+      "match": { "kind": "prefix", "value": "服務學習" },
+      "reason": "非學分畢業條件，不列入學分池；AIS 若回 0 學分也不會影響總學分。",
+      "sourceId": "S113-03",
+      "locator": "注意事項"
+    }
+  ],
+  "rules": [
+    {
+      "id": "REQ-01",
+      "match": { "kind": "exact", "value": "計算機概論" },
+      "canonical": "計算機概論",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-02",
+      "match": { "kind": "exact", "value": "程式設計" },
+      "canonical": "程式設計",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-03",
+      "match": { "kind": "exact", "value": "程式設計(二)" },
+      "canonical": "程式設計(二)",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-04",
+      "match": { "kind": "exact", "value": "微積分(上)" },
+      "canonical": "微積分(上)",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-05",
+      "match": { "kind": "exact", "value": "微積分(下)" },
+      "canonical": "微積分(下)",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-06",
+      "match": { "kind": "exact", "value": "離散數學" },
+      "canonical": "離散數學",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-07",
+      "match": { "kind": "exact", "value": "資料結構" },
+      "canonical": "資料結構",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-08",
+      "match": { "kind": "exact", "value": "演算法" },
+      "canonical": "演算法",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-09",
+      "match": { "kind": "exact", "value": "數位邏輯" },
+      "canonical": "數位邏輯",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-10",
+      "match": { "kind": "exact", "value": "數位邏輯實驗" },
+      "canonical": "數位邏輯實驗",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-11",
+      "match": { "kind": "exact", "value": "電腦網路" },
+      "canonical": "電腦網路",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-12",
+      "match": { "kind": "exact", "value": "計算機組織學" },
+      "canonical": "計算機組織學",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-13",
+      "match": { "kind": "exact", "value": "線性代數" },
+      "canonical": "線性代數",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-14",
+      "match": { "kind": "exact", "value": "機率論" },
+      "canonical": "機率論",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-15",
+      "match": { "kind": "exact", "value": "作業系統" },
+      "canonical": "作業系統",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-16",
+      "match": { "kind": "exact", "value": "資工系專題(一)" },
+      "canonical": "資工系專題(一)",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-17",
+      "match": { "kind": "exact", "value": "資工系專題(二)" },
+      "canonical": "資工系專題(二)",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "REQ-18",
+      "match": { "kind": "exact", "value": "資訊專題討論" },
+      "canonical": "資訊專題討論",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修"
+    },
+    {
+      "id": "CE-01",
+      "match": { "kind": "prefix", "value": "國文" },
+      "category": "CE",
+      "tags": ["chinese"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／國文領域"
+    },
+    {
+      "id": "CE-02",
+      "match": { "kind": "contains", "value": "大一英文" },
+      "category": "CE",
+      "tags": ["english"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／外文領域"
+    },
+    {
+      "id": "CE-03",
+      "match": { "kind": "contains", "value": "進階英文" },
+      "category": "CE",
+      "tags": ["english", "advancedEnglish"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／外文領域；備註大二進階英文 2 學分"
+    },
+    {
+      "id": "CE-04",
+      "match": { "kind": "contains", "value": "英文精進" },
+      "category": "CE",
+      "tags": ["english"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／外文領域；英文畢業門檻替代課程"
+    },
+    {
+      "id": "CE-05",
+      "match": { "kind": "contains", "value": "海洋科學概論" },
+      "category": "CE",
+      "tags": ["ocean", "general"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／博雅(通識)領域"
+    },
+    {
+      "id": "CE-06",
+      "match": { "kind": "contains", "value": "人工智慧概論" },
+      "category": "CE",
+      "tags": ["ai", "general"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／博雅(通識)領域"
+    },
+    {
+      "id": "CE-07",
+      "match": { "kind": "contains", "value": "人文探索" },
+      "category": "CE",
+      "tags": ["general", "domainHuman"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）博雅(通識)領域四大子領域"
+    },
+    {
+      "id": "CE-08",
+      "match": { "kind": "contains", "value": "社會脈動" },
+      "category": "CE",
+      "tags": ["general", "domainSociety"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）博雅(通識)領域四大子領域"
+    },
+    {
+      "id": "CE-09",
+      "match": { "kind": "contains", "value": "科技創新" },
+      "category": "CE",
+      "tags": ["general", "domainTech"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）博雅(通識)領域四大子領域"
+    },
+    {
+      "id": "CE-10",
+      "match": { "kind": "contains", "value": "跨域永續" },
+      "category": "CE",
+      "tags": ["general", "domainSustain"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）博雅(通識)領域四大子領域（跨域永續至少 2 學分）"
+    },
+    {
+      "id": "CE-11",
+      "match": { "kind": "prefix", "value": "博雅" },
+      "category": "CE",
+      "tags": ["general"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／博雅(通識)領域"
+    },
+    {
+      "id": "CE-12",
+      "match": { "kind": "contains", "value": "游泳" },
+      "category": "CE",
+      "tags": ["pe", "swimming"],
+      "sourceId": "S113-09",
+      "locator": "體育課程備註；游泳畢業門檻"
+    },
+    {
+      "id": "CE-13",
+      "match": { "kind": "prefix", "value": "體育" },
+      "category": "CE",
+      "tags": ["pe"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／體育領域（四門 0 學分）"
+    },
+    {
+      "id": "REQ-19",
+      "match": { "kind": "exact", "value": "微積分" },
+      "canonical": "微積分",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修／微積分（上）（下）",
+      "note": "AIS 的課名只寫「微積分」、不帶上／下；這裡只保證計入系訂必修學分，R04 的微積分(上)／(下) 仍需以課程目錄的完整課名對應（見 limitations）。"
+    },
+    {
+      "id": "CODE-01",
+      "match": { "kind": "codePrefix", "value": "B57" },
+      "category": "ELE",
+      "tags": ["inner", "program"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修＋（Ⅲ）系內選修",
+      "note": "AIS 課號前綴 B57 是資訊工程學系開課：檢核表（Ⅱ）的系訂必修在真實紀錄中皆為 B57 開頭（計算機概論 B57011RQ、程式設計 B5701M33、資料結構 B5702M57…），同前綴課程視為系內選修。"
+    },
+    {
+      "id": "CODE-02",
+      "match": { "kind": "codePrefix", "value": "B92" },
+      "category": "CE",
+      "tags": ["pe"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／體育領域",
+      "note": "AIS 課號前綴 B92 是體育課（重量訓練 B92D2G65、羽球 B92J3G04、潛水 B92B4G31、有氧舞蹈 B92A5G0C、網球 B92K6G07），皆為 0 學分。"
+    }
+  ]
+}

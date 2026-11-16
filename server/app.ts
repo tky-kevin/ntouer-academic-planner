@@ -74,6 +74,17 @@ function send(res: ServerResponse, requestId: string, reply: Reply): void {
     res.end()
     return
   }
+  // 靜態檔案（server/static.ts）直接回 Buffer／字串；JSON 走下面的序列化路徑。
+  if (typeof reply.body === 'string' || Buffer.isBuffer(reply.body)) {
+    const payload = typeof reply.body === 'string' ? Buffer.from(reply.body, 'utf8') : reply.body
+    res.writeHead(reply.status, {
+      'Content-Length': String(payload.byteLength),
+      'X-Request-Id': requestId,
+      ...reply.headers,
+    })
+    res.end(payload)
+    return
+  }
   const payload = JSON.stringify(reply.body)
   res.writeHead(reply.status, {
     'Content-Type': 'application/json; charset=utf-8',
@@ -148,6 +159,11 @@ export function createApp({ query, routes = [], logger = console }: AppOptions):
     }
 
     send(res, requestId, reply)
+    // system-design §15.4 的日誌欄位：錯誤碼要能被監控與排查，不能只記 HTTP 狀態。
+    const body = reply.body as { error?: { code?: unknown } } | undefined
+    const errorCode = body && typeof body === 'object' && body.error && typeof body.error.code === 'string'
+      ? body.error.code
+      : undefined
     logger.info(
       JSON.stringify({
         level: 'info',
@@ -156,6 +172,7 @@ export function createApp({ query, routes = [], logger = console }: AppOptions):
         path: url.pathname,
         status: reply.status,
         durationMs: Date.now() - startedAt,
+        ...(errorCode ? { errorCode } : {}),
       }),
     )
   }

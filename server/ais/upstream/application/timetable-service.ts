@@ -39,6 +39,7 @@ export class TimetableService {
           expectedProgramCode: "STU1220",
           expectedQueryUrl: queryUrl,
           operation: "timetable",
+          directQueryFirst: true,
           assertAuthenticated: (html) => assertAuthenticated(html, session),
         });
         const selections = [
@@ -116,6 +117,7 @@ export class TimetableService {
           expectedProgramCode: "STU1220",
           expectedQueryUrl: queryUrl,
           operation: "timetable",
+          directQueryFirst: true,
           assertAuthenticated: (html) => assertAuthenticated(html, session),
         });
         const fields = parseWebFormsQueryPage(

@@ -1,5 +1,7 @@
 // 需要真實 PostgreSQL：`npm run test:db`（CI 的 api job 會先 migrate + seed）。
 // 驗證 route 對真實 schema 的查詢與 jsonb payload，而不是只驗 fake row。
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createServer } from 'node:http'
 import type { Server } from 'node:http'
@@ -11,6 +13,16 @@ import { createRulesRoutes } from './rules.js'
 import { loadDotEnv, readConfig } from '../env.js'
 
 const silent = { info: () => undefined, error: () => undefined }
+
+// 期望值直接取自 seed 的來源檔（docs/design/examples/113-cse.json），
+// 不要在測試裡寫死條文／來源數量——規則資料本來就會增補（Issue #18 就補了 clause）。
+const example = JSON.parse(readFileSync(resolve('docs/design/examples/113-cse.json'), 'utf8')) as {
+  clauses: unknown[]
+  sources: unknown[]
+}
+const expectedClauses = example.clauses.length
+const expectedSources = example.sources.length
+
 let pool: Pool
 let server: Server | undefined
 let base = ''
@@ -47,7 +59,7 @@ afterAll(async () => {
 })
 
 describe('GET /api/rules/{versionId}（真實資料庫）', () => {
-  it('cse-113-day@1 回 200、published、10 條 clause、4 個來源', async () => {
+  it('cse-113-day@1 回 200、published、條文與來源數量與 seed 檔一致', async () => {
     const response = await fetch(`${base}/api/rules/cse-113-day@1`)
     const body = (await response.json()) as {
       data: { status: string; clauses: unknown[]; sources: unknown[]; contentHash: string }
@@ -56,8 +68,8 @@ describe('GET /api/rules/{versionId}（真實資料庫）', () => {
 
     expect(response.status).toBe(200)
     expect(body.data.status).toBe('published')
-    expect(body.data.clauses).toHaveLength(10)
-    expect(body.data.sources).toHaveLength(4)
+    expect(body.data.clauses).toHaveLength(expectedClauses)
+    expect(body.data.sources).toHaveLength(expectedSources)
     expect(body.data.contentHash).toMatch(/^sha256:[0-9a-f]{64}$/)
     expect(body.meta.ruleVersionId).toBe('cse-113-day@1')
   })

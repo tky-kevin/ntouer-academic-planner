@@ -4,6 +4,13 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // dev server（5173）把 API 與登入導向轉給本機 API server（3000），避免跨來源 cookie 問題。
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:3000',
+      '/auth': 'http://127.0.0.1:3000',
+    },
+  },
   // 本機 Windows/Node 的遞迴 rm 在重建時崩潰；build 指令改由安全的逐檔清理腳本處理。
   build: {
     emptyOutDir: false,
