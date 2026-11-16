@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NTOUER Academic Planner｜設計系統預覽</title>
+<!-- 直接載入產品用的樣式表，確保這頁與實際介面永遠一致 -->
+<link rel="stylesheet" href="../../src/styles.css" />
+<style>
+  /* 只屬於這張預覽頁的排版，不改產品樣式 */
+  .ds-main { padding-block: var(--space-6) var(--space-10); }
+  .ds-section { margin-top: var(--space-10); }
+  .ds-section > h2 { font-size: var(--fs-h1); margin-bottom: var(--space-2); }
+  .ds-section > p.lead { color: var(--muted); font-size: var(--fs-body); margin-bottom: var(--space-5); max-width: 78ch; }
+  .ds-grid { display: grid; gap: var(--space-3); }
+  .ds-swatches { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); }
+  .swatch { border: var(--border); border-radius: var(--radius-block); overflow: hidden; background: var(--surface); }
+  .swatch .chip { height: 64px; }
+  .swatch .meta { padding: var(--space-2) var(--space-3) var(--space-3); font-size: var(--fs-xs); line-height: var(--leading-normal); }
+  .swatch code { display: block; color: var(--ink); font-size: var(--fs-xs); font-weight: var(--weight-medium); }
+  .swatch .ratio { display: block; color: var(--muted); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+  .panel { background: var(--surface); border: var(--border); border-radius: var(--radius-surface); padding: var(--space-5); }
+  .type-row { display: flex; align-items: baseline; gap: var(--space-4); padding-block: var(--space-3); border-bottom: 1px solid var(--line-subtle); }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .tag { min-width: 132px; color: var(--muted); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
+  .space-demo { display: flex; align-items: flex-end; gap: var(--space-3); }
+  .space-demo div { background: var(--teal-tint); border: 1px solid #a2cbc0; border-radius: var(--radius-tag); width: 28px; }
+  .space-demo span { display: block; font-size: var(--fs-xs); color: var(--muted); text-align: center; }
+  table.ds { min-width: 0; font-size: var(--fs-sm); }
+  .ds-note { font-size: var(--fs-xs); color: var(--muted); margin-top: var(--space-2); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ds-content">跳至主要內容</a>
+
+<header class="app-header">
+  <div class="page-width header-content">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h6l3 2 3-2h6v15h-6l-3 2-3-2H3Z"/><path d="M12 6v15"/></svg>
+      </span>
+      <div><h1>NTOUER <span>Academic Planner</span></h1><p>設計系統預覽 · Iteration 2</p></div>
+    </div>
+    <span class="iteration-label">Design tokens <span>docs/design/ui-ux-spec.md</span></span>
+  </div>
+</header>
+
+<aside class="test-notice" aria-label="說明">
+  <div class="page-width notice-content">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+    <strong>這一頁載入的是產品同一份 <code>src/styles.css</code></strong>
+    <span>看到的顏色、字級與元件就是實作會長的樣子，不是另外畫的示意圖。</span>
+  </div>
+</aside>
+
+<main id="ds-content" class="page-width ds-main">
+
+  <!-- 1. 顏色 -->
+  <section class="ds-section" aria-labelledby="c-color">
+    <h2 id="c-color">1. 顏色</h2>
+    <p class="lead">每個色票都標出它實際的用途與對比比值（對白底，以 WCAG 相對亮度公式計算）。文字需 ≥ 4.5:1，非文字元件需 ≥ 3:1。</p>
+
+    <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-3)">文字與結構</h3>
+    <div class="ds-grid ds-swatches">
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--ink)"></div></div><div class="meta"><code>--ink</code>#12343d<span class="ratio">13.26 標題／數字</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--fg)"></div></div><div class="meta"><code>--fg</code>#243b43<span class="ratio">10.85 內文</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--muted)"></div></div><div class="meta"><code>--muted</code>#5c7077<span class="ratio">5.20 次要文字</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--line)"></div></div><div class="meta"><code>--line</code>#d9e2e5<span class="ratio">1.32 邊框（裝飾）</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--line-subtle)"></div></div><div class="meta"><code>--line-subtle</code>#e8eef0<span class="ratio">表格分隔線</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--bg)"></div></div><div class="meta"><code>--bg</code>#f3f6f7<span class="ratio">頁面底色</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--surface)"></div></div><div class="meta"><code>--surface</code>#ffffff<span class="ratio">卡片底</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--surface-alt)"></div></div><div class="meta"><code>--surface-alt</code>#f6f8f9<span class="ratio">表頭底</span></div></div>
+    </div>
+
+    <h3 style="font-size:var(--fs-h3);margin:var(--space-6) 0 var(--space-3)">主色與互動</h3>
+    <div class="ds-grid ds-swatches">
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--teal)"></div></div><div class="meta"><code>--teal</code>#086d65<span class="ratio">6.20 主要動作</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--teal-hover)"></div></div><div class="meta"><code>--teal-hover</code>#04554e<span class="ratio">8.70 白字 on hover</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--teal-active)"></div></div><div class="meta"><code>--teal-active</code>#03473f<span class="ratio">按下態</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--teal-tint)"></div></div><div class="meta"><code>--teal-tint</code>#e9f4f1<span class="ratio">5.52 teal on tint</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--focus)"></div></div><div class="meta"><code>--focus</code>#167e98<span class="ratio">4.70 焦點環</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--warning)"></div></div><div class="meta"><code>--warning</code>#915317<span class="ratio">5.59 未達標</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--warning-tint)"></div></div><div class="meta"><code>--warning-tint</code>#fff4e4<span class="ratio">警示底</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--step-border)"></div></div><div class="meta"><code>--step-border</code>#78898f<span class="ratio">3.64 步驟圓圈</span></div></div>
+    </div>
+
+    <h3 style="font-size:var(--fs-h3);margin:var(--space-6) 0 var(--space-3)">狀態（顏色＋文字，不單靠顏色）</h3>
+    <div class="ds-grid ds-swatches">
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--state-met-bg)"></div></div><div class="meta"><code>state-met</code>#086258 on #e8f3ee<span class="ratio">6.38 及格／達標</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--state-unmet-bg)"></div></div><div class="meta"><code>state-unmet</code>#9b3c3c on #fbecec<span class="ratio">5.90 不及格</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--state-unknown-bg)"></div></div><div class="meta"><code>state-unknown</code>#645775 on #f1edf6<span class="ratio">5.75 尚未確認</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--state-pending-bg)"></div></div><div class="meta"><code>state-pending</code>#44636f on #eaf0f3<span class="ratio">5.60 待檢核</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--notice-bg)"></div></div><div class="meta"><code>notice</code>#78501d on #fff0d6<span class="ratio">6.31 範圍提示</span></div></div>
+      <div class="swatch"><div class="chipwrap"><div class="chip" style="background-color:var(--state-pending-dim)"></div></div><div class="meta"><code>state-pending-dim</code>#74898f<span class="ratio">3.67 大號待檢核數字</span></div></div>
+    </div>
+  </section>
+
+  <!-- 2. 字體 -->
+  <section class="ds-section" aria-labelledby="c-type">
+    <h2 id="c-type">2. 字體</h2>
+    <p class="lead">字級收斂為 4 級（原本 20 多個介於 .6–.875rem 的值）。數字一律用等寬（tabular-nums），缺額並排時才看得出大小關係。</p>
+    <div class="panel">
+      <div class="type-row"><span class="tag">--fs-display · 2.3rem</span><strong style="font-size:var(--fs-display);font-weight:var(--weight-bold);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--ink);line-height:1.2">135</strong></div>
+      <div class="type-row"><span class="tag">--fs-h1 · 1.65rem</span><span style="font-size:var(--fs-h1);font-weight:var(--weight-bold);letter-spacing:-.025em;color:var(--ink)">畢業進度</span></div>
+      <div class="type-row"><span class="tag">--fs-h2 · 1.35rem</span><span style="font-size:var(--fs-h2);font-weight:var(--weight-bold);letter-spacing:-.025em;color:var(--ink)">NTOUER Academic Planner</span></div>
+      <div class="type-row"><span class="tag">--fs-h3 · 1rem</span><span style="font-size:var(--fs-h3);font-weight:var(--weight-bold);color:var(--ink)">已載入修課紀錄</span></div>
+      <div class="type-row"><span class="tag">--fs-body · .875rem</span><span style="font-size:var(--fs-body)">系內選修至少 46 學分，核心選修 12 學分需為白名單課程。</span></div>
+      <div class="type-row"><span class="tag">--fs-sm · .78rem</span><span style="font-size:var(--fs-sm);color:var(--muted)">目前樣本：核心選修不足（含排除紀錄）</span></div>
+      <div class="type-row"><span class="tag">--fs-xs · .7rem</span><span style="font-size:var(--fs-xs);color:var(--muted)">來源：113 學年度大學部修業規定 · 範圍：113 入學日間學士班</span></div>
+    </div>
+    <p class="ds-note">字重 4 級：400 內文／550 強調／650 卡片標題／750 標題與大數字。</p>
+  </section>
+
+  <!-- 3. 間距與圓角 -->
+  <section class="ds-section" aria-labelledby="c-space">
+    <h2 id="c-space">3. 間距與圓角</h2>
+    <p class="lead">間距以 4px 為基數（--space-1 到 --space-12）。原本散落的 3、5、6、7、9 等值已併入最近一階。</p>
+    <div class="panel">
+      <div class="space-demo">
+        <div style="height:4px"><span>1</span></div>
+        <div style="height:8px"><span>2</span></div>
+        <div style="height:12px"><span>3</span></div>
+        <div style="height:16px"><span>4</span></div>
+        <div style="height:20px"><span>5</span></div>
+        <div style="height:24px"><span>6</span></div>
+        <div style="height:28px"><span>7</span></div>
+        <div style="height:32px"><span>8</span></div>
+        <div style="height:40px"><span>10</span></div>
+        <div style="height:48px"><span>12</span></div>
+      </div>
+      <div class="row" style="margin-top:var(--space-6)">
+        <div style="width:96px;height:56px;background:var(--surface-alt);border:var(--border);border-radius:var(--radius-surface);display:grid;place-items:center;font-size:var(--fs-xs);color:var(--muted)">12px 面板</div>
+        <div style="width:96px;height:56px;background:var(--surface-alt);border:var(--border);border-radius:var(--radius-block);display:grid;place-items:center;font-size:var(--fs-xs);color:var(--muted)">8px 區塊</div>
+        <div style="width:96px;height:56px;background:var(--surface-alt);border:var(--border);border-radius:var(--radius-control);display:grid;place-items:center;font-size:var(--fs-xs);color:var(--muted)">7px 控制項</div>
+        <div style="width:96px;height:56px;background:var(--surface-alt);border:var(--border);border-radius:var(--radius-tag);display:grid;place-items:center;font-size:var(--fs-xs);color:var(--muted)">4px 標籤</div>
+      </div>
+    </div>
+    <p class="ds-note">刻意不用陰影：層次靠邊框與底色，投影機與低對比螢幕才不會糊。</p>
+  </section>
+
+  <!-- 4. 元件 -->
+  <section class="ds-section" aria-labelledby="c-components">
+    <h2 id="c-components">4. 元件</h2>
+    <p class="lead">以下全部使用產品的 class，複製貼上即可用。</p>
+
+    <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-3)">按鈕與標籤</h3>
+    <div class="panel row">
+      <button class="run-button" type="button">執行學分檢核
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg>
+      </button>
+      <button class="sample-button is-selected" type="button" aria-pressed="true" style="width:auto;min-height:46px">
+        <span class="sample-number">3</span><span class="sample-copy"><span class="sample-name">已選取</span></span>
+      </button>
+      <button class="sample-button" type="button" aria-pressed="false" style="width:auto;min-height:46px">
+        <span class="sample-number">4</span><span class="sample-copy"><span class="sample-name">未選取</span></span>
+      </button>
+      <span class="version-tag">cse-113-day@3</span>
+      <span class="status-badge status-passed">及格</span>
+      <span class="status-badge status-failed">不及格</span>
+      <span class="status-badge status-unknown">尚未確認</span>
+      <span class="counted-label">已採計</span>
+      <span class="muted">待檢核</span>
+    </div>
+
+    <h3 style="font-size:var(--fs-h3);margin:var(--space-6) 0 var(--space-3)">結果卡（三種狀態）</h3>
+    <div class="result-grid">
+      <article class="result-card result-met" aria-label="已達標結果">
+        <div class="result-card-heading"><h3>系內選修</h3><span class="result-status"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>已達標</span></div>
+        <p class="credit-value"><strong>46</strong><span> / 46 學分</span></p>
+        <div class="credit-track" aria-hidden="true"><span style="transform:scaleX(1)"></span></div>
+        <p class="credit-deficit">尚缺 <strong>0</strong> 學分</p>
+        <details class="counted-details"><summary>採計紀錄（3 筆）</summary><ul><li><span>資料結構 <small>R-001</small></span><span>3 學分</span></li><li><span>演算法 <small>R-002</small></span><span>3 學分</span></li></ul></details>
+      </article>
+      <article class="result-card result-unmet" aria-label="未達標結果">
+        <div class="result-card-heading"><h3>外系選修</h3><span class="result-status">未達標</span></div>
+        <p class="credit-value"><strong>5</strong><span> / 8 學分</span></p>
+        <div class="credit-track" aria-hidden="true"><span style="transform:scaleX(.625)"></span></div>
+        <p class="credit-deficit">尚缺 <strong>3</strong> 學分</p>
+      </article>
+      <article class="result-card result-pending" aria-label="待檢核結果">
+        <div class="result-card-heading"><h3>英文畢業門檻</h3><span class="result-status">待檢核</span></div>
+        <p class="credit-value"><strong>—</strong><span> / 0 學分</span></p>
+        <div class="credit-track" aria-hidden="true"><span style="transform:scaleX(0)"></span></div>
+        <p class="credit-deficit">執行後顯示已取得學分與缺額</p>
+      </article>
+    </div>
+
+    <h3 style="font-size:var(--fs-h3);margin:var(--space-6) 0 var(--space-3)">摘要與提示</h3>
+    <div class="panel" style="display:grid;gap:var(--space-3)">
+      <div class="audit-summary summary-met">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+        <div><h3>全部條件已滿足</h3><p>採計 12 筆及格紀錄，排除 3 筆紀錄。</p><p class="audit-trace">規則版本 cse-113-day@3 · 資料時間 2026/11/16 03:20</p></div>
+      </div>
+      <div class="audit-summary summary-unmet">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+        <div><h3>尚有 2 項條件未達標</h3><p>缺額已列在下方卡片；未解衝突 X01 仍待確認。</p></div>
+      </div>
+      <div class="pending-feedback">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+        <p>尚未執行檢核，請點選「執行學分檢核」查看結果。</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:var(--fs-h3);margin:var(--space-6) 0 var(--space-3)">表格</h3>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <div class="table-scroll">
+        <table class="ds">
+          <caption class="sr-only">表格元件示例</caption>
+          <thead><tr><th scope="col">課程</th><th scope="col">紀錄 ID</th><th scope="col" class="number-cell">學分</th><th scope="col">類別</th><th scope="col">修課狀態</th><th scope="col">採計</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="course-name">資料結構</span><span class="course-code">課號 CSE2103</span></th><td class="record-id">R-001</td><td class="number-cell">3</td><td>必修</td><td><span class="status-badge status-passed">及格</span></td><td><span class="counted-label">已採計</span></td></tr>
+            <tr class="excluded-row"><th scope="row"><span class="course-name">資料結構</span><span class="course-code">課號 CSE2103</span></th><td class="record-id">R-002</td><td class="number-cell">3</td><td>必修</td><td><span class="status-badge status-passed">及格</span></td><td><span class="muted">同課已採計</span></td></tr>
+            <tr><th scope="row"><span class="course-name">微積分</span><span class="course-code">課號 MAT1001</span></th><td class="record-id">R-003</td><td class="number-cell">3</td><td>必修</td><td><span class="status-badge status-unknown">尚未確認</span></td><td><span class="muted">未知排除</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 四種狀態 -->
+  <section class="ds-section" aria-labelledby="c-states">
+    <h2 id="c-states">5. 四種狀態</h2>
+    <p class="lead">每個需要資料的畫面都要有這四態。目前的程式只有 Empty 與「待檢核」，Loading 與 Error 是 I2 新補的規格。</p>
+    <div class="ds-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+
+      <div class="panel">
+        <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-2)">Loading</h3>
+        <p class="ds-note" style="margin-bottom:var(--space-3)">骨架佔位，不清空既有內容；超過 300ms 才出現。</p>
+        <div style="display:grid;gap:var(--space-2)" aria-busy="true" aria-live="polite">
+          <div style="height:14px;border-radius:4px;background:var(--tag-bg);width:60%"></div>
+          <div style="height:14px;border-radius:4px;background:var(--tag-bg);width:88%"></div>
+          <div style="height:14px;border-radius:4px;background:var(--tag-bg);width:74%"></div>
+          <p class="ds-note">正在載入畢業規則…</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-2)">Empty</h3>
+        <p class="ds-note" style="margin-bottom:var(--space-3)">說明為什麼空，並給下一步。</p>
+        <div class="empty-records" style="border:var(--border);border-radius:var(--radius-block)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3H5v18h14V8Z"/><path d="M14 3v5h5M8 12h8M8 16h5"/></svg>
+          <strong>此系所／年度尚無已發布規則</strong>
+          <span>不會改套其他年度的規則；請聯絡系所管理員。</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-2)">Error</h3>
+        <p class="ds-note" style="margin-bottom:var(--space-3)">依 <code>error.code</code> 分支；附 requestId；可重試的才給重試。</p>
+        <div style="background:var(--state-unmet-bg);color:var(--state-unmet-fg);border-radius:var(--radius-block);padding:var(--space-3) var(--space-4)">
+          <strong style="font-size:var(--fs-sm)">同步失敗：教務系統暫時沒有回應</strong>
+          <p style="font-size:var(--fs-xs);margin-top:var(--space-1)">既有資料已保留，時間未更新。代碼 SYNC_FAILED · requestId b7f3c2a1</p>
+          <button class="sample-button" type="button" style="width:auto;min-height:36px;margin-top:var(--space-2);border-color:var(--state-unmet-fg);color:var(--state-unmet-fg)">重試</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--fs-h3);margin-bottom:var(--space-2)">無權限</h3>
+        <p class="ds-note" style="margin-bottom:var(--space-3)">選單隱藏只是體驗，後端仍會拒絕；所以這一頁必須存在。</p>
+        <div style="background:var(--state-pending-bg);color:var(--state-pending-fg);border-radius:var(--radius-block);padding:var(--space-3) var(--space-4)">
+          <strong style="font-size:var(--fs-sm)">你沒有這個系所的發布權限</strong>
+          <p style="font-size:var(--fs-xs);margin-top:var(--space-1)">代碼 AUTH_DEPT_OUT_OF_SCOPE。若你剛被指派，請重新登入。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 對比 -->
+  <section class="ds-section" aria-labelledby="c-contrast">
+    <h2 id="c-contrast">6. 對比實測</h2>
+    <p class="lead">以 WCAG 相對亮度公式計算的實際比值，不是估計。門檻：文字 4.5:1、非文字元件 3:1。</p>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <div class="table-scroll">
+        <table class="ds">
+          <thead><tr><th scope="col">組合</th><th scope="col" class="number-cell">比值</th><th scope="col">判定</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">--ink on surface</th><td class="number-cell">13.26</td><td><span class="status-badge status-passed">通過</span></td></tr>
+            <tr><th scope="row">--fg on --bg</th><td class="number-cell">10.85</td><td><span class="status-badge status-passed">通過</span></td></tr>
+            <tr><th scope="row">--teal on surface</th><td class="number-cell">6.20</td><td><span class="status-badge status-passed">通過</span></td></tr>
+            <tr><th scope="row">--muted on surface</th><td class="number-cell">5.20</td><td><span class="status-badge status-passed">通過</span></td></tr>
+            <tr><th scope="row">--muted on --bg</th><td class="number-cell">4.79</td><td><span class="status-badge status-passed">通過（餘裕 0.29，不得再調亮）</span></td></tr>
+            <tr><th scope="row">--focus on --bg（非文字）</th><td class="number-cell">4.32</td><td><span class="status-badge status-passed">通過</span></td></tr>
+            <tr><th scope="row">--state-pending-dim on surface</th><td class="number-cell">3.67</td><td><span class="status-badge status-passed">通過（原 2.49，已修）</span></td></tr>
+            <tr><th scope="row">--step-border on surface（非文字）</th><td class="number-cell">3.64</td><td><span class="status-badge status-passed">通過（原 1.70，已修）</span></td></tr>
+            <tr><th scope="row">--line on surface（裝飾邊框）</th><td class="number-cell">1.32</td><td><span class="status-badge status-unknown">不適用</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="ds-note">最後一列刻意不改：卡片邊框只是裝飾，內容以文字呈現；規則是「不可用邊框單獨表達選取或狀態」。</p>
+  </section>
+
+</main>
+
+<footer class="page-width app-footer">
+  <span>NTOUER Academic Planner · 設計系統</span>
+  <p>來源：<code>src/styles.css</code>、<code>docs/design/ui-ux-spec.md</code>。深色模式暫不實作（SRS 無此需求）。</p>
+</footer>
+</body>
+</html>

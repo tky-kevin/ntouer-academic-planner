@@ -13,6 +13,7 @@
 | [api-spec.md](api-spec.md) | HTTP 介面契約：回應 envelope、錯誤碼、版本策略、認證標頭、端點規格 | 實作（前後端）、評閱者 |
 | [openapi.yaml](openapi.yaml) | 上面那份契約的機器可讀版（OpenAPI 3.1，先收 3 個 path） | 實作、驗證器 |
 | [ui-ux-spec.md](ui-ux-spec.md) | sitemap、使用流程、design tokens、元件清單、四種狀態、無障礙與對比實測 | 實作（前端）、評閱者 |
+| [design-system.html](design-system.html) | 上面那份規格的**可視版本**：色票、字級、間距、元件、四種狀態、對比表（直接載入 `src/styles.css`） | 實作（前端）、評閱者 |
 | [adr/](adr/) | 已定案的技術決策與理由（0001～0006） | 全體、實作 |
 
 ## 決策紀錄（ADR）
