@@ -18,6 +18,8 @@ export interface RouteContext {
   url: URL
   requestId: string
   query: QueryFn
+  /** 路徑參數（`/api/rules/:versionId` → `{ versionId }`），已 decode。 */
+  params: Record<string, string>
 }
 
 export interface Route {
@@ -40,8 +42,29 @@ export interface AppOptions {
 
 export type App = (req: IncomingMessage, res: ServerResponse) => Promise<void>
 
-function matches(pattern: string, pathname: string): boolean {
-  return pattern.endsWith('*') ? pathname.startsWith(pattern.slice(0, -1)) : pattern === pathname
+function matchPath(pattern: string, pathname: string): Record<string, string> | null {
+  if (pattern.endsWith('*')) {
+    return pathname.startsWith(pattern.slice(0, -1)) ? {} : null
+  }
+  const patternParts = pattern.split('/')
+  const pathParts = pathname.split('/')
+  if (patternParts.length !== pathParts.length) return null
+  const params: Record<string, string> = {}
+  for (let index = 0; index < patternParts.length; index += 1) {
+    const expected = patternParts[index]
+    const actual = pathParts[index]
+    if (expected.startsWith(':')) {
+      if (!actual) return null
+      try {
+        params[expected.slice(1)] = decodeURIComponent(actual)
+      } catch {
+        return null
+      }
+    } else if (expected !== actual) {
+      return null
+    }
+  }
+  return params
 }
 
 function send(res: ServerResponse, requestId: string, reply: Reply): void {
@@ -86,9 +109,14 @@ export function createApp({ query, routes = [], logger = console }: AppOptions):
     let reply: Reply
 
     try {
-      const route = table.find((candidate) => candidate.method === req.method && matches(candidate.path, url.pathname))
+      let params: Record<string, string> | null = null
+      const route = table.find((candidate) => {
+        if (candidate.method !== req.method) return false
+        params = matchPath(candidate.path, url.pathname)
+        return params !== null
+      })
       reply = route
-        ? await route.handler({ req, url, requestId, query })
+        ? await route.handler({ req, url, requestId, query, params: params ?? {} })
         : {
             status: 404,
             body: fail(
