@@ -10,7 +10,7 @@
 
 | 檢查 | 指令 | 實際輸出 | 判定 |
 | --- | --- | --- | --- |
-| 單元／元件 | `npm test` | 29 檔、287 測試通過 | ✅ |
+| 單元／元件 | `npm test` | 30 檔、303 測試通過 | ✅ |
 | DB 整合 | `npm run test:db` | 6 檔、21 測試通過 | ✅ |
 | 建置 | `npm run build` | `tsc -b` ＋ Vite 三入口成功；client boundary `PASS` | ✅ |
 | spike | `node docs/design/spike/run-cases.mjs` | `結果：27 通過、0 失敗（共 27 項）` | ✅ |
@@ -29,6 +29,9 @@
 | 未登入 | `curl /auth/session` | 401 `AUTH_REQUIRED` |
 | 學生進度（dev 身分） | `curl '/api/me/progress?scenario=completed'` | 200；`cse-113-day@1`、總學分 135、`overall=unconfirmed`（X01 未解衝突） |
 | 管理端未授權 | `POST /api/admin/rules/cse-113-day/draft` | 403 `AUTH_FORBIDDEN`（dev 學生沒有系所管理權） |
+| 管理端讀取版本 | `GET /api/admin/rules/{versionId}`（dev-admin 身分） | 200；published 的 `allowedActions=[]`、payload 19 個 requirement；跨系所（mmd）回 403 `AUTH_DEPT_OUT_OF_SCOPE` |
+| **發布流程（真實 DB，dev-admin）** | `create draft → validate → test → submit → approve → publish` | `cse-113-day@2` published、`superseded=cse-113-day@1`；`/api/me/progress` 立即改用 @2（135 學分、19 條件） |
+| 稽核紀錄 | `GET /api/admin/audit` | 7 筆：`created, validated, tested, submitted, approved, superseded, published` |
 | **AIS 登入頁可達** | `POST /api/me/sync/ais`（帶 `.env.local` 的真實帳密） | **202**、`captchaImage` 為真的 PNG data URL、851 ms；AIS 已回登入表單與驗證碼 |
 
 ## 3. 真人流程（需要使用者本人）
@@ -57,6 +60,6 @@
 
 - **多使用者**：目前一個部署只有一份 AIS 憑證（`AIS_ACCOUNT`），不是每人各自的憑證。
 - **系內／外系選修自動判定**：AIS 沒有開課系所欄位；未分類課程會進 `unmatched`，相關條件回 `unknown`。
-- **管理端 UI 已接真 API**：後端端點與測試完成，兩頁仍吃 `src/data/mockAdmin.ts`。
+- **管理端草稿編輯器**：兩頁已接真 API（驗證／測試／送審／核准／退回／發布／diff／稽核），但沒有 payload 編輯器（UI-08／09 的線稿本來就沒有；`PUT` 與 `updateDraft()` 已備好給 I3）。
 - **學期計畫、缺額篩選、衝堂、AI PDF 整合**：屬 I3，未實作。
 - **可部署 ≠ 已部署**：只有本機 Docker 驗證，沒有對外主機與 HTTPS。

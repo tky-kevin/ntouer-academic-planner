@@ -33,7 +33,7 @@ ntouer-academic-planner/
 ## 設計文件（Iter2 實作依據）
 
 - [系統設計文件](design/system-design.md)：容器到元件、引擎演算法（含 §5.5 未分類 → unknown）、發布流程、權限、資料表、API、AuthN（§14 含 AIS 同步）與部署（§15）。
-- [API 規格](design/api-spec.md)＋[OpenAPI](design/openapi.yaml)：envelope、錯誤碼、版本策略、8 個已進 OpenAPI 的 path（含 AIS 同步與學籍補齊）與 §7.8 管理端發布流程。
+- [API 規格](design/api-spec.md)＋[OpenAPI](design/openapi.yaml)：envelope、錯誤碼、版本策略、6 個已進 OpenAPI 的 path（8 個 operation）（含 AIS 同步與學籍補齊）與 §7.8 管理端發布流程。
 - [資料庫設計](design/database-design.md)：15 張表、索引理由、遷移順序、`student_records`／`student_sync_state` 的同步語意。
 - [UI/UX 規格](design/ui-ux-spec.md)、[測試計畫](design/test-plan.md)（TC-01～34 的落點與現況）、[ADR-0001～0006](design/adr/)。
 - [規則描述模型](design/rule-model.md)：規則的三層紀錄方式、六型節點、採計配置與多系所驗證矩陣。

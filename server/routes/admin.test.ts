@@ -618,6 +618,86 @@ describe('管理端權限', () => {
   })
 })
 
+describe('GET /api/admin/rules/{versionId}（讀取版本）', () => {
+  it('沒有身分 401 AUTH_REQUIRED；格式錯誤 400；不存在 404 RULE_VERSION_NOT_FOUND', async () => {
+    const noIdentity = await start(new FakeDb())
+    const unauthorized = await call(noIdentity, '/api/admin/rules/cse-113-day@1')
+    expect(unauthorized.status).toBe(401)
+    expect(unauthorized.body.error.code).toBe('AUTH_REQUIRED')
+
+    const base = await start(new FakeDb(), { devUserSub: 'dev-admin' })
+    const malformed = await call(base, '/api/admin/rules/not-a-version')
+    expect(malformed.status).toBe(400)
+    expect(malformed.body.error.details[0].field).toBe('versionId')
+
+    const missing = await call(base, '/api/admin/rules/nope@1')
+    expect(missing.status).toBe(404)
+    expect(missing.body.error.code).toBe('RULE_VERSION_NOT_FOUND')
+  })
+
+  it('別系的版本 403 AUTH_DEPT_OUT_OF_SCOPE；沒有管理權 403 AUTH_FORBIDDEN', async () => {
+    const base = await start(new FakeDb(), { devUserSub: 'dev-admin' })
+
+    const otherDept = await call(base, '/api/admin/rules/mmd-115-day@1')
+    expect(otherDept.status).toBe(403)
+    expect(otherDept.body.error.code).toBe('AUTH_DEPT_OUT_OF_SCOPE')
+
+    const noScope = await start(new FakeDb(), { devUserSub: 'dev-student' })
+    const forbidden = await call(noScope, '/api/admin/rules/cse-113-day@1')
+    expect(forbidden.status).toBe(403)
+    expect(forbidden.body.error.code).toBe('AUTH_FORBIDDEN')
+  })
+
+  it('200 回中繼資料、整份 payload 與依狀態／權限算出的 allowedActions', async () => {
+    const db = new FakeDb()
+    db.findVersion('cse-113-day@1')!.published_at = new Date('2026-11-10T10:00:00Z')
+    const base = await start(db, { devUserSub: 'dev-admin' })
+
+    // published → 不可原地操作。
+    const published = await call(base, '/api/admin/rules/cse-113-day@1')
+    expect(published.status).toBe(200)
+    expect(published.body.data).toMatchObject({
+      versionId: 'cse-113-day@1',
+      bundleId: 'cse-113-day',
+      versionNo: 1,
+      status: 'published',
+      schemaVersion: '1.0',
+      proxy: false,
+      allowedActions: [],
+    })
+    expect(published.body.data.contentHash).toMatch(/^sha256:[0-9a-f]{64}$/)
+    expect(published.body.data.publishedAt).toMatch(/^2026-/)
+    expect(published.body.data.payload.requirements).toHaveLength(1)
+    expect(published.body.meta.ruleVersionId).toBe('cse-113-day@1')
+    expect(published.headers.get('cache-control')).toBe('no-store')
+
+    // approved → publish。
+    const approved = await call(base, '/api/admin/rules/cse-113-day@2')
+    expect(approved.status).toBe(200)
+    expect(approved.body.data.status).toBe('approved')
+    expect(approved.body.data.allowedActions).toEqual(['publish'])
+    expect(approved.body.data.publishedAt).toBeNull()
+
+    // in-review → approve／reject。
+    const created = await call(base, '/api/admin/rules/cse-113-day/draft', {
+      method: 'POST',
+      body: { payload: payloadFor('cse-113-day', 'cse', 12, '總學分至少 12。') },
+    })
+    const versionId: string = created.body.data.versionId
+    await call(base, `/api/admin/rules/${versionId}/submit`, { method: 'POST', body: {} })
+    const inReview = await call(base, `/api/admin/rules/${versionId}`)
+    expect(inReview.body.data.status).toBe('in-review')
+    expect(inReview.body.data.allowedActions).toEqual(['approve', 'reject'])
+
+    // draft → validate／test／submit（換另一個系所的管理員）。
+    const other = await start(db, { devUserSub: 'dev-other' })
+    const draft = await call(other, '/api/admin/rules/mmd-115-day@1')
+    expect(draft.status).toBe(200)
+    expect(draft.body.data.status).toBe('draft')
+    expect(draft.body.data.allowedActions).toEqual(['validate', 'test', 'submit'])
+  })
+})
+
 describe('狀態機與稽核', () => {
   it('draft → validate → test → submit → approve → publish 全程，並留下對應稽核', async () => {
     const db = new FakeDb()

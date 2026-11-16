@@ -224,6 +224,12 @@ export class AisSyncService {
   }
 
   async start(input: StartSyncInput): Promise<StartSyncResult> {
+    // 先清掉所有過期的 pending：使用者關掉頁面就不會有人來 complete，
+    // 不清會讓記憶體與 AIS session 一直留著。
+    for (const candidate of [...this.pendingById.values()]) {
+      if (this.isExpired(candidate)) this.discard(candidate)
+    }
+
     const existing = this.pendingByUser.get(input.userId)
     if (existing) {
       const pending = this.pendingById.get(existing)

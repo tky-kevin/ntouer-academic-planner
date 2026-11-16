@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>登入未完成｜NTOUER Academic Planner</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #12343d;
+        --muted: #4a5c63;
+        --line: #d7dee1;
+        --bg: #f6f8f8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif;
+        line-height: 1.7;
+      }
+      main {
+        width: min(560px, 100%);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 32px;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 1.5rem;
+      }
+      p {
+        margin: 0 0 12px;
+        color: var(--muted);
+      }
+      ul {
+        margin: 0 0 20px;
+        padding-left: 1.2em;
+        color: var(--muted);
+      }
+      a {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      a:focus-visible {
+        outline: 3px solid #7fb6c4;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>登入沒有完成</h1>
+      <p>Google 授權沒有走完，所以沒有建立工作階段。常見原因：</p>
+      <ul>
+        <li>在 Google 頁面按了取消，或關掉了視窗</li>
+        <li>授權流程超過 5 分鐘（state cookie 過期）</li>
+        <li>Google Console 的 redirect URI 與伺服器設定不一致</li>
+      </ul>
+      <p><strong>網址不帶錯誤細節是刻意的</strong>：避免把 token 或錯誤內容留在瀏覽器紀錄裡。</p>
+      <a href="/auth/google/start">再試一次登入</a>
+    </main>
+  </body>
+</html>

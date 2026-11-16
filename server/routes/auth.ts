@@ -104,19 +104,19 @@ export function createAuthRoutes({ query, config, fetchImpl = fetch }: AuthRoute
         const { url, requestId, req } = ctx
         const cookies = parseCookies(req.headers.cookie)
         const stateCookie = readStateCookie(cookies[STATE_COOKIE], config.sessionSecret)
-        if (!stateCookie) return redirect('/login-failed')
+        if (!stateCookie) return redirect('/login-failed.html')
 
         const error = url.searchParams.get('error')
-        if (error) return redirect('/login-failed')
+        if (error) return redirect('/login-failed.html')
 
         try {
           assertStateMatches(stateCookie.state, url.searchParams.get('state'))
         } catch {
-          return redirect('/login-failed')
+          return redirect('/login-failed.html')
         }
 
         const code = url.searchParams.get('code')
-        if (!code) return redirect('/login-failed')
+        if (!code) return redirect('/login-failed.html')
 
         let idToken: string | undefined
         try {
@@ -132,13 +132,13 @@ export function createAuthRoutes({ query, config, fetchImpl = fetch }: AuthRoute
               code_verifier: stateCookie.verifier,
             }),
           })
-          if (!response.ok) return redirect('/login-failed')
+          if (!response.ok) return redirect('/login-failed.html')
           const body = (await response.json()) as { id_token?: string }
           idToken = body.id_token
         } catch {
-          return redirect('/login-failed')
+          return redirect('/login-failed.html')
         }
-        if (!idToken) return redirect('/login-failed')
+        if (!idToken) return redirect('/login-failed.html')
 
         let claims: IdTokenClaims
         try {
@@ -151,7 +151,7 @@ export function createAuthRoutes({ query, config, fetchImpl = fetch }: AuthRoute
               message: `id token 驗證失敗：${caught instanceof Error ? caught.message : 'unknown'}`,
             }),
           )
-          return redirect('/login-failed')
+          return redirect('/login-failed.html')
         }
 
         const users = await query(

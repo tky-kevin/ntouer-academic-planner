@@ -284,6 +284,78 @@ async function versionAccess(
   }
 }
 
+/**
+ * GET 讀取版本的權限：editDraft／validateDraft／reviewDraft 任一即可。
+ * 不重用 authorizeFor 逐個呼叫，避免同一個請求重複查 department_admins 三次。
+ */
+async function authorizeVersionRead(
+  ctx: RouteContext,
+  identity: Identity,
+  version: VersionRow,
+): Promise<Result<string[]>> {
+  const deptScopes = await loadDeptScopes(ctx.query, identity.userId)
+  const actions: Action[] = ['editDraft', 'validateDraft', 'reviewDraft']
+  const allowed = actions.some((action) =>
+    can({
+      role: identity.role,
+      actorUserId: identity.userId,
+      deptScopes,
+      action,
+      resourceDept: version.dept_id,
+    }),
+  )
+  if (allowed) return { ok: true, value: deptScopes }
+
+  const outOfScope =
+    identity.role === 'student' &&
+    deptScopes.length > 0 &&
+    !deptScopes.includes(version.dept_id)
+  return deny(
+    outOfScope
+      ? forbiddenReply(ctx.requestId, 'AUTH_DEPT_OUT_OF_SCOPE', `你的管理範圍不包含系所 ${version.dept_id}。`)
+      : forbiddenReply(ctx.requestId, 'AUTH_FORBIDDEN', '你沒有讀取這個規則版本的權限。'),
+  )
+}
+
+export type AdminAllowedAction = 'validate' | 'test' | 'submit' | 'approve' | 'reject' | 'publish'
+
+/**
+ * 前端按鈕要不要顯示，由後端依「狀態 ＋ 權限」算，不讓前端自己猜。
+ * draft 的三個動作分別需要 validateDraft／validateDraft／editDraft；
+ * in-review／approved 需要的 reviewDraft／publishVersion 比讀取權限更嚴格，
+ * 所以不是 sysadmin、也不是該系管理員的身分即使讀得到，也不會拿到動作。
+ */
+export function allowedActionsFor(
+  version: Pick<VersionRow, 'status' | 'dept_id'>,
+  identity: Pick<Identity, 'role' | 'userId'>,
+  deptScopes: readonly string[],
+): AdminAllowedAction[] {
+  const allowed = (action: Action): boolean =>
+    can({
+      role: identity.role,
+      actorUserId: identity.userId,
+      deptScopes,
+      action,
+      resourceDept: version.dept_id,
+    })
+
+  switch (version.status) {
+    case 'draft': {
+      const actions: AdminAllowedAction[] = []
+      if (allowed('validateDraft')) actions.push('validate', 'test')
+      if (allowed('editDraft')) actions.push('submit')
+      return actions
+    }
+    case 'in-review':
+      return allowed('reviewDraft') ? ['approve', 'reject'] : []
+    case 'approved':
+      return allowed('publishVersion') ? ['publish'] : []
+    default:
+      // published／superseded 不可原地操作；validating／testing 是暫態，一律視為不可操作。
+      return []
+  }
+}
+
 async function parseBody<T>(
   ctx: RouteContext,
   parse: (value: unknown) => ParseResult<T>,
@@ -467,6 +539,40 @@ export function createAdminRoutes(options: AdminRouteOptions): Route[] {
           ),
           headers: NO_STORE,
         }
+      },
+    },
+
+    // ─── 讀取單一版本（含整份 payload 與 allowedActions）────────────────────
+    {
+      method: 'GET',
+      path: '/api/admin/rules/:versionId',
+      handler: async (ctx) => {
+        const begin = await beginRequest(ctx, options, { csrf: false, allowedQuery: [] })
+        if (!begin.ok) return begin.reply
+
+        const loaded = await loadVersion(ctx)
+        if (!loaded.ok) return loaded.reply
+        const version = loaded.value
+
+        const authz = await authorizeVersionRead(ctx, begin.value.identity, version)
+        if (!authz.ok) return authz.reply
+
+        return okReply(
+          {
+            versionId: version.version_id,
+            bundleId: version.bundle_id,
+            versionNo: version.version_no,
+            status: version.status,
+            schemaVersion: version.schema_version,
+            contentHash: version.content_hash,
+            publishedAt: version.published_at ? isoNow(version.published_at) : null,
+            proxy: version.proxy,
+            payload: version.payload,
+            allowedActions: allowedActionsFor(version, begin.value.identity, authz.value),
+          },
+          ctx.requestId,
+          version.version_id,
+        )
       },
     },
 

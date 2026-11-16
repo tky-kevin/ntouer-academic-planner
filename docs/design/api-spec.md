@@ -161,6 +161,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | POST | `/api/check` | 帶入情境與狀態執行檢核 | 學生本人 | 待擴充 |
 | GET | `/api/rules` | 依 `dept`／`year` 取最新已發布版本 | 已登入 | 待擴充 |
 | POST | `/api/admin/rules/{bundleId}/draft` | 建立草稿（201；省略 payload 時複製最新版） | 系所管理員 | 已實作（§7.8，未進 openapi） |
+| GET | `/api/admin/rules/{versionId}` | 讀取任一狀態的版本（含 payload 與 `allowedActions`） | 系所管理員 | 已實作（§7.8） |
 | PUT | `/api/admin/rules/{versionId}` | 更新草稿 | 系所管理員 | 已實作（§7.8） |
 | POST | `/api/admin/rules/{versionId}/validate` | 結構驗證（422 `RULE_VALIDATION_FAILED`） | 系所管理員 | 已實作（§7.8） |
 | POST | `/api/admin/rules/{versionId}/test` | 以測試紀錄跑引擎（422 `RULE_TEST_FAILED`） | 系所管理員 | 已實作（§7.8） |
@@ -443,18 +444,23 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 - 一律 `Cache-Control: no-store`；成功 `{data,meta}`、失敗 `{error,meta}`。
 - 請求 body 上限 1 MiB；未知欄位拒絕（400 `REQUEST_INVALID` ＋ `details`）。
 
-| 端點 | 請求 | 成功 | 主要錯誤 |
+| 端點 | 請求 | 成功（200／201） | 主要錯誤 |
 | --- | --- | --- | --- |
-| `POST /api/admin/rules/{bundleId}/draft` | `{ payload? }`；省略時複製最新版本 | 201，新 `versionId`（`version_no` = 最大 +1） | 400、404 `RULE_BUNDLE_NOT_FOUND` |
-| `PUT /api/admin/rules/{versionId}` | `{ payload }` | 200，更新後的版本摘要 | 400、409 `RULE_VERSION_IMMUTABLE`（非 draft） |
-| `POST …/validate` | `{}` | 200 `{ ok: true }` | 422 `RULE_VALIDATION_FAILED`（`details` 逐條，狀態留在 draft） |
-| `POST …/test` | `{ records?, scenario? }` | 200 `{ ok: true, run }` | 422 `RULE_TEST_FAILED` |
-| `POST …/submit` | `{}` | 200；狀態 → `in-review` | 409（非 draft／approved 以外的前置） |
-| `POST …/approve` | `{}` | 200；狀態 → `approved`，記 `reviewed_by` | 409 |
-| `POST …/reject` | `{ reason }`（必填，≤2000 字） | 200；狀態 → `draft` | 400、409 |
-| `POST …/publish` | `{}` | 200；狀態 → `published`，`proxy` 依 §8 | 422（投影／驗證失敗）、403（代理發布條件不符）、409 |
-| `GET …/diff` | — | 200 `{ previousVersionId, added, removed, changed, summary }` | 404 |
-| `GET /api/admin/audit` | `limit?`（預設 50）、`cursor?`（`record_id`）、`versionId?` | 200 `{ records, nextCursor }` | 400（拒 `offset`） |
+| `POST /api/admin/rules/{bundleId}/draft` | `{ payload? }`；省略時複製最新版本 | **201** `{ versionId, bundleId, versionNo, status, schemaVersion, contentHash, createdAt }` | 400、404 `RULE_BUNDLE_NOT_FOUND` |
+| `GET /api/admin/rules/{versionId}` | — | `{ versionId, bundleId, versionNo, status, schemaVersion, contentHash, publishedAt, proxy, payload, allowedActions }` | 400、401、403、404 `RULE_VERSION_NOT_FOUND` |
+| `PUT /api/admin/rules/{versionId}` | `{ payload }` | `{ versionId, status, contentHash, updatedAt }` | 400、409 `RULE_VERSION_IMMUTABLE`（非 draft） |
+| `POST …/validate` | `{}` | `{ versionId, valid: true, errors: [], checkedAt }` | 422 `RULE_VALIDATION_FAILED`（`details` 逐條，狀態留在 draft） |
+| `POST …/test` | `{ records?, scenario?, statuses? }` | `{ versionId, suite, scenario, passed, failed, overall, totalCredits, results }` | 422 `RULE_TEST_FAILED` |
+| `POST …/submit` | `{}` | `{ versionId, status: in-review, submittedAt }` | 409（狀態不是 draft） |
+| `POST …/approve` | `{}` | `{ versionId, status: approved, reviewedBy, reviewedAt }` | 409（狀態不是 in-review） |
+| `POST …/reject` | `{ reason }`（必填，≤2000 字） | `{ versionId, status: draft, notes, reviewedBy, reviewedAt }` | 400、409 |
+| `POST …/publish` | `{}` | `{ versionId, status: published, publishedAt, publishedBy, proxy, superseded[] }` | 422（投影／驗證失敗）、403（代理發布條件不符）、409（狀態不是 approved） |
+| `GET …/diff` | — | `{ versionId, bundleId, versionNo, status, previousVersionId, summary, requirements, clauses, sources }` | 404 |
+| `GET /api/admin/audit` | `limit?`（預設 50）、`cursor?`（`record_id`）、`versionId?` | `{ items[], nextCursor, limit }` | 400（拒 `offset`）、403 |
+
+**`allowedActions`**：由狀態與 `can()` 共同決定——`draft`→`validate`／`test`（需 `validateDraft`）、`submit`（需 `editDraft`）；`in-review`→`approve`／`reject`（需 `reviewDraft`）；`approved`→`publish`（需 `publishVersion`）；`published`／`superseded`／暫態→`[]`。
+
+**diff 形狀**：`requirements`／`clauses`／`sources` 三個區塊，各自是 `{ added[], removed[], changed[] }`；`changed` 的每一筆附 `before`／`after` 與逐欄位 `changes[]`。`summary` 是三區塊的計數總和；第一版的 `previousVersionId` 為 `null`、全部列為 `added`。
 
 **`/test` 的語意**：有帶 `records` 就用 provided-records 跑；沒帶就用空資料檢核，檢查三態、缺額與門檻的一致性、`and`/`or` 與子節點一致、`overall` 與三態一致。**空資料的缺額不算失敗**（缺資料不等於規則錯）。
 

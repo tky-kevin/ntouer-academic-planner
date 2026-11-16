@@ -159,6 +159,17 @@ describe('AIS 同步：驗證碼兩段式', () => {
     await expect(h.service.complete('user-1', started.syncId, 'A1B2')).rejects.toMatchObject({ code: 'SYNC_NOT_FOUND' })
   })
 
+  it('過期的 pending 會被下一個 start 清掉（不會留在記憶體）', async () => {
+    const h = harness({ config: config({ captchaTtlSeconds: 30 }) })
+    await h.service.start({ userId: 'user-1' })
+    expect(h.service.pendingCount()).toBe(1)
+    // 30 秒驗證碼期限 ＋ 5 秒同步期限，過 36 秒才算整個 pending 過期。
+    h.advance(36_000)
+    await h.service.start({ userId: 'user-1' })
+    // 舊的被清掉、只留下這次的新同步。
+    expect(h.service.pendingCount()).toBe(1)
+  })
+
   it('別人的同步不能取消、也不能完成', async () => {
     const h = harness()
     const started = await h.service.start({ userId: 'user-1' })

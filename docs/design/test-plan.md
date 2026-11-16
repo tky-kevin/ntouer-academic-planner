@@ -31,7 +31,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | Job | 指令 | 涵蓋 |
 | --- | --- | --- |
-| `web` | `npm ci` → `npm run build` → `npm test` | L0、L1（目前 29 檔 287 測試） |
+| `web` | `npm ci` → `npm run build` → `npm test` | L0、L1（目前 30 檔 303 測試） |
 | `docs` | `node docs/design/spike/run-cases.mjs` | spike 27 項（歷史證據；已移植到 `ruleEngine.test.ts`） |
 | `docs` | `node scripts/verify-rule-coverage.mjs` | 46 條覆蓋清單 → `clauseId` 對照（#18） |
 | `docs` | `node scripts/check-doc-links.mjs` | 文件相對連結 |
@@ -70,7 +70,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 **現況**：**未量測**。`@vitest/coverage-v8` 尚未安裝，所以 CI 沒有覆蓋率數字。
 
-要啟用的話是三個步驟：`npm i -D @vitest/coverage-v8`、`vitest run --coverage`、在 `vite.config.ts` 設 `coverage.thresholds`。這會讓 `web` job 多約 3 秒。**I2 不啟用**，理由：目前 287 個測試的分佈不是照覆蓋率長的，先量數字只會誘導去補無關的檔案。
+要啟用的話是三個步驟：`npm i -D @vitest/coverage-v8`、`vitest run --coverage`、在 `vite.config.ts` 設 `coverage.thresholds`。這會讓 `web` job 多約 3 秒。**I2 不啟用**，理由：目前 303 個測試的分佈不是照覆蓋率長的，先量數字只會誘導去補無關的檔案。
 
 ## 5. TC-01～TC-34 自動化對照表
 
@@ -117,7 +117,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | 狀態 | 條數 | 佔比 | 證據來源 |
 | --- | --- | --- | --- |
-| 自動（`npm test` 或 CI 腳本） | **24**（TC-01～09、12、14、15、18、19、24～27、29～34） | 71% | 29 檔 287 測試；另加 `scripts/verify-rule-coverage.mjs` |
+| 自動（`npm test` 或 CI 腳本） | **24**（TC-01～09、12、14、15、18、19、24～27、29～34） | 71% | 30 檔 303 測試；另加 `scripts/verify-rule-coverage.mjs` |
 | 部分 | **4**（TC-10、11、13、23） | 12% | 見上表逐條說明 |
 | 未實作 | **6**（TC-16、17、20、21、22、28） | 18% | I3 或 MVP 後 |
 | 合計 | 34 | 100% | — |

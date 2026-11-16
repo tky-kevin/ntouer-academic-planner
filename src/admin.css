@@ -1,4 +1,4 @@
-// 管理端兩頁的版面（#21）。與學生端共用 token 與頁首／頁尾樣式。
+/* 管理端兩頁的版面（#21）。與學生端共用 token 與頁首／頁尾樣式。 */
 .admin-main { padding-block: var(--space-7) var(--space-10); }
 .admin-intro { margin-bottom: var(--space-6); }
 .admin-intro h2 { font-size: var(--fs-h1); letter-spacing: -.02em; }
@@ -41,6 +41,21 @@
 .review-panel textarea:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
 .review-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 .review-actions p { font-size: var(--fs-sm); color: var(--state-met-fg); }
+.admin-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-3); margin: 0; }
+.admin-meta div { display: grid; gap: var(--space-1); min-width: 0; }
+.admin-meta dt { font-size: var(--fs-xs); color: var(--muted); }
+.admin-meta dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); min-width: 0; }
+.admin-meta code, .audit-head code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: var(--fs-xs); overflow-wrap: anywhere; }
+.admin-summary { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.admin-summary li { display: flex; justify-content: space-between; align-items: baseline; padding-block: var(--space-2); border-bottom: 1px solid var(--line-subtle); font-size: var(--fs-sm); }
+.admin-summary li:last-child { border-bottom: 0; }
+.admin-summary span { color: var(--muted); font-family: ui-monospace, SFMono-Regular, monospace; font-size: var(--fs-xs); }
+.admin-test-panel textarea { width: 100%; padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-control); font: inherit; font-size: var(--fs-sm); resize: vertical; }
+.admin-test-panel textarea:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.audit-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.audit-list li { display: grid; gap: var(--space-1); padding-bottom: var(--space-3); border-bottom: 1px solid var(--line-subtle); }
+.audit-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+.audit-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: var(--fs-xs); color: var(--muted); }
 
 @media (max-width: 850px) {
   .admin-grid { grid-template-columns: 1fr; }

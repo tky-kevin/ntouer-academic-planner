@@ -6,7 +6,7 @@
 
 1. **學生端畢業進度頁**（`/`）：三情境（已完成／修課中／規劃中）、總學分、條件卡三態（已達成／未達成／尚未確認）、未解衝突、四種狀態（Loading／Empty／Error／無權限），以及**真的打 API**（不再吃 mock）。
 2. **AIS 教務資料同步**：驗證碼兩段式（顯示驗證碼圖 → 輸入四碼 → 寫入快照）；帳密只存在伺服器記憶體，不落庫、不進日誌、不回前端。見 [api-spec.md §7.6](docs/design/api-spec.md)。
-3. **管理端**：`/admin-validate.html`（結構驗證與測試）、`/admin-review.html`（版本差異與審核）。後端發布流程端點（validate／test／submit／approve／publish／diff／audit）已完成；兩頁目前仍吃 `src/data/mockAdmin.ts`。
+3. **管理端**：`/admin-validate.html`（結構驗證、測試、送審）、`/admin-review.html`（版本差異、核准／退回／發布、稽核紀錄）。兩頁都打真 API，需帶 `?versionId=…`。
 4. **後端**：`node:http`＋`pg`（沒有 ORM）、統一回應 envelope、`/healthz`、`GET /api/rules/{versionId}`、`GET /api/me/progress`、Google OIDC 工作階段、AIS 同步、規則發布流程。
 
 需求與設計的入口是 [docs/README.md](docs/README.md)；API 契約是 [api-spec.md](docs/design/api-spec.md)＋[openapi.yaml](docs/design/openapi.yaml)。
@@ -76,13 +76,14 @@ npm run dev          # Vite http://localhost:5173，/api 與 /auth 會 proxy 到
 ### demo 資料
 
 - `dev-student`：113 資工，135 學分，`overall = unconfirmed`（X01 未解衝突）。
+- `dev-admin`：cse 系所管理員（`google_sub='dev-admin'`）；要做管理端 demo，把 `.env.local` 的 `DEV_USER_SUB` 設成 `dev-admin` 再重啟 API。
 - `cse-113-day@1`：seed 預設種成 draft；本機要看進度頁需先發布（CI 的 `test:db` 會自己轉 published）。
 - 規則包樣本：`docs/design/examples/113-cse.json`、`115-mmd.json`。
 
 ## 驗證指令
 
 ```powershell
-npm test                                  # 單元／元件測試（29 檔 287 測試）
+npm test                                  # 單元／元件測試（30 檔 303 測試）
 npm run test:db                           # 需要 PostgreSQL 的整合測試
 npm run build                             # tsc -b ＋ Vite 多入口建置 ＋ client boundary 檢查
 node docs/design/spike/run-cases.mjs      # spike 27 項（歷史證據，CI docs job 也會跑）
@@ -116,7 +117,8 @@ CI 有三個 job：`web`（build ＋ 單元測試）、`docs`（spike、覆蓋�
 
 ## 已知邊界（不假裝完成）
 
-- **管理端兩頁仍吃 mock**；發布流程的後端端點與測試已完成，但 UI 尚未接線。
+- **管理端沒有 payload 編輯器**：兩頁已接真 API（驗證／測試／送審／核准／退回／發布／diff／稽核），但草稿內容編輯要等 I3；`PUT /api/admin/rules/{versionId}` 與 `updateDraft()` 已備好。
+- **管理端 demo 需要管理員身分**：本機把 `DEV_USER_SUB` 設成 `dev-admin`（cse 系所管理員）再重啟；正式環境用真的 Google 帳號 ＋ `department_admins` 設定。
 - **AIS 同步是「一個部署、一份 AIS 憑證」**：多使用者上線前要改成每人各自憑證（見 [system-design.md §14.4](docs/design/system-design.md)）。
 - **系內／外系選修無法自動判定**：AIS 只給「必修／選修／通識」。未分類的課程會出現在 `unmatched`，相關學分條件顯示「尚未確認」而不是「未達成」（見 [system-design.md §5.5](docs/design/system-design.md)）。
 - **Google 登入需要真人走一次**；CI 只覆蓋純函式、路由與 session 資料表。
