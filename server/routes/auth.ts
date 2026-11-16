@@ -14,7 +14,8 @@ import {
   verifyIdToken,
 } from '../auth/oidc.js'
 import type { IdTokenClaims } from '../auth/oidc.js'
-import { createSession, loadDeptScopes, readSession, revokeSession } from '../auth/session.js'
+import { createSession, readSession, revokeSession } from '../auth/session.js'
+import { loadDeptScopes } from '../authz/can.js'
 
 export interface AuthConfig {
   clientId: string
