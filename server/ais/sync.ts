@@ -154,6 +154,12 @@ function maskAccount(account: string): string {
   return `${trimmed.slice(0, 3)}${'*'.repeat(Math.max(2, trimmed.length - 5))}${trimmed.slice(-2)}`
 }
 
+/** AIS 的學期是 `1141`、`1142`；資料庫與畫面統一用 `114-1`（database-design §3.11 的 term 格式）。 */
+export function toTermLabel(termId: string): string {
+  const match = /^(\d{3})(\d)$/.exec(termId.trim())
+  return match ? `${match[1]}-${match[2]}` : termId.trim()
+}
+
 function countsOf(records: readonly SyncRecord[]): SyncCounts {
   return {
     total: records.length,
@@ -414,7 +420,7 @@ export class AisSyncService {
         credits: record.credits,
         category: classified.category,
         status: toSyncStatus(record),
-        term: record.termId,
+        term: toTermLabel(record.termId),
         tags: classified.tags,
         owner: 'own',
         raw: {
@@ -459,7 +465,7 @@ export class AisSyncService {
           credits: offering.credits,
           category: classified.category,
           status: 'inProgress',
-          term: timetable.termId,
+          term: toTermLabel(timetable.termId),
           tags: classified.tags,
           owner: 'own',
           raw: {

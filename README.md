@@ -82,7 +82,7 @@ npm run dev          # Vite http://localhost:5173，/api 與 /auth 會 proxy 到
 ## 驗證指令
 
 ```powershell
-npm test                                  # 單元／元件測試（29 檔 286 測試）
+npm test                                  # 單元／元件測試（29 檔 287 測試）
 npm run test:db                           # 需要 PostgreSQL 的整合測試
 npm run build                             # tsc -b ＋ Vite 多入口建置 ＋ client boundary 檢查
 node docs/design/spike/run-cases.mjs      # spike 27 項（歷史證據，CI docs job 也會跑）

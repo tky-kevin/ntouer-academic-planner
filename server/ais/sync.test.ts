@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { QueryFn } from '../app.js'
-import { AisSyncService, DeferredCaptchaSolver, SyncError, aisErrorMessage, maskAccount } from './sync.js'
+import { AisSyncService, DeferredCaptchaSolver, SyncError, aisErrorMessage, maskAccount, toTermLabel } from './sync.js'
 import type { AisSessionClient } from './sync.js'
 import { PlannerAisError } from './errors.js'
 import { loadClassificationTable } from './classify.js'
@@ -227,6 +227,12 @@ describe('AIS 同步：紀錄轉換', () => {
 })
 
 describe('小工具', () => {
+  it('學期標籤：AIS 的 1141 轉成 114-1（與 database-design 的 term 格式一致）', () => {
+    expect(toTermLabel('1141')).toBe('114-1')
+    expect(toTermLabel('1142')).toBe('114-2')
+    expect(toTermLabel('暑修')).toBe('暑修')
+  })
+
   it('遮蔽帳號只留頭尾', () => {
     expect(maskAccount('B12345678')).toBe('B12****78')
     expect(maskAccount('abc')).toBe('***')

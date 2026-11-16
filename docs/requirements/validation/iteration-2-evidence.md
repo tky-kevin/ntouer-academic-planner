@@ -10,7 +10,7 @@
 
 | 檢查 | 指令 | 實際輸出 | 判定 |
 | --- | --- | --- | --- |
-| 單元／元件 | `npm test` | 29 檔、286 測試通過 | ✅ |
+| 單元／元件 | `npm test` | 29 檔、287 測試通過 | ✅ |
 | DB 整合 | `npm run test:db` | 6 檔、21 測試通過 | ✅ |
 | 建置 | `npm run build` | `tsc -b` ＋ Vite 三入口成功；client boundary `PASS` | ✅ |
 | spike | `node docs/design/spike/run-cases.mjs` | `結果：27 通過、0 失敗（共 27 項）` | ✅ |
