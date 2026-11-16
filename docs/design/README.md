@@ -20,9 +20,9 @@
 | [0001 規則即資料，版本不可變](adr/0001-rules-as-data-immutable-versions.md) | 規則包 JSON ＋ 發布即凍結，`bundleId@versionNo` 唯讀 | Accepted |
 | [0002 PostgreSQL + jsonb](adr/0002-postgresql-jsonb.md) | 唯一持久層；關聯表管約束，規則包存 `payload` jsonb | Accepted |
 | [0003 Google OIDC](adr/0003-google-oidc-identity.md) | 唯一身分來源；後端工作階段，不用 localStorage 存 token | Accepted |
-| [0004 migration 工具](adr/0004-migration-tooling.md) | 建議 `node-pg-migrate` ＋ 純 SQL，不引入 ORM | **Proposed**（待確認） |
-| [0005 測試框架與 E2E](adr/0005-test-framework-and-e2e.md) | Vitest 為單元／整合；E2E 建議 Playwright | Vitest Accepted／E2E **Proposed** |
-| [0006 部署平台與 CI](adr/0006-deployment-platform-and-ci.md) | CI 已實作（無 secrets）；部署平台與環境待定 | CI Accepted／部署 **Proposed** |
+| [0004 migration 工具](adr/0004-migration-tooling.md) | `node-pg-migrate` ＋ 純 SQL，不引入 ORM；遷移檔在 `db/migrations/` | Accepted |
+| [0005 測試框架與 E2E](adr/0005-test-framework-and-e2e.md) | Vitest 為單元／整合；E2E 用 Playwright，I2 不進 CI | Accepted |
+| [0006 部署平台與 CI](adr/0006-deployment-platform-and-ci.md) | CI 已實作（無 secrets）；I2 只交付可部署產出，不建環境 | Accepted |
 
 ## 與其他文件的關係
 

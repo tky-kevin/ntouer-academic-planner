@@ -2,7 +2,7 @@
 
 Extends: system-design.md §9（資料模型）
 
-- **狀態**：**Proposed（待團隊確認，見文末「待確認」）**
+- **狀態**：Accepted（2026/11/16 確認，見文末「確認結果」）
 - **日期**：2026/11/16
 - **決策者**：第七組（tky-kevin 彙整，需資料庫負責人覆核）
 - **對應需求**：NFR-08（儲存可靠性）、NFR-09（可維護與可測試）、FR-12（版本不可變）
@@ -19,7 +19,7 @@ Extends: system-design.md §9（資料模型）
 
 另外，`rule_versions.payload` 這種「整份 jsonb 快照」的欄位，一旦上線就有歷史資料；任何 schema 變更都必須**向前相容**，不能靠「清空重建」。
 
-## 決策（建議）
+## 決策
 
 1. **採 `node-pg-migrate`**，遷移檔為純 SQL／JS，放在 `db/migrations/`，以 npm script 執行：
    - `npm run db:migrate`（套用到最新）
@@ -64,11 +64,11 @@ Extends: system-design.md §9（資料模型）
 - 以 `\d+` 檢查部分索引（`department_admins` 的有效指派唯一）與 GIN 索引確實存在。
 - 以應用角色嘗試 UPDATE／DELETE 已發布的 `review_records`，必須被拒絕（TC-34 的前置條件）。
 
-## 待確認
+## 確認結果（2026/11/16）
 
-1. **是否接受「不引入 ORM，`pg` + 手寫 SQL」？** 這會影響後續所有 API 實作風格（Fritzcoding 的 AP-I2-03／04）。若團隊選 Drizzle，本 ADR 與 ADR-0002 的「schema 擁有權」段落要一起改。
-2. **遷移檔要放 `db/migrations/` 還是 `server/db/migrations/`？** 建議前者（與 `data/`、`docs/` 同層，不屬於應用程式碼）。
-3. **誰負責跑正式環境的遷移？** 若無部署環境（ADR-0006 未定），I2 只在開發環境套用。
+1. **不引入 ORM。** 確定採 `pg`（node-postgres）＋手寫 SQL 與手寫 row 型別；Prisma／Drizzle 兩個候選一併排除。
+2. **遷移檔放 `db/migrations/`**（與 `data/`、`docs/` 同層，不屬於應用程式碼）。
+3. **I2 只在開發環境套用遷移。** 正式環境的遷移負責人待 ADR-0006 的部署環境落地後再指定。
 
 ## 相關
 

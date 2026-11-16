@@ -2,7 +2,7 @@
 
 Extends: system-design.md §6（邊緣案例與測試設計）、§13（I2 完成定義）
 
-- **狀態**：**Vitest 部分 Accepted（已在使用）／E2E 部分 Proposed（待確認）**
+- **狀態**：Accepted（2026/11/16 確認，見文末「確認結果」）
 - **日期**：2026/11/16
 - **決策者**：第七組（tky-kevin 彙整，Yili-code 覆蓋測試與 CI）
 - **對應需求**：NFR-01（正確性）、NFR-07（可用性與相容性）、NFR-09（可維護與可測試）
@@ -26,7 +26,7 @@ Extends: system-design.md §6（邊緣案例與測試設計）、§13（I2 完�
    - `docs/design/spike/run-cases.mjs` 的 27 項情境（正式實作時改寫成回歸測試，見 system-design.md §6.2）
    - TC-29～TC-34 的邊緣案例（上限、重複採計、抵免／免修、未解衝突）
 3. **API／權限用整合測試**：對真的 PostgreSQL 測 FK、唯一約束與「A 不能讀 B」。這一層**不在本輪 CI 執行**（CI 不連外部服務，見 ADR-0006），以本機或 I3 的整合 job 執行。
-4. **E2E 建議採 Playwright**：涵蓋 Chrome 與 Edge，viewport 至少 `390×844` 與 `1366×768`（NFR-07）。
+4. **E2E 採 Playwright**：涵蓋 Chrome 與 Edge，viewport 至少 `390×844` 與 `1366×768`（NFR-07）。
 5. **TC-01～TC-34 自動化對照表是 `test-plan.md`（Step 7）的唯一真相**：本 ADR 只定「用什麼工具、哪一層」，不在這裡重複列出每個 TC 的落點。
 6. **不用 `continue-on-error` 或「先跳過」讓 CI 變綠**；還沒實作的案例以明確的 `skip` 加 Issue 編號，並在 `test-plan.md` 標為未自動化。
 
@@ -60,11 +60,11 @@ Extends: system-design.md §6（邊緣案例與測試設計）、§13（I2 完�
 - 引擎測試可在無網路、無資料庫的環境單獨執行（NFR-09）：以 `npm test` 在 CI 的 `web` job 即為證明。
 - TC 對照表在 `test-plan.md` 完成後，每一條 TC 都能指出「哪個測試檔、哪一層、目前是自動／手動／未實作」。
 
-## 待確認
+## 確認結果（2026/11/16）
 
-1. **E2E 要不要納入 I2 的 CI？** 建議 **I2 只在本機／手動跑**，理由：需要起資料庫與真實登入流程，會把外部依賴引進 CI（違反 ADR-0006 的「CI 不用 secrets」。若要用測試帳號登入 Google，就必須有 secret）。I3 再評估以容器化資料庫 ＋ 專用測試帳號導入。
-2. **E2E 的工具是否就用 Playwright？** 若團隊成員只熟 Cypress，可改用 Cypress；本 ADR 的決策點是「E2E 只覆蓋流程與版面，不重複驗引擎」。
-3. **整合測試的資料庫怎麼起？** 建議 `docker compose up db`（與 ADR-0006 的開發環境一致）；待部署平台定案後再確認。
+1. **E2E 不納入 I2 的 CI。** I2 只在本機／手動執行；理由是它需要資料庫與真實登入，會把外部依賴與 secret 引進 CI（違反 ADR-0006 的邊界）。I3 再評估以容器化資料庫＋專用測試帳號導入。
+2. **E2E 工具確定為 Playwright。** 決策點是「E2E 只覆蓋流程與版面，不重複驗引擎」，工具可換但層級不變。
+3. **整合測試的資料庫用 `docker compose up db`**，與 ADR-0006 的開發環境一致。
 
 ## 相關
 

@@ -2,7 +2,7 @@
 
 Extends: system-design.md §3（容器到元件）、§12.2（風險）
 
-- **狀態**：**CI 部分 Accepted（已實作並綠燈）／部署平台部分 Proposed（待確認）**
+- **狀態**：Accepted（2026/11/16 確認；I2 的部署範圍限於「可部署產出」，不建立實際環境）
 - **日期**：2026/11/16
 - **決策者**：第七組（tky-kevin 彙整）
 - **對應需求**：NFR-04（身分與資料安全）、NFR-08（儲存可靠性）、NFR-09（可維護與可測試）
@@ -48,11 +48,11 @@ Extends: system-design.md §3（容器到元件）、§12.2（風險）
 
 ### 環境
 
-| 環境 | 用途 | I2 是否必要 |
+| 環境 | 用途 | I2 |
 | --- | --- | --- |
-| Dev | 本機開發：Vite dev server ＋ 本機 PostgreSQL（容器）；CI 只驗 build 與測試 | **是** |
-| Staging | 部署前驗收：同一份 artifact、獨立資料庫 | 待確認（見下） |
-| Prod | 正式提供學生與管理者使用 | 待確認（見下） |
+| Dev | 本機開發：Vite dev server ＋ 本機 PostgreSQL（容器）；CI 只驗 build 與測試 | **建立** |
+| Staging | 部署前驗收：同一份 artifact、獨立資料庫 | **不建立**（5 人團隊，多一層環境只有維運成本） |
+| Prod／Demo | 正式提供學生與管理者使用 | **不建立**；I2 交付到「可部署」（Dockerfile＋啟動腳本＋環境變數清單），有主機即可上線 |
 
 ## 為什麼不是其他作法
 
@@ -85,12 +85,12 @@ Extends: system-design.md §3（容器到元件）、§12.2（風險）
 - 邊界：`grep -n "secrets\." .github/workflows/ci.yml` 應無結果；`grep -n "continue-on-error"` 亦應無結果。
 - 保護：`gh api repos/tky-kevin/ntouer-academic-planner/branches/main/protection` 應出現 `required_status_checks` 含 `web`、`docs`。
 
-## 待確認
+## 確認結果（2026/11/16）
 
-1. **有沒有可用的主機？** 校內 VM、雲端免費層（Render／Railway／Fly.io）或自架。這決定 Staging／Prod 能不能在 I2 落地；沒有主機前，I2 的部署產出僅到「可建置 ＋ 有 Dockerfile／啟動腳本」。
-2. **Staging 是否必要？** 建議先只做 Dev ＋ 一個 Prod（或稱 Demo 環境），5 人團隊不需要三環境；但評閱若要求分環境，再補。
-3. **要不要 `enforce_admins: true`？** 開了 owner 也不能直推 `main`；好處是流程一致，壞處是急修時多一道手續。
-4. **`ubuntu-latest` 是否鎖版本？** 建議鎖 `ubuntu-24.04` 避免映像漂移，本輪先維持 `ubuntu-latest`。
+1. **目前沒有可用主機**（校內 VM／雲端免費層／自架皆未取得）。因此 I2 **不建立任何實際環境**，部署產出定義為：`Dockerfile` ＋ 啟動腳本 ＋ 環境變數清單 ＋ 資料庫遷移指令，讓取得主機後可直接上線。報告時必須寫明「可部署」不等於「已部署」（NFR-06）。
+2. **不建立 Staging。** 環境只有 Dev，以及取得主機後的單一 Prod／Demo。
+3. **`enforce_admins` 建議設為 `true`**，讓 owner 也走 PR；由 repo owner 在 Settings 套用（本次已有兩個 commit 以 bypass 方式直推 `main`，設定後就不會再發生）。
+4. **`ubuntu-latest` 暫時維持**；如遇映像漂移造成紅燈，改鎖 `ubuntu-24.04`。
 
 ## 相關
 
