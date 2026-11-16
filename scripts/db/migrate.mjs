@@ -6,18 +6,16 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import pg from "pg";
+import { loadDatabaseEnv } from "./load-env.mjs";
 
 const root = process.cwd();
-for (const line of readFileSync(path.join(root, ".env.local"), "utf8").split(/\r?\n/)) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/);
-  if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
-}
+const connectionString = loadDatabaseEnv(root);
 
 const dir = path.join(root, "db/migrations");
 const files = readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
 const onlyStatus = process.argv.includes("--status");
 
-const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+const client = new pg.Client({ connectionString });
 
 async function main() {
   await client.connect();
