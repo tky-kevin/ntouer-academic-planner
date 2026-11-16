@@ -64,11 +64,3 @@ export async function revokeSession(query: QueryFn, token: string): Promise<bool
   )
   return result.rows.length > 0
 }
-
-export async function loadDeptScopes(query: QueryFn, userId: string): Promise<string[]> {
-  const result = await query(
-    `select dept_id from department_admins where user_id = $1 and revoked_at is null order by dept_id`,
-    [userId],
-  )
-  return (result.rows as Array<{ dept_id: string }>).map((row) => row.dept_id)
-}
