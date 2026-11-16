@@ -83,12 +83,13 @@ npm run dev          # Vite http://localhost:5173，/api 與 /auth 會 proxy 到
 ## 驗證指令
 
 ```powershell
-npm test                                  # 單元／元件測試（30 檔 303 測試）
+npm test                                  # 單元／元件測試（33 檔 323 測試）
 npm run test:db                           # 需要 PostgreSQL 的整合測試
 npm run build                             # tsc -b ＋ Vite 多入口建置 ＋ client boundary 檢查
 node docs/design/spike/run-cases.mjs      # spike 27 項（歷史證據，CI docs job 也會跑）
 node scripts/verify-rule-coverage.mjs     # 46 條覆蓋清單 → clauseId 對照（#18）
 node scripts/check-doc-links.mjs          # 文件相對連結
+npm run db:reclassify                     # 分類表修正後，重新分類已同步的 AIS 紀錄（不需重登 AIS）
 npx --yes @redocly/cli@latest lint docs/design/openapi.yaml
 ```
 
@@ -120,6 +121,9 @@ CI 有三個 job：`web`（build ＋ 單元測試）、`docs`（spike、覆蓋�
 - **管理端沒有 payload 編輯器**：兩頁已接真 API（驗證／測試／送審／核准／退回／發布／diff／稽核），但草稿內容編輯要等 I3；`PUT /api/admin/rules/{versionId}` 與 `updateDraft()` 已備好。
 - **管理端 demo 需要管理員身分**：本機把 `DEV_USER_SUB` 設成 `dev-admin`（cse 系所管理員）再重啟；正式環境用真的 Google 帳號 ＋ `department_admins` 設定。
 - **AIS 同步是「一個部署、一份 AIS 憑證」**：多使用者上線前要改成每人各自憑證（見 [system-design.md §14.4](docs/design/system-design.md)）。
-- **系內／外系選修無法自動判定**：AIS 只給「必修／選修／通識」。未分類的課程會出現在 `unmatched`，相關學分條件顯示「尚未確認」而不是「未達成」（見 [system-design.md §5.5](docs/design/system-design.md)）。
+- **系內／外系選修**：AIS 只給「必修／選修／通識」，沒有開課系所欄位；分類表用 **AIS 課號前綴**（`B57`＝資工系、`B92`＝體育）補足，並在 `data/rules/113-cse-classification.json` 逐條寫明依據。課號非 B57 的選修（例如 `M57` 的資料探勘）一律保持 `unknown`。
+- **微積分上／下**：AIS 課名只寫「微積分」，因此只計入系訂必修學分（R03）；R04 的 `微積分(上)`／`(下)` 仍顯示缺少，等課程目錄的完整課名對應。
+- **核心選修 12 學分**：清單在課程地圖 PDF，尚未數位化 → 條件維持 `unknown`。
+- **R15～R19 的狀態條件**（英文門檻、操行、體育四學期、游泳、進階英文資格）：AIS 成績頁沒有這些欄位 → `unknown`，需個人修正或 I3 補資料來源。
 - **Google 登入需要真人走一次**；CI 只覆蓋純函式、路由與 session 資料表。
 - 學期計畫、缺額篩選、衝堂、AI PDF 整合屬 I3。

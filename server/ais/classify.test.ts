@@ -104,6 +104,43 @@ describe('分類：排除與未知', () => {
   })
 })
 
+describe('分類：真實 AIS 課名與課號', () => {
+  it('AIS 課名「英文(大一英文)」也算大一英文', () => {
+    const result = classifyCourse(table, { courseName: '英文(大一英文)', courseCode: 'B9D01968' })
+    expect(result.category).toBe('CE')
+    expect(result.tags).toContain('english')
+  })
+
+  it('AIS 課名只寫「微積分」時仍算系訂必修（R04 的上下冊對應另計）', () => {
+    const result = classifyCourse(table, { courseName: '微積分', courseCode: 'B5711M97' })
+    expect(result.category).toBe('REQ')
+    expect(result.courseCode).toBe('微積分')
+  })
+
+  it('B57 開頭的課視為資工系開課 → ELE＋inner／program', () => {
+    const result = classifyCourse(table, { courseName: '資料庫系統', courseCode: 'B5703N54' })
+    expect(result.category).toBe('ELE')
+    expect(result.tags).toEqual(['inner', 'program'])
+    expect(result.ruleId).toBe('CODE-01')
+  })
+
+  it('B92 開頭的 0 學分課視為體育 → CE＋pe', () => {
+    const result = classifyCourse(table, { courseName: '羽球(初)', courseCode: 'B92J3G04' })
+    expect(result.category).toBe('CE')
+    expect(result.tags).toEqual(['pe'])
+  })
+
+  it('課名比對優先於課號前綴（B57 的計算機概論仍是 REQ）', () => {
+    const result = classifyCourse(table, { courseName: '計算機概論', courseCode: 'B57011RQ' })
+    expect(result.category).toBe('REQ')
+  })
+
+  it('外系課號（M57）不會被當成系內選修', () => {
+    const result = classifyCourse(table, { courseName: '資料探勘', courseCode: 'M5701N5J' })
+    expect(result.category).toBe('unknown')
+  })
+})
+
 describe('分類資料本身的完整性', () => {
   it('每一條規則都有 sourceId 與 locator（可追溯）', () => {
     for (const rule of [...table.rules, ...table.excluded]) {

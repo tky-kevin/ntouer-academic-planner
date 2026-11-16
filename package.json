@@ -20,6 +20,7 @@
     "check:docs": "node scripts/check-doc-links.mjs",
     "db:migrate": "node scripts/db/migrate.mjs",
     "db:seed": "node scripts/db/seed.mjs",
+    "db:reclassify": "tsx scripts/reclassify-ais-records.ts",
     "preview": "vite preview"
   },
   "dependencies": {

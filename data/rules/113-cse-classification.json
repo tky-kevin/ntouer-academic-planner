@@ -216,7 +216,7 @@
     },
     {
       "id": "CE-02",
-      "match": { "kind": "prefix", "value": "大一英文" },
+      "match": { "kind": "contains", "value": "大一英文" },
       "category": "CE",
       "tags": ["english"],
       "sourceId": "S113-03",
@@ -224,7 +224,7 @@
     },
     {
       "id": "CE-03",
-      "match": { "kind": "exact", "value": "進階英文" },
+      "match": { "kind": "contains", "value": "進階英文" },
       "category": "CE",
       "tags": ["english", "advancedEnglish"],
       "sourceId": "S113-03",
@@ -232,7 +232,7 @@
     },
     {
       "id": "CE-04",
-      "match": { "kind": "prefix", "value": "英文精進" },
+      "match": { "kind": "contains", "value": "英文精進" },
       "category": "CE",
       "tags": ["english"],
       "sourceId": "S113-03",
@@ -240,7 +240,7 @@
     },
     {
       "id": "CE-05",
-      "match": { "kind": "exact", "value": "海洋科學概論" },
+      "match": { "kind": "contains", "value": "海洋科學概論" },
       "category": "CE",
       "tags": ["ocean", "general"],
       "sourceId": "S113-03",
@@ -248,7 +248,7 @@
     },
     {
       "id": "CE-06",
-      "match": { "kind": "exact", "value": "人工智慧概論" },
+      "match": { "kind": "contains", "value": "人工智慧概論" },
       "category": "CE",
       "tags": ["ai", "general"],
       "sourceId": "S113-03",
@@ -309,6 +309,34 @@
       "tags": ["pe"],
       "sourceId": "S113-03",
       "locator": "（Ⅰ）共同教育／體育領域（四門 0 學分）"
+    },
+    {
+      "id": "REQ-19",
+      "match": { "kind": "exact", "value": "微積分" },
+      "canonical": "微積分",
+      "category": "REQ",
+      "tags": [],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修／微積分（上）（下）",
+      "note": "AIS 的課名只寫「微積分」、不帶上／下；這裡只保證計入系訂必修學分，R04 的微積分(上)／(下) 仍需以課程目錄的完整課名對應（見 limitations）。"
+    },
+    {
+      "id": "CODE-01",
+      "match": { "kind": "codePrefix", "value": "B57" },
+      "category": "ELE",
+      "tags": ["inner", "program"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅱ）系訂專業必修＋（Ⅲ）系內選修",
+      "note": "AIS 課號前綴 B57 是資訊工程學系開課：檢核表（Ⅱ）的系訂必修在真實紀錄中皆為 B57 開頭（計算機概論 B57011RQ、程式設計 B5701M33、資料結構 B5702M57…），同前綴課程視為系內選修。"
+    },
+    {
+      "id": "CODE-02",
+      "match": { "kind": "codePrefix", "value": "B92" },
+      "category": "CE",
+      "tags": ["pe"],
+      "sourceId": "S113-03",
+      "locator": "（Ⅰ）共同教育／體育領域",
+      "note": "AIS 課號前綴 B92 是體育課（重量訓練 B92D2G65、羽球 B92J3G04、潛水 B92B4G31、有氧舞蹈 B92A5G0C、網球 B92K6G07），皆為 0 學分。"
     }
   ]
 }

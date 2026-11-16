@@ -7,7 +7,7 @@ import path from 'node:path'
 export type CourseCategory = 'CE' | 'REQ' | 'ELE' | 'unknown'
 
 export interface ClassificationPattern {
-  kind: 'exact' | 'prefix' | 'contains' | 'regex'
+  kind: 'exact' | 'prefix' | 'contains' | 'regex' | 'codePrefix'
   value: string
 }
 
@@ -19,6 +19,8 @@ export interface ClassificationRule {
   tags?: readonly string[]
   sourceId: string
   locator: string
+  /** 給人看的補充說明（例如為什麼用課號前綴）。 */
+  note?: string
 }
 
 export interface ExcludedRule {
@@ -78,6 +80,31 @@ function matches(pattern: ClassificationPattern, normalizedName: string): boolea
   }
 }
 
+/** AIS 課號前綴＝開課系所（B57＝資訊工程學系、B92＝體育）。只在課名對不到時使用。 */
+export function matchesCodePrefix(prefix: string, courseCode: string): boolean {
+  const code = courseCode.trim().toUpperCase()
+  const value = prefix.trim().toUpperCase()
+  return value !== '' && code.startsWith(value)
+}
+
+function matchesName(pattern: ClassificationPattern, normalizedName: string, courseCode: string): boolean {
+  if (pattern.kind === 'codePrefix') return matchesCodePrefix(pattern.value, courseCode)
+  return matches(pattern, normalizedName)
+}
+
+function classified(rule: ClassificationRule, fallbackCode: string): CourseClassification {
+  return {
+    decision: 'classified',
+    category: rule.category,
+    tags: [...(rule.tags ?? [])],
+    courseCode: rule.canonical ? normalizeCourseName(rule.canonical) : fallbackCode,
+    ruleId: rule.id,
+    sourceId: rule.sourceId,
+    locator: rule.locator,
+    reason: null,
+  }
+}
+
 export function parseClassificationTable(raw: unknown): ClassificationTable {
   const table = raw as ClassificationTable
   if (!table || typeof table !== 'object') throw new Error('classification 資料不是物件')
@@ -124,7 +151,7 @@ export function classifyCourse(table: ClassificationTable, input: ClassifyInput)
   const fallbackCode = input.courseCode.trim() || input.courseName
 
   for (const rule of table.excluded) {
-    if (matches(rule.match, normalized)) {
+    if (matchesName(rule.match, normalized, input.courseCode)) {
       return {
         decision: 'excluded',
         category: 'unknown',
@@ -138,18 +165,16 @@ export function classifyCourse(table: ClassificationTable, input: ClassifyInput)
     }
   }
 
+  // 先比課名（必修／共同教育優先），再用課號前綴（系所／體育）兜底。
   for (const rule of table.rules) {
-    if (!matches(rule.match, normalized)) continue
-    return {
-      decision: 'classified',
-      category: rule.category,
-      tags: [...(rule.tags ?? [])],
-      courseCode: rule.canonical ? normalizeCourseName(rule.canonical) : fallbackCode,
-      ruleId: rule.id,
-      sourceId: rule.sourceId,
-      locator: rule.locator,
-      reason: null,
-    }
+    if (rule.match.kind === 'codePrefix') continue
+    if (!matchesName(rule.match, normalized, input.courseCode)) continue
+    return classified(rule, fallbackCode)
+  }
+  for (const rule of table.rules) {
+    if (rule.match.kind !== 'codePrefix') continue
+    if (!matchesCodePrefix(rule.match.value, input.courseCode)) continue
+    return classified(rule, fallbackCode)
   }
 
   // AIS 明確標成通識的課，依規格書屬於共同教育；其餘一律 unknown。
