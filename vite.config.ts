@@ -9,5 +9,7 @@ export default defineConfig({
     environment: 'node',
     setupFiles: ['./src/test/setup.ts'],
     clearMocks: true,
+    // DB 測試需要真的 PostgreSQL，改用 `npm run test:db`（vitest.db.config.ts）。
+    exclude: ['**/node_modules/**', '**/dist/**', '**/*.db.test.ts'],
   },
 })

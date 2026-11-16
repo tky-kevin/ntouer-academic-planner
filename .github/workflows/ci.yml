@@ -2,6 +2,7 @@ name: CI
 
 # 基本 CI：push 到 main 與所有 pull_request 都跑。
 # 不使用 secrets、不連外部服務（OpenAPI lint 用 npx 從 npm registry 取官方 CLI）。
+# `api` job 用 GitHub 內建的 Postgres service container，仍不連任何外部服務。
 on:
   push:
     branches: [main]
@@ -80,3 +81,46 @@ jobs:
           else
             echo "docs/design/openapi.yaml 尚未建立，略過 OpenAPI lint。"
           fi
+
+  api:
+    name: api
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: planner
+          POSTGRES_PASSWORD: planner
+          POSTGRES_DB: planner
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U planner -d planner"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://planner:planner@localhost:5432/planner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: 安裝相依套件
+        run: npm ci
+
+      - name: 套用遷移
+        run: npm run db:migrate
+
+      - name: 種子資料（可重複執行）
+        run: npm run db:seed
+
+      # 需要真實 PostgreSQL 的測試（檔名 *.db.test.ts）；目前尚無，passWithNoTests。
+      - name: DB 整合測試
+        run: npm run test:db

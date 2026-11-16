@@ -1,6 +1,7 @@
 node_modules/
 dist/
 *.tsbuildinfo
+.vitest/
 output/
 .playwright-cli/
 *.local
