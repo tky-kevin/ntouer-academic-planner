@@ -1,0 +1,559 @@
+openapi: 3.1.0
+
+info:
+  title: NTOUER Academic Planner API
+  version: 0.1.0
+  summary: 畢業規則檢核、個人進度與規則版本查詢
+  description: |
+    Iteration 2 的 HTTP 介面契約。人類可讀的規格、錯誤碼表與版本策略見
+    `docs/design/api-spec.md`；本檔是機器可讀版本，兩者衝突時以本檔為準。
+
+    所有回應都使用同一個 envelope：成功為 `{ data, meta }`，
+    失敗為 `{ error, meta }`。成功與失敗的區分看有沒有 `data`／`error`，
+    HTTP 狀態碼仍正確設定。
+
+    認證只支援 cookie 工作階段（`planner_session`），不使用 `Authorization`
+    標頭；理由與流程見 ADR-0003。
+  contact:
+    name: 第七組（NTOUER Academic Planner）
+    url: https://github.com/tky-kevin/ntouer-academic-planner
+  license:
+    name: 課程專案（未授權對外散布）
+    identifier: LicenseRef-Proprietary
+
+tags:
+  - name: auth
+    description: 登入工作階段。OIDC 的 start／callback 端點尚未納入本檔，流程見 api-spec.md §6.1。
+  - name: student
+    description: 學生端查詢：個人進度與規則版本內容。
+
+servers:
+  - url: '{protocol}://{host}'
+    description: |
+      前端與 API 同源部署（ADR-0006）。正式主機尚未定案，預設值為本機開發。
+    variables:
+      protocol:
+        default: https
+        enum: [https, http]
+      host:
+        default: 'localhost:3000'
+        description: 部署主機；取得主機後在此填入實際網域
+
+security:
+  - sessionCookie: []
+
+paths:
+  /auth/session:
+    get:
+      tags: [auth]
+      operationId: getSession
+      summary: 取得目前工作階段
+      description: |
+        前端啟動時呼叫一次，用來決定顯示學生端或管理端入口。
+        系所管理員的判定看 `deptScopes` 是否非空，不另立角色。
+      responses:
+        '200':
+          description: 目前有效的工作階段
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          description: 沒有 cookie、cookie 無效、已過期或已撤銷
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [auth]
+      operationId: deleteSession
+      summary: 登出並撤銷工作階段
+      description: |
+        寫入 `sessions.revoked_at` 並清除 cookie，該 cookie 立刻失效。
+        成功回 204 且沒有 body，是唯一不帶 envelope 的回應。
+      responses:
+        '204':
+          description: 已登出
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+        '401':
+          description: 沒有可撤銷的工作階段
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/me/progress:
+    get:
+      tags: [student]
+      operationId: getMyProgress
+      summary: 取得個人畢業進度
+      description: |
+        資料來源為學生目前的修課快照、個人修正、個人覆蓋與指定的已發布規則版本。
+        `overall` 與 `requirements[].state` 都是三態；未解衝突（`openConflicts`
+        非空）或存在 `unknown` 時 `overall` 必須是 `unconfirmed`，不得顯示為已完成。
+      parameters:
+        - name: scenario
+          in: query
+          required: false
+          description: 參與計算的紀錄範圍；省略時為 `completed`
+          schema:
+            $ref: '#/components/schemas/Scenario'
+        - name: bundleId
+          in: query
+          required: false
+          description: |
+            指定規則包，如 `cse-113-day`。省略時使用該學生系所與入學年度的
+            最新已發布版本。
+          schema:
+            type: string
+            pattern: '^[a-z]+-[0-9]{3}-[a-z]+$'
+        - name: includeTrace
+          in: query
+          required: false
+          description: 是否回傳逐筆採計 trace；預設 `true`
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: 指定情境的進度
+          headers:
+            Cache-Control:
+              description: 個人資料一律不快取
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponse'
+        '400':
+          description: 查詢參數格式或列舉值不合法
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 指定的規則包不屬於該學生（`AUTH_DEPT_OUT_OF_SCOPE`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 規則包或版本不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 指定的版本尚未發布（`RULE_VERSION_NOT_PUBLISHED`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/rules/{versionId}:
+    get:
+      tags: [student]
+      operationId: getRuleVersion
+      summary: 取得指定規則版本
+      description: |
+        回傳版本中繼資料、來源卡與條文卡。學生端的條件詳情頁與管理端的來源
+        回溯都使用這支端點。`proxy` 為 true 代表由系統管理員代理發布、
+        未經系所管理者審核，前端必須原樣顯示這個標示。
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          description: 版本識別碼，格式為 `bundleId@versionNo`
+          schema:
+            type: string
+            pattern: '^[a-z]+-[0-9]{3}-[a-z]+@[0-9]+$'
+            examples:
+              - cse-113-day@3
+        - name: include
+          in: query
+          required: false
+          description: |
+            設為 `payload` 時一併回傳整份規則包，供管理端編輯使用；
+            學生端不需要。
+          schema:
+            type: string
+            enum: [payload]
+      responses:
+        '200':
+          description: 指定版本的內容
+          headers:
+            Cache-Control:
+              description: 個人端不快取；規則版本可快取但先保守處理
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleVersionResponse'
+        '400':
+          description: "`versionId` 格式不合法"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 未登入
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 版本不存在（`RULE_VERSION_NOT_FOUND`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 學生端請求了非 `published` 的版本（`RULE_VERSION_NOT_PUBLISHED`）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: planner_session
+      description: |
+        `HttpOnly`、`Secure`、`SameSite=Lax` 的工作階段 cookie。伺服器只保存
+        其內容的 SHA-256，登出即撤銷。不使用 `Authorization` 標頭。
+
+  schemas:
+    Meta:
+      type: object
+      description: 每個回應都有的中繼資料
+      required: [requestId, generatedAt]
+      properties:
+        requestId:
+          type: string
+          description: 伺服器產生的請求識別碼，與 `X-Request-Id` 標頭相同
+        ruleVersionId:
+          type: string
+          description: 只在結果與規則版本有關時出現
+        generatedAt:
+          type: string
+          format: date-time
+          description: 伺服器產生回應的時間
+
+    ErrorCode:
+      type: string
+      description: 穩定的機器可讀錯誤代碼；前端依此分支，不依 `message`
+      enum:
+        - AUTH_REQUIRED
+        - AUTH_FORBIDDEN
+        - AUTH_DEPT_OUT_OF_SCOPE
+        - AUTH_ORIGIN_MISMATCH
+        - REQUEST_INVALID
+        - RESOURCE_NOT_FOUND
+        - RULE_BUNDLE_NOT_FOUND
+        - RULE_VERSION_NOT_FOUND
+        - RULE_VERSION_NOT_PUBLISHED
+        - RULE_VERSION_IMMUTABLE
+        - RULE_VALIDATION_FAILED
+        - RULE_TEST_FAILED
+        - SYNC_FAILED
+        - RATE_LIMITED
+        - INTERNAL
+
+    ErrorDetail:
+      type: object
+      description: 逐欄位或逐項的失敗原因
+      required: [reason]
+      properties:
+        field:
+          type: string
+        reason:
+          type: string
+
+    ErrorBody:
+      type: object
+      required: [code, message, retryable]
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+          description: 給人看的中文訊息；措辭可能調整，不視為契約
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+        retryable:
+          type: boolean
+          description: 客戶端可否原樣重試
+
+    ErrorResponse:
+      type: object
+      description: 失敗回應的 envelope
+      required: [error, meta]
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    Role:
+      type: string
+      description: 系統級角色；系所管理員由 `deptScopes` 是否非空表達
+      enum: [student, sysadmin]
+
+    UserRef:
+      type: object
+      required: [userId, email, displayName]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        displayName:
+          type: [string, 'null']
+          description: Google 未提供時為 null，不以前端猜測填充
+
+    SessionData:
+      type: object
+      required: [user, role, deptScopes, expiresAt]
+      properties:
+        user:
+          $ref: '#/components/schemas/UserRef'
+        role:
+          $ref: '#/components/schemas/Role'
+        deptScopes:
+          type: array
+          description: 可管理的系所代碼；系統管理員為空陣列（不受系所限制）
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+
+    SessionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/SessionData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    Scenario:
+      type: string
+      description: 參與計算的紀錄範圍，對應 system-design.md §5.2 的篩選步驟
+      enum: [completed, inProgress, planned]
+
+    OverallState:
+      type: string
+      description: |
+        `incomplete`＝有條件 `notMet`；`unconfirmed`＝存在 `unknown` 或未解衝突；
+        `complete`＝其餘。未解衝突或未知狀態不得表示為 `complete`。
+      enum: [complete, unconfirmed, incomplete]
+
+    RequirementState:
+      type: string
+      enum: [met, notMet, unknown]
+
+    RequirementResult:
+      type: object
+      required: [id, name, state]
+      properties:
+        id:
+          type: string
+          description: 條件節點 ID，跨版本穩定，如 `R06`
+        name:
+          type: string
+        state:
+          $ref: '#/components/schemas/RequirementState'
+        credits:
+          type: [number, 'null']
+          description: 已認列學分；非學分條件為 null
+        min:
+          type: [number, 'null']
+          description: 門檻；非學分條件為 null
+        gap:
+          type: [number, 'null']
+          description: 缺額，`max(min - credits, 0)`；非學分條件為 null
+        statusKey:
+          type: string
+          description: 非學分條件的狀態鍵，如 `englishThreshold`
+
+    TraceEntry:
+      type: object
+      description: 逐筆採計紀錄，供條件詳情頁顯示「為什麼算／不算」
+      required: [courseCode, pool, credits]
+      properties:
+        courseCode:
+          type: string
+        courseName:
+          type: [string, 'null']
+        pool:
+          type: string
+          description: 被歸入的採計池，如 `inner`、`outer`、`ce`
+        credits:
+          type: number
+          description: 實際計入的學分（可能已被上限截斷）
+        cappedBy:
+          type: [string, 'null']
+          description: 截斷此筆的上限 ID，如 `CAP-COLLEGE`
+        excludedReason:
+          type: [string, 'null']
+          description: 未計入的原因；有值時代表這筆在 trace 裡但不計學分
+
+    ProgressData:
+      type: object
+      required: [bundleId, versionId, scenario, overall, totalCredits, requirements, openConflicts]
+      properties:
+        bundleId:
+          type: string
+        versionId:
+          type: string
+        scenario:
+          $ref: '#/components/schemas/Scenario'
+        overall:
+          $ref: '#/components/schemas/OverallState'
+        totalCredits:
+          type: number
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequirementResult'
+        openConflicts:
+          type: array
+          description: 未解衝突的 ID；非空時 `overall` 不得為 `complete`
+          items:
+            type: string
+        trace:
+          type: array
+          description: 僅在 `includeTrace=true` 時出現
+          items:
+            $ref: '#/components/schemas/TraceEntry'
+        dataSyncedAt:
+          type: [string, 'null']
+          format: date-time
+          description: 最後一次成功同步的時間；從未同步時為 null
+
+    ProgressResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProgressData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    RuleSource:
+      type: object
+      required: [sourceId, title, locator]
+      properties:
+        sourceId:
+          type: string
+          description: 來源卡 ID，如 `S113-01`
+        title:
+          type: string
+        url:
+          type: [string, 'null']
+          description: 官方網址；紙本可為 null
+        locator:
+          type: string
+          description: 頁碼或條號定位
+        retrievedAt:
+          type: [string, 'null']
+          format: date
+
+    RuleClause:
+      type: object
+      required: [clauseId, sourceId, locator, text]
+      properties:
+        clauseId:
+          type: string
+          description: 條文卡 ID，如 `R06`；跨版本穩定
+        sourceId:
+          type: string
+        locator:
+          type: string
+        text:
+          type: string
+          description: 原文逐字
+        reading:
+          type: [string, 'null']
+          description: 白話說明
+
+    RuleVersionData:
+      type: object
+      required:
+        [versionId, bundleId, versionNo, status, schemaVersion, contentHash, proxy, sources, clauses]
+      properties:
+        versionId:
+          type: string
+        bundleId:
+          type: string
+        versionNo:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum: [draft, validating, testing, in-review, approved, published, superseded]
+        schemaVersion:
+          type: string
+          description: 對應 rule-bundle.schema.json 的版本
+        contentHash:
+          type: string
+          description: 版本內容的雜湊，用來證明「審的是哪一版」
+        publishedAt:
+          type: [string, 'null']
+          format: date-time
+        publishedBy:
+          oneOf:
+            - $ref: '#/components/schemas/UserRef'
+            - type: 'null'
+        proxy:
+          type: boolean
+          description: true 代表系統管理員代理發布、未經系所管理者審核
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleSource'
+        clauses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleClause'
+        payload:
+          type: object
+          description: 整份規則包；僅在 `include=payload` 時出現
+          additionalProperties: true
+
+    RuleVersionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/RuleVersionData'
+        meta:
+          $ref: '#/components/schemas/Meta'
