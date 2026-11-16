@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:api": "tsx server/index.ts",
+    "start:api": "tsx server/index.ts",
     "test": "vitest run",
+    "test:db": "vitest run --config vitest.db.config.ts",
     "test:watch": "vitest",
     "typecheck:ais": "tsc -p tsconfig.server.json",
     "demo:ais": "tsx scripts/demo-ais-fixtures.ts",
@@ -30,6 +33,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "~5.2.0",

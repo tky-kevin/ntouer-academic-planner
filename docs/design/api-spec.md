@@ -144,6 +144,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | GET | `/api/rules/{versionId}` | 取特定版本（含來源與條文） | 已登入 | ✅ |
 | GET | `/auth/google/start` | 開始 Google OIDC（302 到 Google） | 匿名 | 待擴充 |
 | GET | `/auth/callback` | OIDC 回呼；交換 token、建立工作階段 | 匿名 | 待擴充 |
+| GET | `/healthz` | 健康檢查（DB 連線、`select 1`） | 匿名 | 待擴充（規格見 §7.5） |
 | POST | `/api/check` | 帶入情境與狀態執行檢核 | 學生本人 | 待擴充 |
 | GET | `/api/rules` | 依 `dept`／`year` 取最新已發布版本 | 已登入 | 待擴充 |
 | POST | `/api/admin/rules/{bundleId}/draft` | 建立草稿 | 系所管理員 | 待擴充 |
@@ -164,7 +165,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 `code_verifier` 與 client secret 都不出現在前端可讀的位置；client secret 只在部署環境的環境變數裡（ADR-0006）。
 
-## 7. 三個端點的規格
+## 7. 端點規格（§7.1–§7.4 進 openapi；§7.5 是維運檢查，暫不進）
 
 ### 7.1 `GET /auth/session`
 
@@ -283,6 +284,38 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 `proxy: true` 代表由系統管理員代理發布、**未經系所管理者審核**；前端必須原樣顯示這個標示（FR-12、NFR-06）。
 
 **狀態碼**：200；400 `REQUEST_INVALID`；401 `AUTH_REQUIRED`；404 `RULE_VERSION_NOT_FOUND`。學生端請求非 `published` 版本時回 409 `RULE_VERSION_NOT_PUBLISHED`（管理端可讀自己的草稿，第二批擴充時加權限判斷）。
+
+### 7.5 `GET /healthz`（維運檢查，未進 openapi）
+
+給本機、CI 與部署的健康檢查用，不是給前端呼叫的；成功也要有 `meta`（§3.1 沒有例外）。
+
+**回應 200**
+
+```json
+{
+  "data": { "db": "ok" },
+  "meta": { "requestId": "…", "generatedAt": "2026-11-17T02:00:51.263+08:00" }
+}
+```
+
+**回應 503**（資料庫連不上）
+
+```json
+{
+  "error": { "code": "INTERNAL", "message": "資料庫目前無法連線，請稍後再試。", "retryable": true },
+  "meta": { "requestId": "…", "generatedAt": "…" }
+}
+```
+
+| 項目 | 規則 |
+| --- | --- |
+| 狀態碼 | 200（`select 1` 成功）、503（連線失敗或逾時） |
+| `data.db` | 目前只有 `ok` 一個值；要加欄位是向後相容的擴充 |
+| 錯誤碼 | 一律 `INTERNAL`；`retryable: true`，因為資料庫恢復後重試就會成功 |
+| 標頭 | `X-Request-Id`、`Cache-Control: no-store` |
+| 未匹配路徑 | 404 `RESOURCE_NOT_FOUND`，形狀同 §3.2（`data` → `error`） |
+
+**為什麼 503 也用 envelope：** 監控與前端共用同一個解析路徑；`/healthz` 若例外回純文字，維運腳本就得為它寫第二套判斷。
 
 ## 8. 分頁、排序與速率
 
