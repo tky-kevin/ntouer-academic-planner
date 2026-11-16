@@ -5,6 +5,7 @@ import { Pool } from 'pg'
 import { createApp } from './app.js'
 import type { QueryFn } from './app.js'
 import { loadDotEnv, readConfig } from './env.js'
+import { createRulesRoutes } from './routes/rules.js'
 
 loadDotEnv()
 
@@ -34,7 +35,7 @@ const query: QueryFn = async (text, params) => {
   return { rows: result.rows }
 }
 
-const server = createServer(createApp({ query }))
+const server = createServer(createApp({ query, routes: [...createRulesRoutes({ query })] }))
 
 server.listen(config.port, config.host, () => {
   console.log(JSON.stringify({ level: 'info', message: `API listening on http://${config.host}:${config.port}` }))
