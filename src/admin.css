@@ -1,0 +1,48 @@
+// 管理端兩頁的版面（#21）。與學生端共用 token 與頁首／頁尾樣式。
+.admin-main { padding-block: var(--space-7) var(--space-10); }
+.admin-intro { margin-bottom: var(--space-6); }
+.admin-intro h2 { font-size: var(--fs-h1); letter-spacing: -.02em; }
+.admin-intro p { color: var(--muted); font-size: var(--fs-sm); margin-top: var(--space-2); }
+.admin-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--space-5); margin-top: var(--space-5); align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-surface); padding: var(--space-5); display: grid; gap: var(--space-3); }
+.panel h3 { font-size: var(--fs-h3); }
+.panel h4 { margin: 0; font-size: var(--fs-sm); color: var(--ink); }
+.empty-note { color: var(--muted); font-size: var(--fs-sm); }
+.error-list, .test-list, .source-list, .diff-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.error-list li { border-left: 3px solid var(--state-unmet-fg); background: var(--state-unmet-bg); border-radius: var(--radius-block); padding: var(--space-3); display: grid; gap: var(--space-1); }
+.error-head { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-xs); color: var(--state-unmet-fg); }
+.error-head code, .diff-line code, .source-head code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: var(--fs-xs); background: var(--tag-bg); padding: 1px var(--space-1); border-radius: var(--radius-tag); }
+.error-list p { font-size: var(--fs-sm); color: var(--ink); }
+.test-list li { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); padding-block: var(--space-2); border-bottom: 1px solid var(--line-subtle); font-size: var(--fs-sm); }
+.test-list li:last-child { border-bottom: 0; }
+.tag { font-size: var(--fs-xs); color: var(--muted); background: var(--tag-bg); padding: 1px var(--space-1); border-radius: var(--radius-tag); }
+.admin-actions { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-5); padding: var(--space-4) var(--space-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-surface); }
+.admin-actions p { font-size: var(--fs-sm); color: var(--muted); }
+.button-primary { padding: var(--space-2) var(--space-5); min-height: 42px; border: 0; border-radius: var(--radius-control); background: var(--teal); color: #fff; font-weight: var(--weight-semibold); }
+.button-primary:hover:not(:disabled) { background: var(--teal-hover); }
+.diff-view { display: grid; gap: var(--space-4); }
+.diff-group h4 { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+.diff-added h4 { color: var(--state-met-fg); }
+.diff-changed h4 { color: var(--warning); }
+.diff-removed h4 { color: var(--state-unmet-fg); }
+.diff-unchanged h4 { color: var(--muted); }
+.diff-list li { padding: var(--space-2) var(--space-3); border: 1px solid var(--line-subtle); border-radius: var(--radius-block); display: grid; gap: var(--space-1); }
+.diff-line { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); }
+.diff-values { display: flex; gap: var(--space-2); font-size: var(--fs-sm); }
+.diff-values del { color: var(--state-unmet-fg); }
+.diff-values ins { color: var(--state-met-fg); text-decoration: none; font-weight: var(--weight-semibold); }
+.source-list li { display: grid; gap: var(--space-1); padding-block: var(--space-2); border-bottom: 1px solid var(--line-subtle); }
+.source-list li:last-child { border-bottom: 0; }
+.source-head { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-xs); color: var(--muted); }
+.source-list p { font-size: var(--fs-sm); }
+.review-panel { margin-top: var(--space-5); max-width: 720px; }
+.field { font-size: var(--fs-sm); font-weight: var(--weight-semibold); color: var(--ink); }
+.review-panel textarea { width: 100%; padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-control); font: inherit; font-size: var(--fs-sm); resize: vertical; }
+.review-panel textarea:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.review-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.review-actions p { font-size: var(--fs-sm); color: var(--state-met-fg); }
+
+@media (max-width: 850px) {
+  .admin-grid { grid-template-columns: 1fr; }
+  .admin-actions { flex-direction: column; align-items: flex-start; }
+}
