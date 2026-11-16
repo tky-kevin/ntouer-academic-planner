@@ -15,6 +15,8 @@ NTOUER Academic Planner｜Iteration 2 設計基準｜2026/11/16
 | 3 | 邊緣案例：重複採計、上限、抵免、例外 | 第 6 節 | TC-29～TC-34 + spike 案例 4～7 |
 | 4 | 可追溯原始條文與人工審核的發布流程 | 第 7 節 | 狀態機 + 稽核欄位 + 權限矩陣 |
 | 5 | 學生介面與管理員介面 | 第 11 節 | 11 張線稿（學生 7、管理 4）＋缺口清單 |
+| 6 | 誰能登入、怎麼確認身分 | 第 14 節 | OIDC 循序圖 ＋ TC-13 檢查點 |
+| 7 | 環境、部署與可觀測性 | 第 15 節 | 日誌欄位、告警門檻、效能對策 |
 
 結論先講：**五項都成立，且不需要為個別系所寫程式碼。** 已知表達不了的兩類規則（學年課連動、雙主修身分）已在第 12 節列為限制，不會假裝支援。
 
@@ -51,6 +53,134 @@ NTOUER Academic Planner｜Iteration 2 設計基準｜2026/11/16
 ```
 
 **Evaluator 是純函式**：輸入（規則包、有效紀錄、情境、狀態）→ 輸出（三態結果、逐筆 trace），不碰資料庫、不呼叫外部服務。這讓同一份邏輯能同時用於 API、管理端預覽與自動測試（NFR-01 一致性的機制保證）。
+
+### 3.1 元件圖（C4 Level 3 的內容）
+
+Lab 2 的 C4 Context 與 Container 是可編輯的 drawio（[diagrams/](diagrams/)）。再往下一層的元件職責如下——用 Mermaid 表達，因為它會隨程式碼一起被 review，不必重新匯出圖片。
+
+```mermaid
+flowchart TB
+    subgraph WebUI["Web UI（React + TS）"]
+        StuPages["學生端頁面<br/>進度／紀錄／搜尋／計畫"]
+        AdmPages["管理端頁面<br/>草稿／驗證／審核／稽核"]
+        SharedUI["共用元件<br/>Alert／EmptyState／Skeleton"]
+    end
+
+    subgraph API["Planner API（Node + TS）"]
+        Authz["Authz<br/>主體＋動作＋系所"]
+        RuleStore["RuleStore<br/>版本讀寫"]
+        Validator["RuleValidator<br/>結構驗證"]
+        TestRunner["TestRunner<br/>案例執行"]
+        Evaluator["Evaluator（純函式）<br/>六型節點／池／上限／三態"]
+        Audit["Audit<br/>稽核與 diff"]
+        SyncSvc["SyncService<br/>AIS 同步"]
+    end
+
+    subgraph DataP["PostgreSQL"]
+        V["rule_versions.payload"]
+        S["rule_sources／rule_clauses"]
+        P["student_* 個人資料"]
+        R["review_records／test_runs"]
+    end
+
+    Ext1["Google OIDC"]
+    Ext2["AIS Adapter（既有模組）"]
+    Ext3["官方 PDF／網頁"]
+
+    StuPages --> Authz
+    AdmPages --> Authz
+    SharedUI --> StuPages
+    Authz --> RuleStore
+    Authz --> P
+    Authz --> Ext1
+    RuleStore --> V
+    RuleStore --> S
+    Validator --> RuleStore
+    TestRunner --> Evaluator
+    TestRunner --> R
+    Evaluator --> V
+    Evaluator --> P
+    Audit --> R
+    SyncSvc --> Ext2
+    SyncSvc --> P
+    Validator --> Ext3
+```
+
+### 3.2 領域型別（UML 類別圖）
+
+程式碼的型別在 `src/domain/types.ts`（I1）與規則包 schema，這裡只表達**關係**：一份規則包有多個節點與池，一次檢核產生一個結果，結果內含逐筆採計。
+
+```mermaid
+classDiagram
+    class RuleBundle {
+        +string bundleId
+        +string schemaVersion
+        +Source[] sources
+        +Clause[] clauses
+        +Node[] requirements
+        +Pool[] pools
+        +Cap[] caps
+        +Conflict[] conflicts
+    }
+    class Node {
+        +string id
+        +string type
+        +number credits
+        +string statusKey
+        +string clauseId
+        +Node[] children
+    }
+    class Pool {
+        +string id
+        +number min
+        +number max
+        +number perCourseCreditsMax
+    }
+    class Cap {
+        +string id
+        +string[] pools
+        +number max
+    }
+    class CourseRecord {
+        +string recordKey
+        +string courseCode
+        +number credits
+        +string category
+        +string status
+    }
+    class EvaluationResult {
+        +string versionId
+        +string scenario
+        +string overall
+        +number totalCredits
+        +RequirementResult[] requirements
+        +string[] openConflicts
+        +TraceEntry[] trace
+    }
+    class RequirementResult {
+        +string id
+        +string state
+        +number credits
+        +number min
+        +number gap
+    }
+    class TraceEntry {
+        +string courseCode
+        +string pool
+        +number credits
+        +string cappedBy
+        +string excludedReason
+    }
+
+    RuleBundle "1" --> "*" Node : requirements
+    RuleBundle "1" --> "*" Pool : pools
+    RuleBundle "1" --> "*" Cap : caps
+    Node "0..1" --> "*" Node : and_or
+    RuleBundle ..> EvaluationResult : 被引擎讀取
+    CourseRecord ..> EvaluationResult : 參與計算
+    EvaluationResult "1" --> "*" RequirementResult
+    EvaluationResult "1" --> "*" TraceEntry
+```
 
 ## 4. 規則資料設計
 
@@ -159,23 +289,29 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 
 ### 7.1 狀態機
 
-```
-         AI 初稿／人工輸入
-                │
-                ▼
-   ┌────────┐  結構驗證   ┌────────────┐  測試案例   ┌──────────┐
-   │ draft  │ ─────────▶ │ validating │ ─────────▶ │ testing  │
-   └────────┘   失敗回 draft└────────────┘  未過回 draft└──────────┘
-                                                          │ 全數通過
-                                                          ▼
-                                                    ┌───────────┐
-                                    系所管理員審核 ──▶ │ in-review │
-                                    退回 ───────────▶ └───────────┘
-                                                          │ 核准
-                                                          ▼
-   ┌────────────┐  新版本發布   ┌───────────┐         ┌───────────┐
-   │ superseded │ ◀──────────── │ published │ ◀────── │ approved  │
-   └────────────┘               └───────────┘         └───────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> draft : 建立草稿（人工或 AI 初稿）
+    draft --> validating : 送出結構驗證
+    validating --> draft : 驗證失敗（列出條文／節點／selector）
+    validating --> testing : 結構通過
+    testing --> draft : 案例未全過
+    state "in-review" as inReview
+    testing --> inReview : 案例全過，送審
+    inReview --> draft : 退回（必填原因）
+    inReview --> approved : 系所管理員核准
+    approved --> published : 具發布權者發布
+    published --> superseded : 新版本發布
+    superseded --> [*]
+
+    note right of draft
+        學生端看不到，可自由修改
+    end note
+
+    note right of published
+        內容不可原地修改；content_hash 固定；
+        proxy=true 代表未經系所審核
+    end note
 ```
 
 規則：
@@ -203,6 +339,44 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 ### 7.3 學生端可見的來源資訊
 
 每個條件的詳情頁顯示：條件名稱、原文摘錄與定位、來源文件標題與連結、規則版本、發布者與是否經系所審核、最後更新時間。這是「規定來源」目標的落地方式。
+
+### 7.4 發布循序圖（含後端重驗權限）
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor M as 系所管理員
+    participant UI as 管理端
+    participant API as Planner API
+    participant V as Validator／TestRunner
+    participant DB as PostgreSQL
+    participant S as 學生端
+
+    M->>UI: 編輯草稿
+    UI->>API: PUT /api/admin/rules/{versionId}
+    API->>API: 驗權限（主體＋動作＋系所）
+    API->>DB: 寫入 payload（僅 draft）
+    API-->>UI: 200
+
+    M->>UI: 送出驗證與測試
+    UI->>API: POST …/validate、…/test
+    API->>V: 結構驗證 ＋ 案例
+    V-->>API: 錯誤清單或全數通過
+    API->>DB: 寫 test_runs、review_records
+    API-->>UI: 200（未過則停在 draft）
+
+    M->>UI: 送審
+    UI->>API: POST …/submit
+    API->>DB: status = in-review
+
+    M->>UI: 核准並發布
+    UI->>API: POST …/approve、…/publish
+    API->>API: 重新驗權限（不信任前端）
+    API->>DB: 交易內寫 published ＋ superseded ＋ review_records
+    API-->>S: 下次檢核讀到新 versionId
+```
+
+**重點**：`approve` 與 `publish` 各自重驗權限與內容雜湊；前端送來的角色一律不採信（見第 8 節）。
 
 ## 8. 權限設計
 
@@ -236,10 +410,12 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 | `student_overrides` | user_id、record_key、field、value、updated_at | 個人修正 |
 | `student_condition_overrides` | user_id、bundle_id、requirement_id、state、updated_at | 個人覆蓋 |
 | `student_plans` | user_id、term、course_code、section_id、sort | 修課計畫 |
+| `sessions` | id、user_id、token_hash、expires_at、revoked_at | 登入工作階段（登出即撤銷） |
+| `student_sync_state` | user_id、last_success_at、last_attempt_at、last_result、last_error_code | 同步狀態（TC-12 的「最後成功時間」不能從紀錄推） |
 
 `payload` 以 jsonb 存整份規則包，另以 `rule_sources`／`rule_clauses` 建索引供查詢與 diff；好處是引擎只需一個查詢就能拿到完整版本，且版本天生不可變。
 
-本節只是概覽。欄位型別、`NOT NULL`、主鍵與外鍵、每條索引存在的理由、遷移順序、seed、快取層級與保留政策，一律以 [database-design.md](database-design.md) 為準；兩邊衝突時修本節。
+本節只是概覽（13 張核心表 ＋ 2 張狀態表，共 15 張）。欄位型別、`NOT NULL`、主鍵與外鍵、每條索引存在的理由、遷移順序、seed、快取層級與保留政策，一律以 [database-design.md](database-design.md) 為準；兩邊衝突時修本節。
 
 ## 10. API 介面（草案）
 
@@ -345,7 +521,136 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 
 **Definition of Done**：SRS 第 10.2 節對應案例通過、每次檢核可回查版本與條文、未解衝突與未知狀態不會顯示「已滿足」、跨系所與跨使用者請求被後端拒絕。
 
-## 14. 未決事項
+## 14. 身分驗證（AuthN）
+
+決策與替代方案見 [ADR-0003](adr/0003-google-oidc-identity.md)；本節只寫流程、失敗處理與檢查點。
+
+### 14.1 登入循序圖
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as 使用者
+    participant B as 瀏覽器（SPA）
+    participant A as Planner API
+    participant G as Google OIDC
+    participant DB as PostgreSQL
+
+    U->>B: 開啟網站
+    B->>A: GET /auth/session
+    A->>DB: 查 sessions（token_hash、expires_at、revoked_at）
+    alt 工作階段有效
+        DB-->>A: user_id、role、deptScopes
+        A-->>B: 200 data: user, role, deptScopes, expiresAt
+        B-->>U: 顯示進度頁
+    else 沒有或已過期
+        A-->>B: 401 AUTH_REQUIRED
+        B->>A: GET /auth/google/start
+        A->>A: 產生 state 與 code_verifier，存 5 分鐘簽章 cookie
+        A-->>B: 302 到 accounts.google.com（openid email，PKCE）
+        B->>G: 授權請求
+        U->>G: 選擇帳號並同意
+        G-->>B: 302 /auth/callback?code=…&state=…
+        B->>A: GET /auth/callback
+        A->>A: 比對 state（不符即中止）
+        A->>G: 交換 token（code ＋ code_verifier ＋ client_secret）
+        G-->>A: ID token
+        A->>A: 驗簽章、iss、aud、exp、nonce
+        A->>DB: upsert users（google_sub 唯一）
+        A->>DB: insert sessions（只存 token 的 SHA-256）
+        A-->>B: 302 回前端 ＋ Set-Cookie planner_session
+        B-->>U: 顯示進度頁
+    end
+```
+
+### 14.2 失敗處理
+
+| 情況 | 伺服器行為 | 使用者看到 |
+| --- | --- | --- |
+| `state` 不符或已過期 | 中止，不建立 session，記一筆稽核 | 登入失敗頁；**網址不帶錯誤細節** |
+| Google 回 `error=access_denied` | 同上 | 「你取消了登入」 |
+| ID token 驗證失敗 | 中止；記 `error` 等級日誌（不含 token） | 「登入暫時無法完成，請再試一次」 |
+| 使用者不存在 | 以 `google_sub` 建立 `student` | 直接進入進度頁 |
+| 登出 | `sessions.revoked_at = now()`，清 cookie | 回到登入頁 |
+| 系所管理員被撤銷 | 下一個請求的權限檢查就失效（不快取角色） | 管理端入口消失；直接打 API 得 403 |
+
+### 14.3 檢查點（對應 TC-13）
+
+- cookie 屬性必須是 `HttpOnly; Secure; SameSite=Lax; Path=/`。
+- 資料庫只存 `token_hash`；任何日誌不得出現原始 token 或 ID token。
+- 使用者 A 改 `userId` 打 B 的資料 → 403；`deptScopes` 以外的系所操作 → 403 `AUTH_DEPT_OUT_OF_SCOPE`。
+- 登出後用同一 cookie 再打 `GET /auth/session` → 401。
+
+## 15. 環境、部署與可觀測性
+
+決策見 [ADR-0006](adr/0006-deployment-platform-and-ci.md)。本節寫「跑起來之後怎麼知道它正常」。
+
+### 15.1 環境
+
+| 環境 | 用途 | 資料庫 | 現況 |
+| --- | --- | --- | --- |
+| Dev | 本機開發；Vite dev server ＋ 容器化 PostgreSQL | 可重建（migrate ＋ seed） | **已具備** |
+| Prod／Demo | 學生與管理者實際使用 | 持久、需備份 | **尚無主機**；I2 只交付可部署產出（Dockerfile ＋ 啟動腳本 ＋ 環境變數清單） |
+
+不設 Staging：5 人團隊多一層環境只有維運成本（ADR-0006）。
+
+### 15.2 分支策略與 CI
+
+| 分支 | 規則 |
+| --- | --- |
+| `main` | 只能經 PR 合併；需 `web`、`docs` 兩個 check 通過；需 1 個 approving review |
+| `feat/*`、`fix/*`、`docs/*`、`ci/*` | 短命分支，合併後刪除 |
+
+CI 兩個 job：`web`（npm ci → build → test）、`docs`（spike 27 項 → 連結檢查 → OpenAPI lint）。**不使用 secrets、不連外部服務**；紅燈不得用 `continue-on-error` 掩蓋。
+
+### 15.3 部署流程（取得主機後）
+
+1. 建置產出（`npm run build` → `dist/`）
+2. 套用遷移（`npm run db:migrate`，由部署者手動執行，不進 CI）
+3. 重啟服務並打 `/healthz`
+4. 以一個真實帳號走一次登入 → 進度頁，確認規則版本正確
+
+### 15.4 日誌欄位
+
+一行一筆 JSON 輸出到 stdout（由平台收集）。**不得出現帳密、token、Cookie、完整學號。**
+
+| 欄位 | 型別 | 說明 |
+| --- | --- | --- |
+| `ts` | string | ISO 8601 帶時區 |
+| `level` | string | `info`／`warn`／`error` |
+| `requestId` | string | 與回應的 `X-Request-Id` 相同 |
+| `route` | string | 路由樣板（`/api/rules/{versionId}`），不是實際 URL |
+| `method` | string | HTTP 方法 |
+| `status` | number | 回應狀態碼 |
+| `durationMs` | number | 伺服器處理時間 |
+| `userId` | string? | 已登入時的使用者 UUID（不含 email） |
+| `ruleVersionId` | string? | 與規則版本相關的請求才填 |
+| `errorCode` | string? | 對應 `api-spec.md` §4 的 `code` |
+| `module` | string | `auth`／`rules`／`eval`／`sync`／`db` |
+
+### 15.5 監控指標與告警
+
+| 指標 | 來源 | 告警門檻 | 為什麼是這個門檻 |
+| --- | --- | --- | --- |
+| 5xx 比率 | 日誌 `status >= 500` | 5 分鐘內 > 1% | 對應 NFR-03 的錯誤率上限 |
+| 檢核端點 p95 | 日誌 `durationMs`（`route=/api/me/progress`） | > 1 秒 | 對應 NFR-02 |
+| 同步失敗率 | `errorCode = SYNC_FAILED` | 連續 3 次失敗 | 單次失敗可能是 AIS 抖動，連續才有意義 |
+| 資料庫連線數 | `pg_stat_activity` | > 80% 上限 | 池用盡會讓所有請求排隊 |
+| 未解衝突版本被發布 | `payload.conflicts[].resolution` 為空且 `status=published` | 出現即告警 | 這是「該擋卻沒擋」，屬 S1 |
+
+I2 沒有人力做完整監控：先實作 `/healthz` 與結構化日誌，其餘指標以 `scripts/` 的查詢腳本人工檢查。**不假裝已有儀表板。**
+
+### 15.6 效能瓶頸與對策
+
+| 瓶頸 | 為什麼會痛 | 對策 |
+| --- | --- | --- |
+| **每次檢核都讀整份 `payload`** | 40–100 KB × 每次請求 | 行程內 LRU（以 `version_id` 為鍵；版本不可變，所以不需要失效） |
+| **AIS 同步** | 外部服務，等待時間不可控 | 只在使用者主動同步時執行；失敗保留前次快照（TC-12）；不做背景輪詢 |
+| **稽核表只增不減** | `review_records` 會長大 | `(version_id, at)` 索引支撐時間軸查詢；不做全表掃描 |
+| **規則版本變多** | 取最新已發布版本要掃 | 部分索引只掃 `published`（[database-design.md](database-design.md) §4） |
+| **引擎本身** | O(R×P + R×C)，R ≤ 300、P ≤ 6、C ≤ 10 | 不需要優化；實測前不加複雜度 |
+
+## 16. 未決事項
 
 1. 管理端是否要支援「批次匯入多年度規則」，或一次只處理一個年度。
 2. 課程等價表（舊課號→新課號）由誰維護、放在哪一層。
