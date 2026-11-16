@@ -185,10 +185,11 @@ erDiagram
 | `locator` | `text` | 否 | — | 該條文在來源文件的定位 |
 | `text` | `text` | 否 | — | 原文逐字 |
 | `reading` | `text` | 是 | — | 白話說明 |
-| `status` | `text` | 否 | `'active'` | `active`／`retired` |
+| `status` | `text` | 否 | `'verified'` | `verified`／`pending`／`conflict`（語意見 [rule-model.md](rule-model.md) §4） |
 
 - `pk (version_id, clause_id)`、`idx (version_id, source_id)`。
 - `check (length(text) > 0)`：空條文沒有追溯價值，寧可驗證失敗。
+- **`status` 表達資料品質，不是生命週期**：`verified`（已對照原文）／`pending`（待確認）／`conflict`（來源不一致）。這個語彙由 [rule-model.md](rule-model.md) 定義，資料庫只負責限制值域。條文的「退役」不是靠此欄位，而是版本本身被 `superseded`。
 - 理由：FR-18 要求「查不到來源定位的條件不得進入已發布版本」，因此 `source_id`、`locator` 都是 `NOT NULL`；外鍵指向同版本的來源卡，避免跨版本錯接。
 
 ### 3.9 `review_records`（稽核紀錄）
@@ -348,6 +349,8 @@ erDiagram
 | 0015 | `create-student-sync-state.sql` | `student_sync_state` | `users` |
 | 0016 | `create-indexes.sql` | 非唯一索引 | 前三段全部 |
 | 0017 | `create-triggers.sql` | 不可變性與稽核保護 | 全表 |
+| 0018 | `fix-clause-status.sql` | 修正 `rule_clauses.status` 語意（active／retired → verified／pending／conflict） | 0008 |
+| 0017 | `create-triggers.sql` | 不可變性與稽核保護 | 全表 |
 
 索引獨立成 0016 是為了讓「表長什麼樣」與「為了哪些查詢加速」在版控上一眼分開；表在建表當下是空的，延後建索引沒有成本。
 
@@ -364,6 +367,8 @@ FR-18「已發布版本與其稽核紀錄不得被刪除或改寫」不能只靠
 
 應用程式角色與遷移角色分開：`planner_app` 只給 DML，`planner_owner` 才持有 DDL 與 trigger 的 `BYPASSRLS`。CI 不連資料庫（ADR-0006），這些規則以本機或 I3 的整合測試驗證。
 
+**2026/11/17 實測**（PostgreSQL 16，`planner-db` 容器）：`review_records` 的 `UPDATE` 被拒絕（`immutable table review_records`）；已發布版本的 `payload` 修改被拒絕（`published version is immutable`）；刪除已發布版本被拒絕（`published version cannot be deleted`）。三條都照上表生效。
+
 ## 7. Seed（開發環境初始化）
 
 `db/seed/` 只放「重建開發環境所需、且有事實依據」的資料，不放假使用者。
@@ -372,7 +377,9 @@ FR-18「已發布版本與其稽核紀錄不得被刪除或改寫」不能只靠
 | --- | --- | --- |
 | `001-departments.sql` | `cse`（資訊工程學系）、`mmd`（商船學系） | 兩系的規則包已有可驗證樣本：`docs/design/examples/113-cse.json`、`115-mmd.json` |
 | `002-rule-bundles.sql` | `cse-113-day`、`mmd-115-day` | 同上 |
-| `003-example-versions.mjs` | 把 `docs/design/examples/*.json` 讀入，建成 `@1` 的 `draft` 版本（`status='draft'`，`proxy=false`） | 樣本本身標示為 draft（`examples/README.md`），seed 不假裝已發布 |
+| `scripts/db/seed.mjs` | 套用上面兩個 SQL，並把 `docs/design/examples/*.json` 建成 `@1` 的 `draft` 版本（`status='draft'`、`proxy=false`，`content_hash` 取檔案 SHA-256） | 樣本本身標示為 draft（`examples/README.md`），seed 不假裝已發布 |
+
+執行：`node scripts/db/seed.mjs`（可重複執行，已存在則跳過）。
 
 **不 seed 使用者。** 系統管理員的初始化改由環境變數 `BOOTSTRAP_ADMIN_EMAIL` 決定：該 email 首次以 Google 登入時，`role` 升級為 `sysadmin` 並寫一筆 `review_records`（`action='created'` 不適用，改記在應用層日誌）。理由：憑空建立本機帳號會製造一個不存在的身分，而 FR-01 規定身分一律來自 Google。
 
