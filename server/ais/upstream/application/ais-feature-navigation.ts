@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { aisText } from "./ais-response.js";
 import type { GatewaySession } from "./ports/gateway-session.js";
@@ -59,6 +59,8 @@ export async function openAisFeature(
   };
   const expand = async (node: AisMenuNode): Promise<void> => {
     await pause();
+    const body = buildAisMenuExpandBody(state, node);
+    debugExpansion(options, node, body, state.mode);
     const expanded = await session.transport.execute({
       operation: `expand_${options.operation}_menu_group`,
       method: "POST",
@@ -69,7 +71,7 @@ export async function openAisFeature(
         origin: menuUrl.origin,
         referer: menuUrl.href,
       },
-      body: buildAisMenuExpandBody(state, node),
+      body,
       maximumResponseBytes: 1_048_576,
       timeoutMs: 10_000,
     });
@@ -82,6 +84,16 @@ export async function openAisFeature(
     expandedPaths.add(node.postbackPath ?? node.title);
   };
   const expandedPaths = new Set<string>();
+  const isExpandedOrAncestor = (node: AisMenuNode): boolean => {
+    const nodePath = node.postbackPath ?? node.title;
+    if (expandedPaths.has(nodePath)) return true;
+    // 展開祖先節點會把子樹收起來（ASP.NET TreeView 是 toggle），所以 BFS 必須避開。
+    if (state.mode !== "postback") return false;
+    for (const expanded of expandedPaths) {
+      if (expanded.startsWith(`${nodePath}\\`)) return true;
+    }
+    return false;
+  };
 
   let configuredPathComplete = true;
   for (const segment of options.menuGroups) {
@@ -110,21 +122,19 @@ export async function openAisFeature(
   // 只在 postback 模式做：舊版 populate 模式有 fixture 測試固定在跑，不要多發請求。
   if (targets.length === 0 && state.mode === "postback") {
     const queue: AisMenuNode[] = state.nodes.filter(
-      (node) => node.kind === "group" && !expandedPaths.has(node.postbackPath ?? node.title),
+      (node) => node.kind === "group" && !isExpandedOrAncestor(node),
     );
     let budget = 30;
     while (queue.length > 0 && budget > 0 && targets.length === 0) {
       const group = queue.shift();
       if (group === undefined) break;
-      const key = group.postbackPath ?? group.title;
-      if (expandedPaths.has(key)) continue;
+      if (isExpandedOrAncestor(group)) continue;
       budget -= 1;
       await expand(group);
       targets = findTargets(state);
       for (const node of state.nodes) {
         if (node.kind !== "group") continue;
-        const childKey = node.postbackPath ?? node.title;
-        if (!expandedPaths.has(childKey)) queue.push(node);
+        if (!isExpandedOrAncestor(node)) queue.push(node);
       }
     }
   }
@@ -239,6 +249,40 @@ function fail(
 ): never {
   debugMenu(state, options, code);
   throw new AisProtocolError(code);
+}
+
+/**
+ * 除錯用：把每次展開實際送出的 postback 參數寫進 `expansions.jsonl`（只在 AIS_DEBUG_DUMP 設定時）。
+ * 不含 cookie／viewstate 值，只有節點路徑與 __EVENTARGUMENT。
+ */
+function debugExpansion(
+  options: Readonly<{ operation: "timetable" | "grades" }>,
+  node: AisMenuNode,
+  body: string,
+  mode: string,
+): void {
+  const dir = process.env.AIS_DEBUG_DUMP?.trim();
+  if (!dir) return;
+  try {
+    mkdirSync(dir, { recursive: true });
+    const params = new URLSearchParams(body);
+    appendFileSync(
+      path.join(dir, "expansions.jsonl"),
+      `${JSON.stringify({
+        at: new Date().toISOString(),
+        operation: options.operation,
+        mode,
+        title: node.title,
+        kind: node.kind,
+        postbackPath: node.postbackPath,
+        eventTarget: params.get("__EVENTTARGET"),
+        eventArgument: params.get("__EVENTARGUMENT"),
+      })}\n`,
+      "utf8",
+    );
+  } catch {
+    // 除錯輸出失敗不影響流程。
+  }
 }
 
 /**
