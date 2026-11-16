@@ -1,126 +1,84 @@
-# NTOUER Academic Planner — Iteration 1 Demo
+# NTOUER Academic Planner — Iteration 2
 
 [![CI](https://github.com/tky-kevin/ntouer-academic-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/tky-kevin/ntouer-academic-planner/actions/workflows/ci.yml)
 
-以 React、TypeScript、Vite 建立的前端單頁 Demo。流程為「選取模擬修課紀錄 → 執行學分檢核 → 顯示結果」。
+海大智慧修課與畢業規劃系統。I2 交付三件事：
 
-本檔只講程式碼；需求、設計與規則資料的入口是 [docs/README.md](docs/README.md)。
+1. **學生端畢業進度頁**（`/`）：三情境（已完成／修課中／規劃中）、總學分、條件卡三態（已達成／未達成／尚未確認）、未解衝突、四種狀態（Loading／Empty／Error／無權限）。
+2. **管理端**：`/admin-validate.html`（結構驗證與測試）、`/admin-review.html`（版本差異與審核）。
+3. **後端**：`node:http`＋`pg`（沒有 ORM），統一回應 envelope、`/healthz`、`GET /api/rules/{versionId}`、`GET /api/me/progress`、Google OIDC 登入與資料庫工作階段。
 
-**開發測試規則，僅檢核部分條件。這個 Demo 不判定正式畢業資格，也不是完整產品 MVP。**
+需求與設計的入口是 [docs/README.md](docs/README.md)；API 契約是 [api-spec.md](docs/design/api-spec.md)＋[openapi.yaml](docs/design/openapi.yaml)。
+
+I1 的 demo 畫面保存在 git tag **`i1-demo`**（`git show i1-demo:src/App.tsx`），不再出現在產品程式碼裡。
 
 ## 安裝與執行
 
-需要 Node.js 22.12 以上（建議 Node 24 LTS）與 npm。本次驗證環境為 Windows、Node 24.11.1、npm 11.6.2。
+需要 Node.js 22.12 以上（建議 Node 24 LTS）、npm、Docker（PostgreSQL 16）。
 
 ```powershell
 git clone https://github.com/tky-kevin/ntouer-academic-planner.git
 cd ntouer-academic-planner
 npm ci
-npm run dev
+
+# 1. 資料庫
+docker run -d --name planner-db -e POSTGRES_USER=planner -e POSTGRES_PASSWORD=planner `
+  -e POSTGRES_DB=planner -p 5433:5432 postgres:16-alpine
+npm run db:migrate
+npm run db:seed
+
+# 2. 環境變數
+cp .env.example .env.local   # 填 GOOGLE_CLIENT_ID/SECRET 與 SESSION_SECRET（不進 repo）
+
+# 3. 前端與 API（兩個終端機）
+npm run dev      # http://localhost:5173
+npm run start:api # http://localhost:3000
 ```
 
-開啟終端機顯示的本機網址，預設為 http://localhost:5173。第一次安裝也可使用 `npm install`；重現已鎖定的相依套件時使用 `npm ci`。
+`GET /healthz` 應回 `{"data":{"db":"ok"},"meta":{…}}`；資料庫停止時回 503 `INTERNAL`。
+
+### 登入與開發身分
+
+- 瀏覽器登入：`GET /auth/google/start` → Google → `GET /auth/callback` → 設 `planner_session` cookie（HttpOnly、SameSite=Lax，資料庫只存 SHA-256）。
+- 還沒完成 Google 設定時：`GET /api/me/progress` 會用 `.env.local` 的 `DEV_USER_SUB`（預設 `dev-student`）當登入者。`npm run db:seed` 會建立這個學生（113 資工、52 筆紀錄、135 學分、5 個條件覆蓋）。
+
+### demo 資料
+
+- `dev-student`：113 資工，資料與 spike 的 `cseComplete()` 同一組，`overall = unconfirmed`（X01 未解衝突）。
+- `cse-113-day@1`：published；`mmd-115-day@1`：draft（seed 預設種 draft，若需要 published 由測試或手動設定）。
+- 規則包樣本：`docs/design/examples/113-cse.json`、`115-mmd.json`。
+
+## 驗證指令
 
 ```powershell
-npm test           # 執行所有自動測試後結束
-npm run test:watch # 開發時持續測試
-npm run build     # TypeScript 檢查與正式建置，輸出至 dist/
-npm run preview   # 預覽 dist/ 的建置成果
+npm test                                  # 單元／元件測試（含 27＋5 項引擎案例）
+npm run test:db                           # 需要 PostgreSQL 的整合測試（session、routes、progress）
+npm run build                             # tsc -b ＋ Vite 多入口建置 ＋ client boundary 檢查
+node docs/design/spike/run-cases.mjs      # spike 27 項（歷史證據，CI docs job 也會跑）
+node scripts/check-doc-links.mjs          # 文件相對連結
+npx --yes @redocly/cli@latest lint docs/design/openapi.yaml
 ```
 
-不需後端、資料庫、帳號、API 金鑰或環境變數。停止開發伺服器請按 Ctrl+C。
+CI 有三個 job：`web`（build ＋ 單元測試）、`docs`（spike、連結、OpenAPI lint）、`api`（Postgres service ＋ migrate ＋ seed ＋ `test:db`）。
 
-另有伺服器端教務 adapter，可用 `npm run demo:ais` 執行登入、成績、課表與課程 detail 的 fixture 流程，並交給相同學分引擎檢核。此入口不使用網路；瀏覽器 I1 Demo 仍使用原本七組樣本。模組介面、來源及日後真實測試方式見 [教務 adapter 說明](server/ais/README.md)。
+## 程式碼地圖
 
-建置指令先做型別檢查，再以 `scripts/clean-dist.mjs` 逐檔清理本專案 `dist/`，最後執行 Vite。這是為了處理本機 Windows/Node 在自動遞迴清理舊產物時的程序崩潰；腳本會檢查路徑、拒絕連結形式的輸出根目錄，並且不跟隨子目錄連結。
-
-## 如何操作 Demo
-
-1. 閱讀頁面上方持續顯示的測試規則提示、規則版本、來源與三項門檻。
-2. 選取七組模擬修課紀錄之一，已載入表格會同步更新。
-3. 點「執行學分檢核」，查看總學分、必修類與選修類的已取得學分、缺額及文字／顏色狀態。
-4. 展開結果卡片的「採計紀錄」，查看該條件使用的紀錄 ID、課程與學分；原始表格保留未採計資料並標示原因。
-5. 切換另一組樣本，舊結果立即清除，顯示「已切換樣本，請重新執行檢核」。再按執行按鈕取得新結果。
-
-手機版結果卡片垂直排列；紀錄表格可左右滑動。空資料仍可按執行，結果為 0 學分及對應缺額。三項全達標時，僅顯示「部分條件已檢核」及「本次三項測試條件全部達標」。
-
-## 規則與樣本
-
-規則版本：`test-v0.1`；來源：人工建立的開發測試規則；範圍：部分條件檢核。
-
-| 條件 ID | 條件 | 最低學分 |
-| --- | --- | ---: |
-| total-credits | 總學分 | 12 |
-| required-credits | 必修類學分 | 6 |
-| elective-credits | 選修類學分 | 6 |
-
-A、B 為必修各 3 學分；C、D、X 為選修各 3 學分。修課紀錄包含 `recordId`、`courseCode`、`name`、`credits`、`category`、`status`。I1 樣本 `category` 為 required/elective；`status` 為 passed/failed/unknown。教務 adapter 另保留 category=unknown，及格但分類未知時只計總學分，分類缺額與待確認原因仍保留。
-
-| 樣本 | 已取得：總／必修／選修 | 缺額：總／必修／選修 | 三項測試條件全部達標 |
-| --- | --- | --- | --- |
-| 不足：A、B、C 及格 | 9／6／3 | 3／0／3 | 否 |
-| 剛好達標：A、B、C、D 及格 | 12／6／6 | 0／0／0 | 是 |
-| 超過門檻：再加 X 及格 | 15／6／9 | 0／0／0 | 是 |
-| 空資料 | 0／0／0 | 12／6／6 | 否 |
-| 不及格：A、B、C 及格，D 不及格 | 9／6／3 | 3／0／3 | 否 |
-| 重複紀錄：達標樣本加相同 recordId 的 A | 12／6／6 | 0／0／0 | 是 |
-| 簡單重修：達標樣本加不同 recordId 的 A 不及格 | 12／6／6 | 0／0／0 | 是 |
-
-這些門檻與課程完全用於開發測試，不是海大或 113 資工正式畢業規則。正式規則需要官方來源、適用系所／入學年度與全部必要條件；本次三個分類學分條件不能推論其完整結果。
-
-## 結構與工作對應
-
-```text
-src/
-  domain/types.ts            規則、修課紀錄與結果型別
-  data/testRules.ts          AP-I1-01：測試規則資料
-  data/sampleRecords.ts      AP-I1-02：七組模擬紀錄
-  data/sampleExpectations.ts AP-I1-02：獨立、明確寫出的預期結果
-  engine/checkCredits.ts     AP-I1-03：學分檢核純函式
-  engine/checkCredits.test.ts AP-I1-03：引擎自動測試
-  components/               AP-I1-04：規則、樣本、表格與結果卡片
-  App.tsx                   AP-I1-04：樣本選取與執行流程
-  App.test.tsx              AP-I1-04：互動與提示文字測試
-  styles.css                桌面與手機排版
-```
-
-畫面與測試直接呼叫 `checkCredits`。`sampleExpectations.ts` 只有測試匯入，畫面與引擎不從預期結果讀取答案。修改 `testRules.ts` 的門檻即可改變計算結果；引擎沒有寫死 12／6／6。
-
-採計順序：同 `recordId` 保留首次出現；只納入 `passed`；同 `courseCode` 保留第一筆及格紀錄。未及格或未知狀態不占用同課的及格採計位置，因此較早的不及格紀錄不會阻止後來及格。總學分只計一次，分類按 required/elective 分開。缺額為 `max(門檻 − 已取得, 0)`。
-
-每項結果提供條件 ID、門檻、已取得學分、缺額、達標狀態與採計紀錄；報告包含規則版本、部分範圍、整體測試條件狀態與排除原因。函式不修改輸入。
-
-## CI
-
-`.github/workflows/ci.yml` 在 `push` 到 `main` 與每個 `pull_request` 執行兩個 job，不需 secrets、不連外部服務，每個 job 上限 10 分鐘：
-
-| Job | 內容 |
+| 路徑 | 內容 |
 | --- | --- |
-| `web` | `npm ci` → `npm run build` → `npm test` |
-| `docs` | `node docs/design/spike/run-cases.mjs`（27 項須全過）→ `node scripts/check-doc-links.mjs` → `docs/design/openapi.yaml` 存在時 `npx @redocly/cli lint` |
+| `server/index.ts` | 進入點：環境、`pg` pool、graceful shutdown |
+| `server/app.ts` | 路由表、`X-Request-Id`、404／500 envelope |
+| `server/routes/` | `rules.ts`、`progress.ts`、`auth.ts` |
+| `server/auth/` | OIDC（PKCE、ID token 驗證）與 session |
+| `src/engine/ruleEngine.ts` | 規則引擎（六型節點、池與上限、三態、trace） |
+| `src/pages/` | 學生進度頁與管理端兩頁 |
+| `src/data/` | `mockProgress`（學生頁 mock）、`mockAdmin`（管理端 mock） |
+| `db/migrations/` | 21 個遷移；`db/seed/` 種子與 dev-student fixture |
+| `docs/design/` | 系統設計、API、DB、UI/UX、規則模型、ADR、spike |
 
-推送前可在本機預跑同一組指令：
+學生端目前吃 `src/data/mockProgress.ts`；`GET /api/me/progress` 已是真實引擎輸出，接線時只要把 loader 換成 fetch（Issue #20 的說明）。管理端兩頁同理吃 mock，真端點屬 #14。
 
-```powershell
-npm ci ; npm run build ; npm test
-node docs/design/spike/run-cases.mjs
-node scripts/check-doc-links.mjs   # 或 npm run check:docs
-```
+## 已知邊界
 
-## 驗證
-
-Vitest 覆蓋七組樣本的精確學分／缺額／狀態、未知狀態不採計、修改規則門檻、雙重去重、先不及格後及格、採計明細及輸入不變性。Testing Library 覆蓋初始提示、按鈕執行、切換清除、空資料與採計明細展開。
-
-實際執行結果與瀏覽器驗證記錄見 `VALIDATION.md`。測試預期值為直接寫出的常數，不使用另一份相同算法計算答案。
-
-## 目前限制
-
-- 僅支援總學分、必修類及選修類最低學分，不涵蓋指定必修、課程群組、英文、體育或其他正式條件。
-- 模擬資料是有效、非負的學分資料；沒有匯入或編輯功能，也未建立外部不合法資料的執行期驗證。
-- `recordId`、`courseCode` 以完全相同的字串識別。相同識別但學分／類別矛盾時採首次紀錄，不處理複雜等價課程、替代、抵免、免修或多次修習例外。
-- 未知狀態不採計學分；I1 的結果為測試學分條件達標／未達標，不支援正式三態規則樹。
-- 教務 adapter 已有 fixture 驗證與真實測試 CLI，但尚未以真實帳號驗證，也尚未接上畫面的 AIS 同步入口。Google 登入、資料庫、AI、修課計畫及衝堂檢查仍留待後續迭代。
-- 選取與結果只存在瀏覽器記憶體，重新整理即重設；沒有保存或多使用者功能。
-- 本機開發／建置驗證不等於正式部署、校方畢業審核或完整 MVP 驗收。
-
-本次需求依使用者的 I1 實作要求及工作區的《軟體需求文件 v0.3.md》I1 範圍核對；原始需求與專案文件未被修改。
+- 管理端的發布流程端點（validate／test／submit／approve／publish／diff／audit）尚未實作；#14 已關閉並拆分，屬 I3。
+- AIS 同步（`server/ais/`）是既有 adapter，尚未寫入 `student_records`；`category` 的 AIS→CE/REQ/ELE 映射需與系所確認（見 [database-design.md](docs/design/database-design.md) §3.11）。
+- 完整 Google 登入需要瀏覽器與 Google 帳號，CI 只覆蓋純函式與 session 路由。
