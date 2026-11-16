@@ -397,7 +397,7 @@ sequenceDiagram
 
 | 表 | 主要欄位 | 說明 |
 | --- | --- | --- |
-| `users` | id、google_sub、email、role、created_at | 角色由後端決定 |
+| `users` | id、google_sub、email、role、dept_id、entry_year、program | 角色由後端決定；學籍用來找適用規則包 |
 | `departments` | id、name、college、active | 系所清單，供擴充 |
 | `department_admins` | dept_id、user_id、granted_by、granted_at、revoked_at | 一系可多名 |
 | `rule_bundles` | bundle_id、dept_id、entry_year、program | 規則包身分 |
@@ -406,7 +406,7 @@ sequenceDiagram
 | `rule_clauses` | clause_id、version_id、source_id、locator、text、reading、status | 條文卡 |
 | `review_records` | id、version_id、actor_id、action、detail、content_hash、at | 稽核 |
 | `test_runs` | id、version_id、suite、passed、failed、detail、at | 測試證據 |
-| `student_records` | user_id、record_key、course_code、credits、status、category、raw(jsonb)、synced_at | 原始快照 |
+| `student_records` | user_id、record_key、course_code、credits、status、category、tags、owner、raw(jsonb)、synced_at | 原始快照；category／tags／owner 是引擎 selector 的輸入 |
 | `student_overrides` | user_id、record_key、field、value、updated_at | 個人修正 |
 | `student_condition_overrides` | user_id、bundle_id、requirement_id、state、updated_at | 個人覆蓋 |
 | `student_plans` | user_id、term、course_code、section_id、sort | 修課計畫 |

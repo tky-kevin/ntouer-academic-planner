@@ -6,6 +6,7 @@ import { createApp } from './app.js'
 import type { QueryFn } from './app.js'
 import { loadDotEnv, readConfig } from './env.js'
 import { createRulesRoutes } from './routes/rules.js'
+import { createProgressRoutes } from './routes/progress.js'
 
 loadDotEnv()
 
@@ -35,7 +36,12 @@ const query: QueryFn = async (text, params) => {
   return { rows: result.rows }
 }
 
-const server = createServer(createApp({ query, routes: [...createRulesRoutes({ query })] }))
+const server = createServer(
+  createApp({
+    query,
+    routes: [...createRulesRoutes({ query }), ...createProgressRoutes({ query, devUserSub: process.env.DEV_USER_SUB })],
+  }),
+)
 
 server.listen(config.port, config.host, () => {
   console.log(JSON.stringify({ level: 'info', message: `API listening on http://${config.host}:${config.port}` }))

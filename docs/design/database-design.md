@@ -79,11 +79,15 @@ erDiagram
 | `google_sub` | `text` | 否 | — | uq。Google OIDC 的 `sub`，**唯一身分鍵**（ADR-0003） |
 | `email` | `text` | 否 | — | 顯示與聯絡用；可變，不作識別 |
 | `role` | `text` | 否 | `'student'` | `student`／`sysadmin`；系所管理員由 `department_admins` 決定，**不放在這裡** |
+| `dept_id` | `text` | 是 | — | fk → `departments`。學生所屬系所；管理員／系統管理員可為 `null` |
+| `entry_year` | `smallint` | 是 | — | 入學年度（民國）。用來找「該學生入學年度的最新已發布版本」 |
+| `program` | `text` | 否 | `'day'` | 學制，對應 `rule_bundles.program`（`day`／`night`…） |
 | `created_at` | `timestamptz` | 否 | `now()` | — |
 | `last_login_at` | `timestamptz` | 是 | — | 最近成功登入時間 |
 
-- `pk (user_id)`、`uq (google_sub)`、`check (role in ('student','sysadmin'))`。
+- `pk (user_id)`、`uq (google_sub)`、`check (role in ('student','sysadmin'))`、`check (entry_year is null or entry_year between 100 and 130)`、`idx (dept_id, entry_year)`。
 - 理由：`role` 只放「系統級」角色。系所管理員是「相對於某個系所」的關係，放進 `users.role` 會無法表達一人管兩系、或撤銷單一系所。
+- 理由（學籍）：`GET /api/me/progress` 省略 `bundleId` 時要「該學生所屬系所與入學年度的最新已發布版本」，沒有這三欄就無法決定；一個使用者只有一份學籍，所以放 `users` 而不是另開表。
 
 ### 3.3 `sessions`（登入工作階段）
 
@@ -235,16 +239,19 @@ erDiagram
 | `course_code` | `text` | 否 | — | 課號；未取得時以課名代替並標記 |
 | `course_name` | `text` | 是 | — | 課名 |
 | `credits` | `numeric(4,1)` | 否 | — | 學分，`>= 0` |
-| `category` | `text` | 否 | `'unknown'` | `required`／`elective`／`unknown` |
+| `category` | `text` | 否 | `'unknown'` | 規則包的課程分類：`CE`（共同教育）／`REQ`（專業必修）／`ELE`（選修）；`required`／`elective`／`unknown` 是 AIS 同步的粗略值，待映射（I3） |
 | `status` | `text` | 否 | — | `passed`／`failed`／`inProgress`／`transfer`／`waived`／`unknown` |
+| `tags` | `text[]` | 否 | `'{}'` | 規則包 selector 用的標籤：`inner`／`core`／`chinese`／`english`／`general`／`domainHuman`… |
+| `owner` | `text` | 否 | `'own'` | `own`（本系）／`other`（外系）；對應 selector `owner:*` |
 | `term` | `text` | 是 | — | 學期，如 `113-1` |
 | `raw` | `jsonb` | 否 | — | 來源原始資料（不含任何帳密，NFR-04） |
 | `previous_raw` | `jsonb` | 是 | — | 上一次同步的原始資料，供 TC-12 的「原始值已更新」比較 |
 | `previous_synced_at` | `timestamptz` | 是 | — | 上一次同步時間 |
 | `synced_at` | `timestamptz` | 否 | — | 本筆最後成功同步時間 |
 
-- `pk (user_id, record_key)`、`idx (user_id, course_code)`、`check (credits >= 0)`、`check (category in (…))`、`check (status in (…))`。
+- `pk (user_id, record_key)`、`idx (user_id, course_code)`、`idx gin (tags)`、`check (credits >= 0)`、`check (category in (…))`、`check (status in (…))`、`check (owner in ('own','other'))`。
 - 理由：以 `(user_id, record_key)` 當主鍵，同步就是 upsert，天然去重；`previous_raw` 讓「同步後某欄位變了」可以並列比較，而不必另開歷史表。
+- 理由（`category`／`tags`／`owner`）：這三欄是規則引擎 selector 的輸入（`docs/design/system-design.md` §5）。`category` 用規則包的詞彙（`CE`／`REQ`／`ELE`），否則 `category:CE` 的 pool 永遠是空的；`tags` 與 `owner` 同理。I2 由 seed 與測試提供，AIS 同步要怎麼映射到這些值需與系所確認（I3），**不在這裡猜**。
 
 ### 3.12 `student_overrides`（個人修正）
 

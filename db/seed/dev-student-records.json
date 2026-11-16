@@ -1,0 +1,645 @@
+[
+  {
+    "recordKey": "dev-01",
+    "courseCode": "國文(上)",
+    "courseName": "國文(上)",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "chinese"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-02",
+    "courseCode": "國文(下)",
+    "courseName": "國文(下)",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "chinese"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-03",
+    "courseCode": "大一英文(上)",
+    "courseName": "大一英文(上)",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "english"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-04",
+    "courseCode": "大一英文(下)",
+    "courseName": "大一英文(下)",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "english"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-05",
+    "courseCode": "進階英文",
+    "courseName": "進階英文",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "advancedEnglish"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-06",
+    "courseCode": "海洋科學概論",
+    "courseName": "海洋科學概論",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "ocean"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-07",
+    "courseCode": "人工智慧概論",
+    "courseName": "人工智慧概論",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "ai"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-08",
+    "courseCode": "博雅-人文A",
+    "courseName": "博雅-人文A",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainHuman"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-09",
+    "courseCode": "博雅-人文B",
+    "courseName": "博雅-人文B",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainHuman"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-10",
+    "courseCode": "博雅-社會A",
+    "courseName": "博雅-社會A",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainSociety"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-11",
+    "courseCode": "博雅-社會B",
+    "courseName": "博雅-社會B",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainSociety"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-12",
+    "courseCode": "博雅-科技A",
+    "courseName": "博雅-科技A",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainTech"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-13",
+    "courseCode": "博雅-科技B",
+    "courseName": "博雅-科技B",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainTech"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-14",
+    "courseCode": "博雅-永續A",
+    "courseName": "博雅-永續A",
+    "credits": 2,
+    "category": "CE",
+    "status": "passed",
+    "tags": [
+      "general",
+      "domainSustain"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-15",
+    "courseCode": "程式設計",
+    "courseName": "程式設計",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-16",
+    "courseCode": "離散數學",
+    "courseName": "離散數學",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-17",
+    "courseCode": "計算機概論",
+    "courseName": "計算機概論",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-18",
+    "courseCode": "微積分(上)",
+    "courseName": "微積分(上)",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-19",
+    "courseCode": "微積分(下)",
+    "courseName": "微積分(下)",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-20",
+    "courseCode": "程式設計(二)",
+    "courseName": "程式設計(二)",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-21",
+    "courseCode": "線性代數",
+    "courseName": "線性代數",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-22",
+    "courseCode": "數位邏輯",
+    "courseName": "數位邏輯",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-23",
+    "courseCode": "數位邏輯實驗",
+    "courseName": "數位邏輯實驗",
+    "credits": 1,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-24",
+    "courseCode": "資料結構",
+    "courseName": "資料結構",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-25",
+    "courseCode": "機率論",
+    "courseName": "機率論",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-26",
+    "courseCode": "計算機組織學",
+    "courseName": "計算機組織學",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-27",
+    "courseCode": "演算法",
+    "courseName": "演算法",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-28",
+    "courseCode": "電腦網路",
+    "courseName": "電腦網路",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-29",
+    "courseCode": "作業系統",
+    "courseName": "作業系統",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-30",
+    "courseCode": "資工系專題(一)",
+    "courseName": "資工系專題(一)",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-31",
+    "courseCode": "資工系專題(二)",
+    "courseName": "資工系專題(二)",
+    "credits": 3,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-32",
+    "courseCode": "資訊專題討論",
+    "courseName": "資訊專題討論",
+    "credits": 1,
+    "category": "REQ",
+    "status": "passed",
+    "tags": [],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-33",
+    "courseCode": "核心選修1",
+    "courseName": "核心選修1",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner",
+      "core"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-34",
+    "courseCode": "核心選修2",
+    "courseName": "核心選修2",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner",
+      "core"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-35",
+    "courseCode": "核心選修3",
+    "courseName": "核心選修3",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner",
+      "core"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-36",
+    "courseCode": "核心選修4",
+    "courseName": "核心選修4",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner",
+      "core"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-37",
+    "courseCode": "系內選修1",
+    "courseName": "系內選修1",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-38",
+    "courseCode": "系內選修2",
+    "courseName": "系內選修2",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-39",
+    "courseCode": "系內選修3",
+    "courseName": "系內選修3",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-40",
+    "courseCode": "系內選修4",
+    "courseName": "系內選修4",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-41",
+    "courseCode": "系內選修5",
+    "courseName": "系內選修5",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-42",
+    "courseCode": "系內選修6",
+    "courseName": "系內選修6",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-43",
+    "courseCode": "系內選修7",
+    "courseName": "系內選修7",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-44",
+    "courseCode": "系內選修8",
+    "courseName": "系內選修8",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-45",
+    "courseCode": "系內選修9",
+    "courseName": "系內選修9",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-46",
+    "courseCode": "系內選修10",
+    "courseName": "系內選修10",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-47",
+    "courseCode": "系內選修11",
+    "courseName": "系內選修11",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-48",
+    "courseCode": "系內選修12",
+    "courseName": "系內選修12",
+    "credits": 1,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [
+      "inner"
+    ],
+    "owner": "own",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-49",
+    "courseCode": "外系A",
+    "courseName": "外系A",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [],
+    "owner": "other",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-50",
+    "courseCode": "外系B",
+    "courseName": "外系B",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [],
+    "owner": "other",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-51",
+    "courseCode": "外系C",
+    "courseName": "外系C",
+    "credits": 3,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [],
+    "owner": "other",
+    "term": "113-1"
+  },
+  {
+    "recordKey": "dev-52",
+    "courseCode": "外系D",
+    "courseName": "外系D",
+    "credits": 2,
+    "category": "ELE",
+    "status": "passed",
+    "tags": [],
+    "owner": "other",
+    "term": "113-1"
+  }
+]

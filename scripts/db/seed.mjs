@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import pg from "pg";
 import { loadDatabaseEnv } from "./load-env.mjs";
+import { seedDevStudent } from "./seed-dev-student.mjs";
 
 const root = process.cwd();
 const connectionString = loadDatabaseEnv(root);
@@ -94,6 +95,8 @@ async function main() {
       throw error;
     }
   }
+
+  await seedDevStudent(client, root);
 
   await client.end();
 }
