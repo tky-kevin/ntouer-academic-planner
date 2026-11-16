@@ -241,6 +241,8 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 
 ## 10. API 介面（草案）
 
+本節保留端點概覽；統一回應 envelope、錯誤碼表、版本策略、認證標頭與前三個端點的完整規格，以 [api-spec.md](api-spec.md) 與 [openapi.yaml](openapi.yaml) 為準。
+
 | 方法 | 路徑 | 用途 | 權限 |
 | --- | --- | --- | --- |
 | POST | `/api/check` | 檢核（bundle 版本、情境、狀態） | 學生本人 |
