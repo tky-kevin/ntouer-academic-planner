@@ -32,7 +32,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | Job | 指令 | 涵蓋 |
 | --- | --- | --- |
 | `web` | `npm ci` → `npm run build` → `npm test` | L0、L1（目前 5 檔 47 測試） |
-| `docs` | `node docs/design/spike/run-cases.mjs` | spike 27 項（TC-29～33 的現行證據） |
+| `docs` | `node docs/design/spike/run-cases.mjs` | spike 27 項（歷史證據；已移植到 `ruleEngine.test.ts`） |
 | `docs` | `node scripts/check-doc-links.mjs` | 文件相對連結 |
 | `docs` | `npx @redocly/cli lint docs/design/openapi.yaml` | OpenAPI 可解析 |
 
@@ -85,13 +85,13 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | TC-06 | 重複紀錄 | L0＋L1 | 自動 | 去重測試 ＋ `App.test.tsx` 保留原始列 |
 | TC-07 | 簡單重修 | L0 | 自動 | 「先不及格後及格」測試 |
 | TC-08 | 部分範圍 | L1 | 自動 | `App.test.tsx` 初始提示與持續標示 |
-| TC-09 | 三情境 | L0 | 未實作 | I2：引擎 `scenario` 參數（`completed`／`inProgress`／`planned`） |
+| TC-09 | 三情境 | L0 | 自動 | `ruleEngine.test.ts` 案例 9（completed／inProgress 切換） |
 | TC-10 | 條件覆蓋 | L0＋L2 | 未實作 | I2：覆蓋套用於節點結果，不改學分 |
 | TC-11 | 個人修正 | L2 | 未實作 | I2：修正儲存、重算、還原 |
 | TC-12 | 同步失敗及變更 | L2 | 未實作 | I2：`student_sync_state` ＋ `previous_raw`（[database-design.md](database-design.md) §3.11、§3.15） |
 | TC-13 | 身分與儲存 | L2＋L3 | 未實作 | I2：cookie 工作階段、跨使用者拒絕（[ADR-0003](adr/0003-google-oidc-identity.md)） |
-| TC-14 | 必修及未知 | L0 | 未實作 | I2：`courseSet`／`status` 節點 |
-| TC-15 | 免修與重複分類 | L0 | spike | spike 案例 6（免修不給學分）；「兩類互斥」待補 |
+| TC-14 | 必修及未知 | L0 | 自動 | `ruleEngine.test.ts` 案例 2（必修）與 7（未知狀態） |
+| TC-15 | 免修與重複分類 | L0 | 自動 | `ruleEngine.test.ts` 案例 6（免修不給學分）；「兩類互斥」待補 |
 | TC-16 | 查詢與缺額 | L2 | 未實作 | I3：課程查詢 API（Step 5 清單中的待擴充端點） |
 | TC-17 | 衝堂與未知 | L2 | 未實作 | I3：正式班別資料 |
 | TC-18 | 發布權限 | L2 | 未實作 | I2：權限矩陣（[system-design.md](system-design.md) §8） |
@@ -100,25 +100,25 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 | TC-21 | PDF 草稿 | M | 未實作 | I2 可行性試作：只驗「草稿不自動發布」 |
 | TC-22 | AI 與先修 | M | 未實作 | S 階段（MVP 後） |
 | TC-23 | 寫入失敗 | L2 | 未實作 | I2：交易與原子發布（NFR-08） |
-| TC-24 | 覆蓋與上層重算 | L0 | spike | spike 案例 7（未知 → 達標 → 未知）；OR 分支待補 |
-| TC-25 | 指定必修缺漏 | L0 | 未實作 | I2：`courseSet` 節點 |
+| TC-24 | 覆蓋與上層重算 | L0 | 自動 | `ruleEngine.test.ts` 案例 7（未知 → 衝突解除）；OR 分支待補 |
+| TC-25 | 指定必修缺漏 | L0 | 未實作 | 引擎已支援 `courseSet`，尚無案例（案例 3 只驗學分缺額） |
 | TC-26 | 規則覆蓋範圍 | M | 未實作 | 可寫成資料檢核腳本，比對覆蓋清單與規則包 |
 | TC-27 | 管理員生命週期 | L2 | 未實作 | I2：`department_admins` 的有效列（[database-design.md](database-design.md) §3.4） |
 | TC-28 | 修正輸入與還原 | L2 | 未實作 | I2：輸入驗證與零學分免修 |
-| TC-29 | 採計上限 | L0 | spike | spike 案例 4（9 學分只認 6、博雅單領域上限） |
-| TC-30 | 重複採計 | L0 | spike | spike 案例 5（同課只計一次、單一池） |
-| TC-31 | 抵免與免修 | L0 | spike | spike 案例 6（抵免給學分、免修不給） |
-| TC-32 | 例外衝突 | L0 | spike | spike 案例 7（未解衝突停在待確認） |
-| TC-33 | 多系所格式 | L0 | spike | spike 案例 8（135／136、子集合不重複計入） |
+| TC-29 | 採計上限 | L0 | 自動 | `ruleEngine.test.ts` 案例 4（9 學分只認 6、博雅單領域上限） |
+| TC-30 | 重複採計 | L0 | 自動 | `ruleEngine.test.ts` 案例 5（同課只計一次、單一池） |
+| TC-31 | 抵免與免修 | L0 | 自動 | `ruleEngine.test.ts` 案例 6（抵免給學分、免修不給） |
+| TC-32 | 例外衝突 | L0 | 自動 | `ruleEngine.test.ts` 案例 7（未解衝突停在待確認） |
+| TC-33 | 多系所格式 | L0 | 自動 | `ruleEngine.test.ts` 案例 8（135／136、子集合不重複計入） |
 | TC-34 | 稽核追溯 | L2 | 未實作 | I2：`review_records` 不可變 ＋ 來源追溯 |
 
 ### 5.1 統計
 
 | 狀態 | 條數 | 佔比 | 證據來源 |
 | --- | --- | --- | --- |
-| 自動（`npm test`） | **8**（TC-01～08） | 24% | 5 檔 47 測試 |
-| spike（`docs` job） | **7**（TC-15、24、29～33） | 21% | 27 項案例 |
-| 未實作 | **19** | 56% | 逐條列在上表 |
+| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 10 檔 92 測試（含 `ruleEngine.test.ts` 27） |
+| spike（`docs` job） | **0**（已全數移植；spike 仍跑，當歷史證據） | 0% | 27 項案例 |
+| 未實作 | **17** | 50% | 逐條列在上表 |
 | 合計 | 34 | 100% | — |
 
 > 誠實說明：TC-01～08 是 **I1 的三條測試門檻**（12／6／6），不是 113 資工正式規則。通過不等於「畢業資格正確」。正式規則的驗收從 TC-09 之後才算。
