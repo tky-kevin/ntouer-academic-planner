@@ -353,13 +353,13 @@ function stateFromCredits(credits: number, min: number): RequirementState {
   return credits >= min ? MET : NOT_MET
 }
 
-function combineAnd(states: readonly RequirementState[]): RequirementState {
+export function combineAnd(states: readonly RequirementState[]): RequirementState {
   if (states.includes(NOT_MET)) return NOT_MET
   if (states.includes(UNKNOWN)) return UNKNOWN
   return MET
 }
 
-function combineOr(states: readonly RequirementState[]): RequirementState {
+export function combineOr(states: readonly RequirementState[]): RequirementState {
   if (states.includes(MET)) return MET
   if (states.includes(UNKNOWN)) return UNKNOWN
   return NOT_MET
