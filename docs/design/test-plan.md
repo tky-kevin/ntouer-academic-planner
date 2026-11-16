@@ -116,7 +116,7 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | 狀態 | 條數 | 佔比 | 證據來源 |
 | --- | --- | --- | --- |
-| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 14 檔 121 測試（含 `ruleEngine.test.ts` 27、`ProgressPage.test.tsx` 8） |
+| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 18 檔 164 測試（含 `ruleEngine.test.ts` 27、`ruleEngine.edge.test.ts` 5、`ProgressPage.test.tsx` 8、`can.test.ts` 32） |
 | spike（`docs` job） | **0**（已全數移植；spike 仍跑，當歷史證據） | 0% | 27 項案例 |
 | 未實作 | **17** | 50% | 逐條列在上表 |
 | 合計 | 34 | 100% | — |
