@@ -10,6 +10,8 @@
 | [examples/](examples/) | 資工 113 與商船 115 兩份可驗證樣本 | 實作、測試 |
 | [spike/](spike/) | 可執行的引擎可行性驗證（不是產品程式碼） | 實作、驗收 |
 | [database-design.md](database-design.md) | 欄位級資料庫設計：ER、型別與約束、索引理由、遷移順序、seed、快取、保留政策 | 實作（後端、DB）、評閱者 |
+| [api-spec.md](api-spec.md) | HTTP 介面契約：回應 envelope、錯誤碼、版本策略、認證標頭、端點規格 | 實作（前後端）、評閱者 |
+| [openapi.yaml](openapi.yaml) | 上面那份契約的機器可讀版（OpenAPI 3.1，先收 3 個 path） | 實作、驗證器 |
 | [adr/](adr/) | 已定案的技術決策與理由（0001～0006） | 全體、實作 |
 
 ## 決策紀錄（ADR）
@@ -34,7 +36,8 @@ docs/requirements/srs.md ── 系統行為與驗收（v0.9）
         ├─▶ docs/design/system-design.md ── 怎麼做
         │        ├─▶ docs/design/rule-model.md ── 規則格式
         │        ├─▶ docs/design/rule-bundle.schema.json ── 格式的機器版
-        │        └─▶ docs/design/database-design.md ── 資料落地（欄位、索引、遷移）
+        │        ├─▶ docs/design/database-design.md ── 資料落地（欄位、索引、遷移）
+        │        └─▶ docs/design/api-spec.md ＋ openapi.yaml ── 介面契約
         │
         └─▶ data/rules/ ── 113 資工的真實條文與覆蓋清單（設計的輸入，不是設計本身）
 
