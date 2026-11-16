@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 設計文件總覽（先看這裡）
+    url: https://github.com/tky-kevin/ntouer-academic-planner/blob/main/docs/design/README.md
+    about: 需求、設計、API、資料庫、測試計畫與 ADR 的入口。開 Issue 前先確認要改的是哪一層。
+  - name: 測試落點與 TC 對照表
+    url: https://github.com/tky-kevin/ntouer-academic-planner/blob/main/docs/design/test-plan.md
+    about: 每一條驗收案例由哪一層測、目前有沒有證據。回報缺陷前先確認它是否已被涵蓋。
+  - name: 已知限制
+    url: https://github.com/tky-kevin/ntouer-academic-planner/blob/main/docs/design/system-design.md
+    about: 學年課連動、雙主修身分等尚未支援的規則列在系統設計文件 §12，屬已知限制而非缺陷。

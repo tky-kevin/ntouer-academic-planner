@@ -1,0 +1,122 @@
+name: 功能任務（子 Issue）
+description: 一個可獨立完成、估時 0.5～1.5 天的工作項。父 Issue 為 SRS 的 AP-I2-0x。
+title: "[AP-I2-xx] "
+labels: ["feat"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **開單前確認**
+        - 一個 Issue 只做一件事；前後端不要綁在同一張（§7）。
+        - 估時 0.5～1.5 天。`Estimate` 以半天為單位；超過 3（＝1.5 天）請拆。
+        - 父 Issue 是 SRS 的 `AP-I2-01`～`AP-I2-07`（史詩，不估時）；子 Issue 以 sub-issue 掛載，API 不支援時改用父 Issue 的 checklist。
+        - 沒有對應 `TC-xx` 的任務，請先確認它是否真的需要存在。
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: 任務目標
+      description: 一句話說明「做完之後，誰可以做什麼」。不要寫成「實作某個檔案」。
+      placeholder: 例：系所管理員可以在無管理員的系所發布規則，且版本標示為未經系所審核。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: parent
+    attributes:
+      label: 父 Issue（史詩）
+      options:
+        - AP-I2-01 規則格式與驗證器
+        - AP-I2-02 規則引擎正式化
+        - AP-I2-03 資料庫與 API
+        - AP-I2-04 發布流程與權限
+        - AP-I2-05 測試與 CI
+        - AP-I2-06 介面整合
+        - AP-I2-07 AI 草稿與規則包轉換
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 主要區域
+      description: 對應 `area:*` label（建立後由維護者補上；triage 時一併設定 Projects 的 Area 欄位）。
+      options:
+        - area:frontend（學生端／管理端畫面）
+        - area:backend（API、權限、排程）
+        - area:db（schema、遷移、seed）
+        - area:infra（CI、部署、監控）
+        - area:rules（規則包、驗證器、引擎）
+    validations:
+      required: true
+
+  - type: textarea
+    id: design-refs
+    attributes:
+      label: 設計文件連結（含章節）
+      description: 至少一個。要指到「節」而不是整份文件，否則等於沒指。
+      placeholder: |
+        - docs/design/database-design.md §3.6 rule_versions
+        - docs/design/api-spec.md §4 錯誤碼 RULE_VERSION_IMMUTABLE
+        - docs/design/system-design.md §7.1 發布狀態機
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: 實作細節
+      description: 做法、要動的檔案、要注意的坑。不需要寫到程式碼層級，但要讓接手的人不用重讀整份規格。
+    validations:
+      required: true
+
+  - type: input
+    id: blocked-by
+    attributes:
+      label: Blocked by
+      description: 被哪個 Issue 或外部條件擋住。沒有就寫「無」。
+      placeholder: 例：#12（先有 sessions 表）；或「無」
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: AC checklist（可執行、可驗證）
+      description: 每一條都要能被別人重跑或重看。不要寫「功能正常」。
+      value: |
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+
+  - type: input
+    id: tc
+    attributes:
+      label: 對應 TC
+      description: 沿用 SRS 的編號，多個以逗號分隔。沒有對應案例請說明原因。
+      placeholder: 例：TC-18、TC-27
+    validations:
+      required: true
+
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimate（半天為單位）
+      description: 超過 3 請拆單。
+      options:
+        - "1（半天）"
+        - "2（1 天）"
+        - "3（1.5 天）"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: iteration
+    attributes:
+      label: Iteration
+      options:
+        - I2
+        - I3
+    validations:
+      required: true
