@@ -4,15 +4,19 @@ import { createServer } from 'node:http'
 import { Pool } from 'pg'
 import { createApp } from './app.js'
 import type { QueryFn } from './app.js'
-import { loadDotEnv, readConfig } from './env.js'
+import { loadDotEnv, readAuthConfig, readConfig } from './env.js'
+import type { AuthConfigValues } from './env.js'
 import { createRulesRoutes } from './routes/rules.js'
 import { createProgressRoutes } from './routes/progress.js'
+import { createAuthRoutes } from './routes/auth.js'
 
 loadDotEnv()
 
 let config: ReturnType<typeof readConfig>
+let authConfig: AuthConfigValues
 try {
   config = readConfig()
+  authConfig = readAuthConfig()
 } catch (error) {
   console.error(JSON.stringify({ level: 'error', message: error instanceof Error ? error.message : String(error) }))
   process.exit(1)
@@ -39,7 +43,11 @@ const query: QueryFn = async (text, params) => {
 const server = createServer(
   createApp({
     query,
-    routes: [...createRulesRoutes({ query }), ...createProgressRoutes({ query, devUserSub: process.env.DEV_USER_SUB })],
+    routes: [
+      ...createRulesRoutes({ query }),
+      ...createProgressRoutes({ query, devUserSub: process.env.DEV_USER_SUB }),
+      ...createAuthRoutes({ query, config: authConfig }),
+    ],
   }),
 )
 
