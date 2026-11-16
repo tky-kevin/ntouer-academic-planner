@@ -9,3 +9,4 @@ output/
 secrets/
 tmp/
 spike-output.log
+client_secret*.json
