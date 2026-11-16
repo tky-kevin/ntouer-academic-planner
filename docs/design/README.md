@@ -13,7 +13,8 @@
 | [api-spec.md](api-spec.md) | HTTP 介面契約：回應 envelope、錯誤碼、版本策略、認證標頭、端點規格 | 實作（前後端）、評閱者 |
 | [openapi.yaml](openapi.yaml) | 上面那份契約的機器可讀版（OpenAPI 3.1，先收 3 個 path） | 實作、驗證器 |
 | [ui-ux-spec.md](ui-ux-spec.md) | sitemap、使用流程、design tokens、元件清單、四種狀態、無障礙與對比實測 | 實作（前端）、評閱者 |
-| [design-system.html](design-system.html) | 上面那份規格的**可視版本**：色票、字級、間距、元件、四種狀態、對比表（直接載入 `src/styles.css`） | 實作（前端）、評閱者 |
+
+| [test-plan.md](test-plan.md) | 測試落點：層級與工具、CI 執行方式、fixtures 策略、覆蓋率目標、TC-01～34 對照表 | 實作、評閱者 || [design-system.html](design-system.html) | 上面那份規格的**可視版本**：色票、字級、間距、元件、四種狀態、對比表（直接載入 `src/styles.css`） | 實作（前端）、評閱者 |
 | [adr/](adr/) | 已定案的技術決策與理由（0001～0006） | 全體、實作 |
 
 ## 決策紀錄（ADR）
@@ -29,6 +30,32 @@
 | [0005 測試框架與 E2E](adr/0005-test-framework-and-e2e.md) | Vitest 為單元／整合；E2E 用 Playwright，I2 不進 CI | Accepted |
 | [0006 部署平台與 CI](adr/0006-deployment-platform-and-ci.md) | CI 已實作（無 secrets）；I2 只交付可部署產出，不建環境 | Accepted |
 
+## 事實所有權表
+
+每一張表、每一組數字只有**一個 owner**；其他文件只能連結，不能複製一份。
+
+| 事實 | Owner（唯一真相） | 其他文件只能 |
+| --- | --- | --- |
+| `FR`／`NFR`／`TC`／`UI`／`US` 編號與內容 | [docs/requirements/srs.md](../requirements/srs.md) | 引用編號，不改寫 |
+| 使用者角色、目標與範圍 | [docs/requirements/urd.md](../requirements/urd.md) | 引用 |
+| 46 條規定、來源定位與處理方式 | [data/rules/113-cse-coverage-list.md](../../data/rules/113-cse-coverage-list.md) | 引用條號 |
+| 上述清單的機器可讀登錄 | [data/rules/113-cse-coverage.json](../../data/rules/113-cse-coverage.json) | 引用 |
+| 官方來源的網址、取得日、SHA256 | [data/rules/sources-manifest.json](../../data/rules/sources-manifest.json) | 引用 source ID |
+| 規則包格式（節點、池、上限、衝突） | [rule-model.md](rule-model.md) ＋ [rule-bundle.schema.json](rule-bundle.schema.json) | 引用節點名 |
+| 兩份系所樣本的實際數字（135／136 等） | [examples/](examples/) | 引用檔名，不重算 |
+| 引擎演算法、三態判定、權限矩陣、資料表概覽 | [system-design.md](system-design.md) | 連結章節 |
+| 欄位型別、索引、遷移順序、保留政策 | [database-design.md](database-design.md) | 連結章節 |
+| 請求／回應形狀與錯誤碼 | [api-spec.md](api-spec.md) ＋ [openapi.yaml](openapi.yaml) | 引用 `code` |
+| 顏色、字級、間距、元件、四種狀態 | [ui-ux-spec.md](ui-ux-spec.md) ＋ [design-system.html](design-system.html) | 引用 token 名 |
+| 每個 TC 落在哪一層、目前有無證據 | [test-plan.md](test-plan.md) | 引用 TC 編號 |
+| 決策的「為什麼」 | [adr/](adr/) | 連結編號 |
+| 畫面配置與資訊層級 | [docs/requirements/wireframes/](../requirements/wireframes/index.html) | 引用 UI 編號 |
+
+**三個容易破功的地方**（寫在這裡提醒後續維護者）：
+
+1. **數字會漂**：`46 條`、`135／136 學分`、`34 個 TC` 都只在 owner 檔出現。若在某份文件看到第二份同樣的數字，就是準備要不同步了。
+2. **API 形狀雙寫**：`api-spec.md` 與 `openapi.yaml` 是同一件事的兩種表達，衝突時以 `openapi.yaml` 為準（因為它會被 linter 驗）。
+3. **規則內容雙寫**：`payload`（資料庫）與 `rule_sources`／`rule_clauses`（投影表）是同一份資料；`payload` 是真相，投影表可重建。
 ## 與其他文件的關係
 
 ```
