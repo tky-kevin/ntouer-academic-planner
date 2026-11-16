@@ -9,6 +9,14 @@ export interface ServerConfig {
   databaseUrl: string
 }
 
+export interface AuthConfigValues {
+  clientId: string
+  clientSecret: string
+  redirectUri: string
+  sessionSecret: string
+  secureCookies: boolean
+}
+
 export function loadDotEnv(root: string = process.cwd()): void {
   const file = path.join(root, '.env.local')
   if (!existsSync(file)) return
@@ -28,4 +36,18 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     throw new Error('DATABASE_URL 未設定：本機請放 .env.local，CI 請在 job env 提供。')
   }
   return { host: env.HOST ?? '127.0.0.1', port, databaseUrl }
+}
+
+export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfigValues {
+  const sessionSecret = env.SESSION_SECRET
+  if (!sessionSecret) {
+    throw new Error('SESSION_SECRET 未設定：本機請放 .env.local，CI／部署請在環境變數提供。')
+  }
+  return {
+    clientId: env.GOOGLE_CLIENT_ID ?? '',
+    clientSecret: env.GOOGLE_CLIENT_SECRET ?? '',
+    redirectUri: env.GOOGLE_REDIRECT_URI ?? 'http://localhost:3000/auth/callback',
+    sessionSecret,
+    secureCookies: env.NODE_ENV === 'production',
+  }
 }

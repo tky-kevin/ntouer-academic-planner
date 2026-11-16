@@ -9,8 +9,9 @@ export type QueryFn = (text: string, params?: readonly unknown[]) => Promise<Que
 
 export interface Reply {
   status: number
-  body: unknown
-  headers?: Record<string, string>
+  /** 204／302 不需要 body。 */
+  body?: unknown
+  headers?: Record<string, string | string[]>
 }
 
 export interface RouteContext {
@@ -68,6 +69,11 @@ function matchPath(pattern: string, pathname: string): Record<string, string> | 
 }
 
 function send(res: ServerResponse, requestId: string, reply: Reply): void {
+  if (reply.body === undefined) {
+    res.writeHead(reply.status, { 'X-Request-Id': requestId, ...reply.headers })
+    res.end()
+    return
+  }
   const payload = JSON.stringify(reply.body)
   res.writeHead(reply.status, {
     'Content-Type': 'application/json; charset=utf-8',
