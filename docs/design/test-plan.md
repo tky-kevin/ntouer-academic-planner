@@ -77,14 +77,14 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | TC | 情境 | 層級 | 現況 | 落點／缺口 |
 | --- | --- | --- | --- | --- |
-| TC-01 | 不足 | L0 | 自動 | `checkCredits.test.ts`（七組樣本參數化） |
-| TC-02 | 等於門檻 | L0 | 自動 | 同上 |
-| TC-03 | 超過門檻 | L0 | 自動 | 同上（驗證缺額不出現負值） |
-| TC-04 | 空資料 | L0＋L1 | 自動 | 引擎測試 ＋ `App.test.tsx` 空資料可執行 |
-| TC-05 | 不及格排除 | L0 | 自動 | `checkCredits.test.ts` |
-| TC-06 | 重複紀錄 | L0＋L1 | 自動 | 去重測試 ＋ `App.test.tsx` 保留原始列 |
-| TC-07 | 簡單重修 | L0 | 自動 | 「先不及格後及格」測試 |
-| TC-08 | 部分範圍 | L1 | 自動 | `App.test.tsx` 初始提示與持續標示 |
+| TC-01 | 不足 | L0 | 自動 | `ruleEngine.test.ts` 案例 3（缺額 6） |
+| TC-02 | 等於門檻 | L0 | 自動 | `ruleEngine.edge.test.ts`（剛好等於門檻） |
+| TC-03 | 超過門檻 | L0 | 自動 | `ruleEngine.edge.test.ts`（超過門檻、缺額不為負） |
+| TC-04 | 空資料 | L0＋L1 | 自動 | `ruleEngine.edge.test.ts`（空資料）＋ `ProgressPage.test.tsx`（空狀態） |
+| TC-05 | 不及格排除 | L0 | 自動 | `ruleEngine.edge.test.ts`（不及格不採計） |
+| TC-06 | 重複紀錄 | L0＋L1 | 自動 | `ruleEngine.test.ts` 案例 5 ＋ `ruleEngine.edge.test.ts`（重修只計一次） |
+| TC-07 | 簡單重修 | L0 | 自動 | `ruleEngine.edge.test.ts`（先不及格後及格） |
+| TC-08 | 部分範圍 | L1 | 自動 | `ProgressPage.test.tsx`（持續顯示部分檢核提示） |
 | TC-09 | 三情境 | L0 | 自動 | `ruleEngine.test.ts` 案例 9（completed／inProgress 切換） |
 | TC-10 | 條件覆蓋 | L0＋L2 | 未實作 | I2：覆蓋套用於節點結果，不改學分 |
 | TC-11 | 個人修正 | L2 | 未實作 | I2：修正儲存、重算、還原 |
@@ -116,12 +116,12 @@ NTOUER Academic Planner｜Iteration 2｜2026/11/16
 
 | 狀態 | 條數 | 佔比 | 證據來源 |
 | --- | --- | --- | --- |
-| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 10 檔 92 測試（含 `ruleEngine.test.ts` 27） |
+| 自動（`npm test`） | **17**（TC-01～09、14、15、24、29～33） | 50% | 14 檔 121 測試（含 `ruleEngine.test.ts` 27、`ProgressPage.test.tsx` 8） |
 | spike（`docs` job） | **0**（已全數移植；spike 仍跑，當歷史證據） | 0% | 27 項案例 |
 | 未實作 | **17** | 50% | 逐條列在上表 |
 | 合計 | 34 | 100% | — |
 
-> 誠實說明：TC-01～08 是 **I1 的三條測試門檻**（12／6／6），不是 113 資工正式規則。通過不等於「畢業資格正確」。正式規則的驗收從 TC-09 之後才算。
+> 誠實說明：TC-01～08 現在由正式引擎（`ruleEngine`）與學生端頁面承接；引擎的 27＋5 項案例是 113 資工與商船的真實規則，不是 I1 的三條測試門檻。
 
 ## 6. 缺陷處理與停止條件
 
