@@ -6,6 +6,7 @@ import {
   applyAisMenuExpandCallback,
   buildAisMenuExpandBody,
   parseAisMenuPage,
+  type AisMenuNode,
   type AisMenuState,
 } from "../protocol/ais/menu-tree-parser.js";
 import { parseAisFeatureLoader } from "../protocol/ais/feature-loader-parser.js";
@@ -49,16 +50,7 @@ export async function openAisFeature(
   const menuHtml = aisText(menu, `read_${options.operation}`, ["text/html"]);
   options.assertAuthenticated(menuHtml);
   let state = parseAisMenuPage(menuHtml);
-
-  for (const segment of options.menuGroups) {
-    const matches = state.nodes.filter(
-      (node) => node.kind === "group" && sameTitle(node.title, segment),
-    );
-    if (matches.length === 0) fail(state, options, "menu_group_not_found");
-    if (matches.length > 1 || matches[0] === undefined) {
-      fail(state, options, "menu_target_ambiguous");
-    }
-    const node = matches[0];
+  const expand = async (node: AisMenuNode): Promise<void> => {
     const expanded = await session.transport.execute({
       operation: `expand_${options.operation}_menu_group`,
       method: "POST",
@@ -79,12 +71,59 @@ export async function openAisFeature(
     ]);
     options.assertAuthenticated(callback);
     state = applyAisMenuExpandCallback(state, node, callback);
+    expandedPaths.add(node.postbackPath ?? node.title);
+  };
+  const expandedPaths = new Set<string>();
+
+  let configuredPathComplete = true;
+  for (const segment of options.menuGroups) {
+    const matches = state.nodes.filter(
+      (node) => node.kind === "group" && sameTitle(node.title, segment),
+    );
+    if (matches.length === 0) {
+      // 設定的群組路徑走不下去（AIS 可能改名或搬家）：交給下面的廣度搜尋，
+      // 真的找不到才回報 menu_group_not_found。
+      configuredPathComplete = false;
+      break;
+    }
+    if (matches.length > 1 || matches[0] === undefined) {
+      fail(state, options, "menu_target_ambiguous");
+    }
+    await expand(matches[0]);
   }
 
-  const targets = state.nodes.filter(
-    (node) => node.kind === "page" && sameTitle(node.title, options.targetTitle),
-  );
-  if (targets.length === 0) fail(state, options, "menu_target_not_found");
+  const findTargets = (current: AisMenuState) =>
+    current.nodes.filter(
+      (node) => node.kind === "page" && sameTitle(node.title, options.targetTitle),
+    );
+  let targets = findTargets(state);
+
+  // 設定的群組路徑找不到時，改用有上限的廣度搜尋（AIS 可能把功能搬到別的群組）。
+  // 只在 postback 模式做：舊版 populate 模式有 fixture 測試固定在跑，不要多發請求。
+  if (targets.length === 0 && state.mode === "postback") {
+    const queue: AisMenuNode[] = state.nodes.filter(
+      (node) => node.kind === "group" && !expandedPaths.has(node.postbackPath ?? node.title),
+    );
+    let budget = 30;
+    while (queue.length > 0 && budget > 0 && targets.length === 0) {
+      const group = queue.shift();
+      if (group === undefined) break;
+      const key = group.postbackPath ?? group.title;
+      if (expandedPaths.has(key)) continue;
+      budget -= 1;
+      await expand(group);
+      targets = findTargets(state);
+      for (const node of state.nodes) {
+        if (node.kind !== "group") continue;
+        const childKey = node.postbackPath ?? node.title;
+        if (!expandedPaths.has(childKey)) queue.push(node);
+      }
+    }
+  }
+
+  if (targets.length === 0) {
+    fail(state, options, configuredPathComplete ? "menu_target_not_found" : "menu_group_not_found");
+  }
   if (targets.length > 1) fail(state, options, "menu_target_ambiguous");
   const target = targets[0];
   if (target === undefined || target.loaderUrl === null) {

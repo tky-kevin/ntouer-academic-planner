@@ -74,4 +74,26 @@ describe('新版選單導覽', () => {
     expect(result.queryUrl.pathname).toBe('/Application/GRD/GRD50/GRD5010_01.aspx')
     expect(result.html).toContain('QUERY')
   })
+
+  it('功能被搬到別的群組時，會用有上限的廣度搜尋找回來', async () => {
+    const steps: FixtureStep[] = [
+      { operation: 'read_grades_menu', fixture: 'menu-tree-postback-bfs-root.html' },
+      { operation: 'expand_grades_menu_group', fixture: 'menu-tree-postback-bfs-stu.html' },
+      // 設定的路徑沒有成績系統 → 廣度搜尋先展開選課系統（沒有目標），再展開學務系統（找到）
+      { operation: 'expand_grades_menu_group', fixture: 'menu-tree-postback-bfs-stu.html' },
+      { operation: 'expand_grades_menu_group', fixture: 'menu-tree-postback-bfs-sls.html' },
+      { operation: 'open_grades_feature', fixture: 'grades-loader.html' },
+      { operation: 'read_grades_query_page', fixture: 'grades-query-page.html' },
+    ]
+    const result = await openAisFeature(session(steps), {
+      menuGroups: ['教務系統', '成績系統'],
+      targetTitle: '查詢各式成績',
+      expectedLoaderUrl: loaderUrl,
+      expectedProgramCode: 'STU2020',
+      expectedQueryUrl: queryUrl,
+      operation: 'grades',
+      assertAuthenticated: () => undefined,
+    })
+    expect(result.queryUrl.pathname).toBe('/Application/GRD/GRD50/GRD5010_01.aspx')
+  })
 })
