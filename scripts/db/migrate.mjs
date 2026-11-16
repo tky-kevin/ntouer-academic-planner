@@ -3,10 +3,13 @@
 // 說明：ADR-0004 決定用 node-pg-migrate；本檔是為了在沒有 CLI 的情況下也能
 // 重現同一組 SQL（I2 時程內的最小實作），語意與 node-pg-migrate 的 up 相同：
 // 單檔單一交易、已套用者跳過。
+// 注意：每個檔案只套用 `-- Down Migration` 之前的那一段。整份檔案送進 PostgreSQL 會把
+// Down 也執行掉（0018 就是這樣被沖掉的，見 0019 的說明）。
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import pg from "pg";
 import { loadDatabaseEnv } from "./load-env.mjs";
+import { upSection } from "./migration-file.mjs";
 
 const root = process.cwd();
 const connectionString = loadDatabaseEnv(root);
@@ -41,7 +44,7 @@ async function main() {
   for (const file of files) {
     const version = file.replace(/\.sql$/, "");
     if (applied.has(version)) continue;
-    const sql = readFileSync(path.join(dir, file), "utf8");
+    const sql = upSection(readFileSync(path.join(dir, file), "utf8"));
     await client.query("begin");
     try {
       await client.query(sql);
