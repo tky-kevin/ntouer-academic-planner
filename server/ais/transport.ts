@@ -26,6 +26,24 @@ function dumpResponse(request: AisRequest, status: number, bytes: Uint8Array): v
   }
 }
 
+/** 請求失敗（timeout／連線錯誤）沒有 response 可以 dump，改記一行錯誤中繼資料。 */
+function dumpFailure(request: AisRequest, code: string): void {
+  const dir = process.env.AIS_DEBUG_DUMP?.trim()
+  if (!dir) return
+  try {
+    mkdirSync(dir, { recursive: true })
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+    const safeOperation = request.operation.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 60)
+    writeFileSync(
+      path.join(dir, `${stamp}-error-${safeOperation}.txt`),
+      `# operation=${request.operation}\n# method=${request.method}\n# url=${request.url.href}\n# timeoutMs=${request.timeoutMs}\n# error=${code}\n`,
+      'utf8',
+    )
+  } catch {
+    // 除錯輸出失敗不影響流程。
+  }
+}
+
 /** Server-only, one CookieJar per session. Cookies/HTML are never part of Planner snapshots. */
 export class FetchAisTransport implements AisTransport {
   private readonly jar = new CookieJar()
@@ -94,8 +112,13 @@ export class FetchAisTransport implements AisTransport {
       }
       throw new PlannerAisError('contractChanged', 'AIS_REDIRECT_LIMIT')
     } catch (error) {
-      if (error instanceof PlannerAisError) throw error
-      throw new PlannerAisError('externalUnavailable', controller.signal.aborted ? 'AIS_TIMEOUT' : 'AIS_FETCH_FAILED', true)
+      if (error instanceof PlannerAisError) {
+        dumpFailure(request, error.code)
+        throw error
+      }
+      const code = controller.signal.aborted ? 'AIS_TIMEOUT' : 'AIS_FETCH_FAILED'
+      dumpFailure(request, code)
+      throw new PlannerAisError('externalUnavailable', code, true)
     } finally { clearTimeout(timer) }
   }
 }
