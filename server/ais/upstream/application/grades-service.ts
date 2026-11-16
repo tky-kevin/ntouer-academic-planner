@@ -103,6 +103,7 @@ export class GradesService {
           expectedProgramCode: "STU2020",
           expectedQueryUrl: gradesUrl,
           operation: "grades",
+          directQueryFirst: true,
           assertAuthenticated: (html) => {
             if (looksLikeLogin(html)) {
               session.authenticated = false;

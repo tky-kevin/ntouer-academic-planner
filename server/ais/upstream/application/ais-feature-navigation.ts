@@ -24,6 +24,47 @@ import { AisProtocolError } from "../protocol/ais/protocol-error.js";
 const mainFrameUrl = new URL("https://ais.ntou.edu.tw/MainFrame.aspx");
 const menuUrl = new URL("https://ais.ntou.edu.tw/MenuTree.aspx");
 
+/**
+ * 直接 GET 查詢頁。AIS 的查詢頁只靠 session cookie，不需要先展開選單；
+ * 選單只是「發現 URL」的機制，而 URL 我們已經知道。
+ * 回 null 代表不能用（登入頁、錯誤頁、或頁面標記不符），呼叫端改走選單導覽。
+ */
+async function tryDirectQuery(
+  session: GatewaySession,
+  options: Readonly<{
+    expectedQueryUrl: URL;
+    operation: "timetable" | "grades";
+    assertAuthenticated(html: string): void;
+  }>,
+): Promise<Readonly<{ queryUrl: URL; html: string }> | null> {
+  let html: string;
+  try {
+    const response = await session.transport.execute({
+      operation: `try_direct_${options.operation}_query_page`,
+      method: "GET",
+      url: options.expectedQueryUrl,
+      headers: {
+        accept: "text/html,application/xhtml+xml",
+        referer: mainFrameUrl.href,
+      },
+      maximumResponseBytes: 524_288,
+      timeoutMs: 10_000,
+    });
+    if (response.status !== 200) return null;
+    html = aisText(response, `try_direct_${options.operation}`, ["text/html"]);
+    options.assertAuthenticated(html);
+  } catch {
+    return null;
+  }
+  const marker =
+    options.operation === "grades"
+      ? /name=["']Q_AYEARSMS["']/iu
+      : /name=["']Q_AYEAR["']/iu;
+  if (!marker.test(html)) return null;
+  if (/GenericErrorPage|<title>\s*(登入|Login)/iu.test(html)) return null;
+  return { queryUrl: options.expectedQueryUrl, html };
+}
+
 export async function openAisFeature(
   session: GatewaySession,
   options: Readonly<{
@@ -34,8 +75,17 @@ export async function openAisFeature(
     expectedQueryUrl: URL;
     operation: "timetable" | "grades";
     assertAuthenticated(html: string): void;
+    /**
+     * 先直接 GET 查詢頁（同一份 session cookie），失敗才走選單導覽。
+     * AIS 的選單是舊版 ASP.NET TreeView，改版或連續 postback 都會壞；查詢頁本身只看 session。
+     */
+    directQueryFirst?: boolean;
   }>,
 ): Promise<Readonly<{ queryUrl: URL; html: string }>> {
+  if (options.directQueryFirst === true) {
+    const direct = await tryDirectQuery(session, options);
+    if (direct !== null) return direct;
+  }
   const menu = await session.transport.execute({
     operation: `read_${options.operation}_menu`,
     method: "GET",
