@@ -237,6 +237,8 @@ spike 只驗證結構與演算法，不含權限、資料庫與 API；正式實�
 
 `payload` 以 jsonb 存整份規則包，另以 `rule_sources`／`rule_clauses` 建索引供查詢與 diff；好處是引擎只需一個查詢就能拿到完整版本，且版本天生不可變。
 
+本節只是概覽。欄位型別、`NOT NULL`、主鍵與外鍵、每條索引存在的理由、遷移順序、seed、快取層級與保留政策，一律以 [database-design.md](database-design.md) 為準；兩邊衝突時修本節。
+
 ## 10. API 介面（草案）
 
 | 方法 | 路徑 | 用途 | 權限 |
